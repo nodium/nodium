@@ -1,0 +1,294 @@
+@charset "UTF-8";
+/*
+ * Global styles
+ */
+/* line 7, sass/graph-editor.scss */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 11, sass/graph-editor.scss */
+html {
+  font-size: 62.5%;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* line 16, sass/graph-editor.scss */
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background: white;
+  font-size: 1.6rem;
+}
+
+/* line 25, sass/graph-editor.scss */
+aside, body, button, form, input, label, li, nav, section, span, svg, ul {
+  padding: 0;
+  margin: 0;
+}
+
+/* line 30, sass/graph-editor.scss */
+button, input, textarea, select, label {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  font-size: 1.6rem;
+}
+
+/* line 38, sass/graph-editor.scss */
+textarea, input, select {
+  background: #b3b3b3;
+  color: #331833;
+}
+
+/* line 45, sass/graph-editor.scss */
+aside button,
+aside input[type=button],
+aside input[type=submit] {
+  width: 304px;
+  margin: 8px;
+}
+
+/* line 54, sass/graph-editor.scss */
+::-webkit-input-placeholder,
+:-moz-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+#placeholder {
+  color: #331833;
+  font-variant: small-caps;
+}
+
+/*
+ * Navigation Bar
+ */
+/* line 63, sass/graph-editor.scss */
+#navigation {
+  display: -webkit-box;
+  /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box;
+  /* OLD: Firefox (buggy) */
+  display: -ms-flexbox;
+  /* MID: IE 10 */
+  display: -webkit-flex;
+  /* NEW, Chrome 21+ */
+  display: flex;
+  /* NEW: Opera 12.1, Firefox 22+ */
+  -webkit-box-pack: justify;
+  -moz-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(41, 41, 41, 0.8);
+}
+
+/* line 76, sass/graph-editor.scss */
+#navigation > form {
+  display: -webkit-box;
+  /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box;
+  /* OLD: Firefox (buggy) */
+  display: -ms-flexbox;
+  /* MID: IE 10 */
+  display: -webkit-flex;
+  /* NEW, Chrome 21+ */
+  display: flex;
+  /* NEW: Opera 12.1, Firefox 22+ */
+  -webkit-box-align: stretch;
+  -moz-box-align: stretch;
+  /* OLDâ€¦ */
+  -ms-flex-align: stretch;
+  /* You know the drill nowâ€¦ */
+  -webkit-align-items: stretch;
+  align-items: stretch;
+  height: 53px;
+}
+
+/**
+ * Filter input
+ */
+/* line 87, sass/graph-editor.scss */
+#node-filter {
+  display: -webkit-box;
+  /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box;
+  /* OLD: Firefox (buggy) */
+  display: -ms-flexbox;
+  /* MID: IE 10 */
+  display: -webkit-flex;
+  /* NEW, Chrome 21+ */
+  display: flex;
+  /* NEW: Opera 12.1, Firefox 22+ */
+  width: 320px;
+  padding: 0 9px;
+}
+
+/* line 95, sass/graph-editor.scss */
+#node-filter > input[type=text] {
+  width: 100%;
+  height: 36px;
+  padding: 0 8px;
+  margin: 9px 0 8px;
+  display: inline-block;
+}
+
+/* line 105, sass/graph-editor.scss */
+#node-filter > button {
+  height: 36px;
+  width: 36px;
+  margin: 9px 0 8px -36px;
+  background: transparent;
+  border: none;
+  color: #515151;
+}
+
+/**
+ * Nodes Tab
+ */
+/* line 120, sass/graph-editor.scss */
+#inspector {
+  width: 320px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+  background: #331833;
+}
+
+/* line 133, sass/graph-editor.scss */
+#nodes {
+  overflow-y: scroll;
+}
+
+/* line 137, sass/graph-editor.scss */
+label {
+  padding: 19px;
+  color: #d2d2d2;
+  cursor: pointer;
+}
+
+/* line 143, sass/graph-editor.scss */
+label.active {
+  color: white;
+}
+
+/* line 147, sass/graph-editor.scss */
+label > input[type=radio] {
+  display: none;
+}
+
+/* line 151, sass/graph-editor.scss */
+#node-list > li {
+  display: -webkit-box;
+  /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box;
+  /* OLD: Firefox (buggy) */
+  display: -ms-flexbox;
+  /* MID: IE 10 */
+  display: -webkit-flex;
+  /* NEW, Chrome 21+ */
+  display: flex;
+  /* NEW: Opera 12.1, Firefox 22+ */
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  /* OLDâ€¦ */
+  -ms-flex-align: center;
+  /* You know the drill nowâ€¦ */
+  -webkit-align-items: center;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* line 164, sass/graph-editor.scss */
+#node-list > li:last-child {
+  border-bottom: none;
+}
+
+/* line 168, sass/graph-editor.scss */
+#node-list li.selected {
+  background: #64baf1;
+}
+
+/* line 172, sass/graph-editor.scss */
+.hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+/* Graph stuff */
+/* line 185, sass/graph-editor.scss */
+circle {
+  cursor: pointer;
+}
+/* line 188, sass/graph-editor.scss */
+circle.background {
+  fill: #24a1f1;
+  opacity: 0.3;
+}
+/* line 193, sass/graph-editor.scss */
+circle.invisible {
+  opacity: 0;
+}
+
+/* line 198, sass/graph-editor.scss */
+text {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  font-family: Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
+/* line 206, sass/graph-editor.scss */
+.top-circle {
+  fill: #d2d2d2;
+  opacity: 1;
+}
+
+/* line 211, sass/graph-editor.scss */
+.accepted .top-circle {
+  fill: #00b67c;
+  opacity: 1;
+}
+
+/* line 216, sass/graph-editor.scss */
+.denied .top-circle {
+  fill: #e2abb9;
+  opacity: 1;
+}
+
+/* line 221, sass/graph-editor.scss */
+.filtered .top-circle {
+  fill: #f1f1f1;
+}
+
+/* line 225, sass/graph-editor.scss */
+.selected .top-circle {
+  fill: #64baf1;
+}
+
+/* line 229, sass/graph-editor.scss */
+.link {
+  stroke: #64baf1;
+  stroke-width: 4px;
+}

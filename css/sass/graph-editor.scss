@@ -27,7 +27,7 @@ aside, body, button, form, input, label, li, nav, section, span, svg, ul  {
 	margin: 0;
 }
 
-button, input, textarea, label {
+button, input, textarea, select, label {
 	width: 100%;
 	padding: 8px;
 
@@ -35,14 +35,25 @@ button, input, textarea, label {
 	font-size: 1.6rem;
 }
 
-textarea, input[type=text] {
-	
+textarea, input, select {
+	background: #b3b3b3;
+	color: #331833;
 }
 
-button,
-input[type=button],
-input[type=submit] {
+aside button,
+aside input[type=button],
+aside input[type=submit] {
+	width: 304px;
 	margin: 8px;
+}
+
+::-webkit-input-placeholder,
+:-moz-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+#placeholder {
+	color: #331833;
+	font-variant: small-caps;
 }
 
 /*
@@ -111,12 +122,12 @@ input[type=submit] {
 	position: absolute;
 
 	right: 0;
-	top: 63px;
-	bottom: 10px;
+	top: 0;
+	bottom: 0;
 
 	overflow-y: auto;
 
-	background: rgba(41, 41, 41, 0.8);
+	background: #331833;;
 }
 
 #nodes {
