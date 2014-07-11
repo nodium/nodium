@@ -290,15 +290,16 @@
 	graph.Graph.prototype.attachNodeEvents = function (nodeEnter) {
 		var eventsObject = this.getEventsObject();
 
-		nodeEnter.call(d3.behavior.drag()
-				.on('dragstart', eventsObject['dragstart'])
-				.on('drag', eventsObject['drag'])
-				.on('dragend', eventsObject['dragend']))
+		nodeEnter
 			.on('click', eventsObject['click'])
 			.on('mouseover', eventsObject['mouseover'])
 			.on('mouseout', eventsObject['mouseout'])
 			.on('mouseup', eventsObject['mouseup'])
-			.on('mousedown', eventsObject['mousedown']);
+			.on('mousedown', eventsObject['mousedown'])
+			.call(d3.behavior.drag()
+				.on('dragstart', eventsObject['dragstart'])
+				.on('drag', eventsObject['drag'])
+				.on('dragend', eventsObject['dragend']));
 	};
 
 	graph.Graph.prototype.drawNodeEnter = function (nodeEnter) {
@@ -368,8 +369,12 @@
 	 * Get the text that should be shown on the node from the data
 	 * Should return null when text not there
 	 */
+	graph.Graph.prototype.getNodeTitleKey = function (data) {
+		return 'name';
+	};
+
 	graph.Graph.prototype.getNodeText = function (data) {
-		return data.name;
+		return data[this.getNodeTitleKey()];
 	};
 
 	graph.Graph.prototype.drawNodeTexts = function (nodeEnter) {
@@ -484,8 +489,6 @@
 
 	graph.Graph.prototype.handleMouseClick = function (graph, data) {
 
-		console.log("yo");
-
 		// don't click after a drag event
 		if (d3.event.defaultPrevented) {
 			return;
@@ -495,8 +498,6 @@
 	};
 
 	graph.Graph.prototype.handleMouseDown = function (graph, data) {
-
-		console.log('mousedown');
 
 		$(graph).trigger('mouse-down', [this, data]);
 	};	
@@ -551,6 +552,7 @@
 
 			// because drag start is not actually dragging yet (we haven't moved)
 			graph.dragging = true;
+			this.style['pointerEvents'] = 'none';
 			
 			// node drag functionality
 
@@ -567,14 +569,11 @@
 
 	graph.Graph.prototype.handleNodeDragStart = function (graph, data) {
 
-		console.log("lalalaa");
 		// use d3 event?
 		$(graph).trigger('drag-start', [this, data]);
 
 		// used to stop canvas from dragging too
 		d3.event.sourceEvent.stopPropagation();
-
-		this.style['pointerEvents'] = 'none';
 
 		graph.xChange = 0;
 		graph.yChange = 0;

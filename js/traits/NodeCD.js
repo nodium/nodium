@@ -26,11 +26,15 @@
 		var deleteNode = window.curry(this.handleNodeDelete, this);
 		var updateNode = window.curry(this.handleNodeUpdate, this);
 		var loadNode = window.curry(this.handleNodeSelected, this);
+		var addProperty = window.curry(this.handlePropertyAdded, this);
+		var deleteProperty = window.curry(this.handlePropertyDeleted, this);
 		$(this).on('drag-down', deleteNode);
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
 		$('#node-form').on('submit', updateNode);
-		$(this).on('drag-up', loadNode);
+		$(this).on('node-clicked', loadNode);
+		$('#new-property').on('click', addProperty);
+		$('.delete-property').on('click', deleteProperty);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -109,17 +113,10 @@
 		$(this).trigger('node-deleted', [data]);
 	};
 
-	graph.NodeCD.prototype.getFieldSelector = function (name) {
-		return '#node-' + name;
-	}
-
 	/**
 	 * Read the node into the edit form
 	 */
 	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
-
-		console.log("handling node selected");
-		console.log(data);
 
 		// fix this differently
 		this.selectedNode = {
@@ -127,28 +124,69 @@
 			data: data
 		};
 
-		var fieldPrototype = '<textarea id="node-__field__" rows="__rows__" placeholder="__field__">__value__</textarea>',
+		var fieldPrototype = $('#node-fields').data('prototype'),
 			fieldHTML,
-			fieldName;
+			fieldName,
+			titleField = this.getNodeTitleKey();
+
+		// set the title field
+		if (data.hasOwnProperty(titleField)) {
+			$('#node-title').val(data[titleField]);
+		}
 
 		// create the html form elements
 		$('#node-fields').empty();
 
 		for (var i = 0; i < data.fields.length; i++) {
 			fieldName = data.fields[i];
-			console.log(data[fieldName]);
+
+			// the title property is rendered differently
+			if (fieldName == titleField) {
+				continue;
+			}
+
 			fieldHTML = fieldPrototype
 				.replace(/__field__/g, fieldName)
 				.replace(/__value__/, data[fieldName])
-				.replace(/__rows__/, fieldName == 'name' ? 1 : 5);
+				.replace(/__rows__/, 5);
 			$('#node-fields').append(fieldHTML);
 		}
-	}
+	};
+
+	/**
+	 * Update the data and return the filtered updated data
+	 */
+	graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+
+		var titleField = this.getNodeTitleKey(),
+			fields = $('#node-fields').children(),
+			key,
+			value;
+
+		// clear the fields metadata, we'll refill this
+		data.fields = [titleField];
+
+		// set the title field separately
+		data[titleField] = $('#node-title').val();
+
+		for (var i = 0; i < fields.length; i++) {
+			key = $('.node-key', fields[i]).val();
+			value = $('.node-value', fields[i]).val();
+
+			data.fields.push(key);
+			data[key] = value;
+		}
+
+		// TODO maybe we should try to remove the unused fields from the node data,
+		// but this is not strictly necessary, the fields metadata works as a filter
+	};
 
 	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
 
 		var data = {},
-			fieldName;
+			fieldName,
+			titleField = this.getNodeTitleKey(),
+			nodeData = this.selectedNode.data;
 
 		event.preventDefault();
 
@@ -158,19 +196,36 @@
 			return;
 		}
 
-		// build the data to send
-		for (var i = 0; i < this.selectedNode.data.fields.length; i++) {
-			fieldName = this.selectedNode.data.fields[i];
-			data[fieldName] = $(this.getFieldSelector(fieldName)).val();
-		};
+		this.updateNodeDataWithFields(nodeData);
 
-		var selectedData = this.selectedNode.data;
-		$.extend(selectedData, data);
+		// build the data to send
+		for (var i = 0; i < nodeData.fields.length; i++) {
+			fieldName = nodeData.fields[i];
+			data[fieldName] = nodeData[fieldName];
+		};
 
 		this.redrawNodes();
 		this.force.start();
 
 		$(this).trigger('node-updated', [data, this.selectedNode.data.id]);
+	};
+
+	graph.NodeCD.prototype.handlePropertyAdded = function (event) {
+
+		var fieldPrototype = $('#node-fields').data('prototype'),
+			fieldHTML;
+
+		event.preventDefault();
+
+		fieldHTML = fieldPrototype
+				.replace(/__field__/g, '')
+				.replace(/__value__/, '')
+				.replace(/__rows__/, 5);
+			$('#node-fields').append(fieldHTML);
+	};
+
+	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
+
 	};
 
 }(window, jQuery, d3));

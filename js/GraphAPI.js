@@ -180,6 +180,10 @@
 
 	graph.API.prototype.handleNodeUpdated = function (event, data, id) {
 
+		console.log("handling node update");
+		console.log(id);
+		console.log(data);
+
 		$.ajax({
 			url: id + '/properties',
 			type: 'PUT',

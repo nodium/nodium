@@ -78,6 +78,8 @@
 	 */
 	graph.Holdable.prototype.handleHoldDrag = function (event, node, data) {
 
+		console.log("lols");
+
 		var infoText;
 
 		if (!this.holding) {
