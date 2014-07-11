@@ -64,7 +64,9 @@
 				self.holding = true;
 
 				// show a nice transition while we're at it
-				self.scaleNode(node, 1.3);
+				console.log(node);
+				d3.select(node).select('.top-circle').classed('hover', true);
+				// self.scaleNode(node, 1.3);
 
 				$('#hold-action-notification').toggle();
 			}
@@ -118,7 +120,8 @@
 		}
 
 		if (this.holding) {
-			this.scaleNode(node, 1);
+			//this.scaleNode(node, 1);
+			d3.select(node).select('.top-circle').classed('hover', false);
 
 			this.holding = false;
 			$('#hold-action-notification').toggle();

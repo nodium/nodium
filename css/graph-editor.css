@@ -2,20 +2,22 @@
 /*
  * Global styles
  */
-/* line 7, sass/graph-editor.scss */
+/* line 1, sass/_dom-overrides.scss */
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* line 11, sass/graph-editor.scss */
+/* line 7, sass/_dom-overrides.scss */
 html {
   font-size: 62.5%;
   font-family: Helvetica, Arial, sans-serif;
 }
 
-/* line 16, sass/graph-editor.scss */
+/* line 12, sass/_dom-overrides.scss */
 body {
   padding: 0;
   margin: 0;
@@ -24,13 +26,7 @@ body {
   font-size: 1.6rem;
 }
 
-/* line 25, sass/graph-editor.scss */
-aside, body, button, form, input, label, li, nav, section, span, svg, ul {
-  padding: 0;
-  margin: 0;
-}
-
-/* line 30, sass/graph-editor.scss */
+/* line 21, sass/_dom-overrides.scss */
 button, input, textarea, select, label {
   width: 100%;
   padding: 8px;
@@ -38,13 +34,20 @@ button, input, textarea, select, label {
   font-size: 1.6rem;
 }
 
-/* line 38, sass/graph-editor.scss */
+/* line 29, sass/_dom-overrides.scss */
 textarea, input, select {
-  background: #b3b3b3;
+  background: #c2b9c2;
+  color: white;
+}
+
+/* line 36, sass/_dom-overrides.scss */
+aside textarea,
+aside input,
+aside select {
   color: #331833;
 }
 
-/* line 45, sass/graph-editor.scss */
+/* line 42, sass/_dom-overrides.scss */
 aside button,
 aside input[type=button],
 aside input[type=submit] {
@@ -52,20 +55,74 @@ aside input[type=submit] {
   margin: 8px;
 }
 
-/* line 54, sass/graph-editor.scss */
-::-webkit-input-placeholder,
-:-moz-placeholder,
-::-moz-placeholder,
-:-ms-input-placeholder,
-#placeholder {
-  color: #331833;
+/* line 48, sass/_dom-overrides.scss */
+::-webkit-input-placeholder {
+  color: inherit;
   font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+/* line 54, sass/_dom-overrides.scss */
+::-moz-placeholder {
+  color: inherit;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+/* line 60, sass/_dom-overrides.scss */
+:-moz-placeholder {
+  color: inherit;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+/* line 66, sass/_dom-overrides.scss */
+:-ms-input-placeholder {
+  color: inherit;
+  font-variant: small-caps;
+  text-transform: lowercase;
+}
+
+/**
+ * Sidebar
+ */
+/* line 2, sass/_sidebar.scss */
+.property > div,
+.property > textarea {
+  width: 50%;
+}
+
+/* line 6, sass/_sidebar.scss */
+.property > div {
+  position: relative;
+}
+
+/* line 10, sass/_sidebar.scss */
+.property input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 38px;
+}
+
+/* line 17, sass/_sidebar.scss */
+.property button {
+  position: absolute;
+  left: 0;
+  width: 38px;
+  text-align: center;
+}
+
+/* line 24, sass/_sidebar.scss */
+#delete-button {
+  background: #e97777;
+  color: #331833;
 }
 
 /*
  * Navigation Bar
  */
-/* line 63, sass/graph-editor.scss */
+/* line 27, sass/graph-editor.scss */
 #navigation {
   display: -webkit-box;
   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
@@ -89,7 +146,7 @@ aside input[type=submit] {
   background: rgba(41, 41, 41, 0.8);
 }
 
-/* line 76, sass/graph-editor.scss */
+/* line 40, sass/graph-editor.scss */
 #navigation > form {
   display: -webkit-box;
   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
@@ -114,7 +171,7 @@ aside input[type=submit] {
 /**
  * Filter input
  */
-/* line 87, sass/graph-editor.scss */
+/* line 51, sass/graph-editor.scss */
 #node-filter {
   display: -webkit-box;
   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
@@ -130,7 +187,7 @@ aside input[type=submit] {
   padding: 0 9px;
 }
 
-/* line 95, sass/graph-editor.scss */
+/* line 59, sass/graph-editor.scss */
 #node-filter > input[type=text] {
   width: 100%;
   height: 36px;
@@ -139,7 +196,7 @@ aside input[type=submit] {
   display: inline-block;
 }
 
-/* line 105, sass/graph-editor.scss */
+/* line 69, sass/graph-editor.scss */
 #node-filter > button {
   height: 36px;
   width: 36px;
@@ -152,7 +209,7 @@ aside input[type=submit] {
 /**
  * Nodes Tab
  */
-/* line 120, sass/graph-editor.scss */
+/* line 84, sass/graph-editor.scss */
 #inspector {
   width: 320px;
   position: absolute;
@@ -163,29 +220,29 @@ aside input[type=submit] {
   background: #331833;
 }
 
-/* line 133, sass/graph-editor.scss */
+/* line 97, sass/graph-editor.scss */
 #nodes {
   overflow-y: scroll;
 }
 
-/* line 137, sass/graph-editor.scss */
+/* line 101, sass/graph-editor.scss */
 label {
   padding: 19px;
   color: #d2d2d2;
   cursor: pointer;
 }
 
-/* line 143, sass/graph-editor.scss */
+/* line 107, sass/graph-editor.scss */
 label.active {
   color: white;
 }
 
-/* line 147, sass/graph-editor.scss */
+/* line 111, sass/graph-editor.scss */
 label > input[type=radio] {
   display: none;
 }
 
-/* line 151, sass/graph-editor.scss */
+/* line 115, sass/graph-editor.scss */
 #node-list > li {
   display: -webkit-box;
   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
@@ -211,17 +268,17 @@ label > input[type=radio] {
   cursor: pointer;
 }
 
-/* line 164, sass/graph-editor.scss */
+/* line 128, sass/graph-editor.scss */
 #node-list > li:last-child {
   border-bottom: none;
 }
 
-/* line 168, sass/graph-editor.scss */
+/* line 132, sass/graph-editor.scss */
 #node-list li.selected {
   background: #64baf1;
 }
 
-/* line 172, sass/graph-editor.scss */
+/* line 136, sass/graph-editor.scss */
 .hidden {
   border: 0;
   clip: rect(0 0 0 0);
@@ -234,21 +291,29 @@ label > input[type=radio] {
 }
 
 /* Graph stuff */
-/* line 185, sass/graph-editor.scss */
+/* line 149, sass/graph-editor.scss */
 circle {
   cursor: pointer;
+  stroke-width: 0;
+  -webkit-transition: stroke-width 0.08s linear;
+  transition: stroke-width 0.08s linear;
 }
-/* line 188, sass/graph-editor.scss */
+/* line 155, sass/graph-editor.scss */
 circle.background {
   fill: #24a1f1;
   opacity: 0.3;
 }
-/* line 193, sass/graph-editor.scss */
+/* line 160, sass/graph-editor.scss */
 circle.invisible {
   opacity: 0;
 }
 
-/* line 198, sass/graph-editor.scss */
+/* line 165, sass/graph-editor.scss */
+.hover {
+  stroke-width: 5;
+}
+
+/* line 169, sass/graph-editor.scss */
 text {
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -259,35 +324,36 @@ text {
   cursor: pointer;
 }
 
-/* line 206, sass/graph-editor.scss */
+/* line 177, sass/graph-editor.scss */
 .top-circle {
   fill: #d2d2d2;
   opacity: 1;
+  stroke: #939393;
 }
 
-/* line 211, sass/graph-editor.scss */
+/* line 183, sass/graph-editor.scss */
 .accepted .top-circle {
   fill: #00b67c;
   opacity: 1;
 }
 
-/* line 216, sass/graph-editor.scss */
+/* line 188, sass/graph-editor.scss */
 .denied .top-circle {
   fill: #e2abb9;
   opacity: 1;
 }
 
-/* line 221, sass/graph-editor.scss */
+/* line 193, sass/graph-editor.scss */
 .filtered .top-circle {
   fill: #f1f1f1;
 }
 
-/* line 225, sass/graph-editor.scss */
+/* line 197, sass/graph-editor.scss */
 .selected .top-circle {
   fill: #64baf1;
 }
 
-/* line 229, sass/graph-editor.scss */
+/* line 201, sass/graph-editor.scss */
 .link {
   stroke: #64baf1;
   stroke-width: 4px;
