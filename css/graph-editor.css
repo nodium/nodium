@@ -150,9 +150,10 @@ aside {
   top: 0;
   left: 0;
   bottom: 0;
+  color: #b3b3b3;
 }
 
-/* line 62, sass/_sidebar.scss */
+/* line 63, sass/_sidebar.scss */
 .node-field button,
 #new-property {
   text-align: center;
@@ -161,27 +162,32 @@ aside {
   width: 38px;
   margin: 0;
   background: transparent;
-  color: #b3b3b3;
 }
 
 /* line 72, sass/_sidebar.scss */
+#new-property {
+  color: white;
+  height: 35px;
+}
+
+/* line 77, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 78, sass/_sidebar.scss */
+/* line 83, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
   color: white;
 }
 
-/* line 84, sass/_sidebar.scss */
+/* line 89, sass/_sidebar.scss */
 #node-fields li:last-child {
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #b3b3b3;
 }
-/* line 88, sass/_sidebar.scss */
+/* line 93, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
   width: 100%;
@@ -192,8 +198,8 @@ aside {
   letter-spacing: 0.02em;
   text-transform: lowercase;
   font-variant: small-caps;
-  color: white;
-  border-bottom: 1px solid white;
+  color: #b3b3b3;
+  border-bottom: 1px solid #b3b3b3;
 }
 
 /*
