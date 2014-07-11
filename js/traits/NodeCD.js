@@ -26,12 +26,10 @@
 		var deleteNode = window.curry(this.handleNodeDelete, this);
 		var updateNode = window.curry(this.handleNodeUpdate, this);
 		var loadNode = window.curry(this.handleNodeSelected, this);
-		// $(this).on('create-node', nodeCreator);
 		$(this).on('drag-down', deleteNode);
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
 		$('#node-form').on('submit', updateNode);
-		// $(this).on('node-clicked', loadNode);
 		$(this).on('drag-up', loadNode);
 	};
 
@@ -55,10 +53,8 @@
 		}
 
 		var data = {
-			// id: this.nextNodeId,
 			name: name
 		};
-		// this.nextNodeId++;
 
 		console.log(data);
 
@@ -131,7 +127,7 @@
 			data: data
 		};
 
-		var fieldPrototype = '<textarea id="node-__field__" placeholder="__field__">__value__</textarea>',
+		var fieldPrototype = '<textarea id="node-__field__" rows="__rows__" placeholder="__field__">__value__</textarea>',
 			fieldHTML,
 			fieldName;
 
@@ -143,7 +139,8 @@
 			console.log(data[fieldName]);
 			fieldHTML = fieldPrototype
 				.replace(/__field__/g, fieldName)
-				.replace(/__value__/, data[fieldName]);
+				.replace(/__value__/, data[fieldName])
+				.replace(/__rows__/, fieldName == 'name' ? 1 : 5);
 			$('#node-fields').append(fieldHTML);
 		}
 	}
@@ -165,8 +162,6 @@
 		for (var i = 0; i < this.selectedNode.data.fields.length; i++) {
 			fieldName = this.selectedNode.data.fields[i];
 			data[fieldName] = $(this.getFieldSelector(fieldName)).val();
-			// 'name': $('#node-name').val(),
-			// 'content': $('#node-content').val()
 		};
 
 		var selectedData = this.selectedNode.data;

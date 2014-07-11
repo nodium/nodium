@@ -1,8 +1,12 @@
-@import "mixins.scss";
+@import "compass";
+@import "_mixins.scss";
 
 /*
  * Global styles
  */
+ * {
+ 	@include box-sizing(border-box);
+ }
 
 html {
 	font-size: 62.5%;
@@ -21,8 +25,24 @@ body {
 aside, body, button, form, input, label, li, nav, section, span, svg, ul  {
 	padding: 0;
 	margin: 0;
+}
 
-	box-sizing: border-box;
+button, input, textarea, label {
+	width: 100%;
+	padding: 8px;
+
+	border: none;
+	font-size: 1.6rem;
+}
+
+textarea, input[type=text] {
+	
+}
+
+button,
+input[type=button],
+input[type=submit] {
+	margin: 8px;
 }
 
 /*
