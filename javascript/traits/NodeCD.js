@@ -39,13 +39,15 @@
 		event.preventDefault();
         event.stopPropagation();
 
-        var input = $('#node-name').val();
-        $('#node-name').val('');
+        var input = $('#new-node-name').val();
+        $('#new-node-name').val('');
 
         this.createNode(input);
 	};
 
 	graph.NodeCD.prototype.createNode = function (name) {
+
+		console.log("name");
 
 		if (name == '') {
 			return;
