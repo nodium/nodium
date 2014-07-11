@@ -99,14 +99,18 @@
 		this.deleteLinksForNode(data.index);
 
 		// remove the node at the index
+		console.log(data.index);
 		this.nodes.splice(data.index, 1);
 
 		// update the indices of all nodes behind it
 		for (var i = data.index; i < this.nodes.length; i++) {
-			this.nodes[i].index = i;
+			console.log(i + ' ' + this.nodes[i].index);
+			// this.nodes[i].index = i;
 		}
 
-		this.drawLinks();
+		console.log(this.nodes);
+
+		// this.drawLinks();
 		this.drawNodes();
 		this.force.start();
 
@@ -124,12 +128,15 @@
 			data: data
 		};
 
+		console.log(data.id);
+
 		var fieldPrototype = $('#node-fields').data('prototype'),
 			fieldHTML,
 			fieldName,
 			titleField = this.getNodeTitleKey();
 
 		// set the title field
+		$('#node-title').val('');
 		if (data.hasOwnProperty(titleField)) {
 			$('#node-title').val(data[titleField]);
 		}

@@ -136,10 +136,11 @@
 			return;
 		}
 
-		nodeId = data.id.substring(index, data.id.length);
-		console.log(nodeId); throw {};
+		nodeId = data.id.substring(index+1, data.id.length);
 
-		query = "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r"
+		query = "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r";
+
+		console.log(query); return;
 
 		$.post('http://localhost:7474/db/data/cypher', query)
 		 .done(function (result) {
@@ -193,54 +194,5 @@
 		 	console.log(result);
 		});
 	};
-
-	/*
-	api.deleteNode = function (nodeObject) {
-		$.ajax({
-			url: window.location.href + 'graph/nodes/',
-			contentType: 'application/json',
-			type: 'DELETE',
-			data: JSON.stringify(nodeObject)
-		});
-	};
-
-	api.updateNode = function (nodeObject) {
-		$.ajax({
-			url: window.location.href + 'graph/nodes/',
-			contentType: 'application/json',
-			type: 'PUT',
-			data: JSON.stringify(nodeObject)
-		});
-	};
-
-	api.createEdge = function (linkObject, callback) {
-		console.log(linkObject);
-		$.ajax({
-			url: window.location.href + 'graph/edges/',
-			contentType: 'application/json',
-			type: 'POST',
-			data: JSON.stringify(linkObject),
-			success: callback
-		});
-	};
-
-	api.deleteEdges = function (linksArray, callback) {
-
-		var data = [],
-			i;
-
-		for (i = 0; i < linksArray.length; i++) {
-			data.push(linksArray[i].id);
-		}
-
-		$.ajax({
-			url: window.location.href + 'graph/edges/',
-			contentType: 'application/json',
-			type: 'DELETE',
-			data: JSON.stringify(data),
-			success: callback
-		});
-	};
-	*/
 
 }(window, jQuery));
