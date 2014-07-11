@@ -146,57 +146,7 @@ label > input[type=radio] {
 
 /* Graph stuff */
 
-circle {
-	cursor: pointer;
-	stroke-width: 0;
-	-webkit-transition: stroke-width 0.08s linear;
-	transition: stroke-width 0.08s linear;
-
-	&.background {
-		fill: rgb(36, 161, 241);
-    	opacity: 0.3;
-	}
-
-	&.invisible {
-		opacity: 0;
-	}
-}
-
-.hover {
-	stroke-width: 5;
-}
-
-text {
-	@include select-none;
-
-	font-family: Helvetica, Arial, sans-serif;
-
-	cursor: pointer;
-}
-
-.top-circle {
-	fill: rgb(210, 210, 210);
-	opacity: 1;
-	stroke: shade(rgb(210, 210, 210), 30%);
-}
-
-.accepted .top-circle {
-	fill: rgb(0, 182, 124);
-	opacity: 1;
-}
-
-.denied .top-circle {
-	fill: rgb(226, 171, 185);
-	opacity: 1;
-}
-
-.filtered .top-circle {
-	fill: rgb(241, 241, 241);
-}
-
-.selected .top-circle {
-	fill: rgb(100, 186, 241);
-}
+@import "_nodes.scss";
 
 .link {
 	stroke: rgb(100, 186, 241);

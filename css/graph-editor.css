@@ -291,29 +291,21 @@ label > input[type=radio] {
 }
 
 /* Graph stuff */
-/* line 149, sass/graph-editor.scss */
+/* line 1, sass/_nodes.scss */
 circle {
   cursor: pointer;
-  stroke-width: 0;
-  -webkit-transition: stroke-width 0.08s linear;
-  transition: stroke-width 0.08s linear;
 }
-/* line 155, sass/graph-editor.scss */
+/* line 4, sass/_nodes.scss */
 circle.background {
   fill: #24a1f1;
   opacity: 0.3;
 }
-/* line 160, sass/graph-editor.scss */
+/* line 9, sass/_nodes.scss */
 circle.invisible {
   opacity: 0;
 }
 
-/* line 165, sass/graph-editor.scss */
-.hover {
-  stroke-width: 5;
-}
-
-/* line 169, sass/graph-editor.scss */
+/* line 14, sass/_nodes.scss */
 text {
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -324,36 +316,44 @@ text {
   cursor: pointer;
 }
 
-/* line 177, sass/graph-editor.scss */
+/* line 22, sass/_nodes.scss */
 .top-circle {
   fill: #d2d2d2;
   opacity: 1;
   stroke: #939393;
+  stroke-width: 0;
+  -webkit-transition: stroke-width 0.03s linear;
+  transition: stroke-width 0.03s linear;
 }
 
-/* line 183, sass/graph-editor.scss */
+/* line 31, sass/_nodes.scss */
 .accepted .top-circle {
   fill: #00b67c;
   opacity: 1;
 }
 
-/* line 188, sass/graph-editor.scss */
+/* line 36, sass/_nodes.scss */
 .denied .top-circle {
   fill: #e2abb9;
   opacity: 1;
 }
 
-/* line 193, sass/graph-editor.scss */
+/* line 41, sass/_nodes.scss */
 .filtered .top-circle {
   fill: #f1f1f1;
 }
 
-/* line 197, sass/graph-editor.scss */
+/* line 45, sass/_nodes.scss */
 .selected .top-circle {
   fill: #64baf1;
 }
 
-/* line 201, sass/graph-editor.scss */
+/* line 49, sass/_nodes.scss */
+.node.hover .top-circle {
+  stroke-width: 5px;
+}
+
+/* line 151, sass/graph-editor.scss */
 .link {
   stroke: #64baf1;
   stroke-width: 4px;

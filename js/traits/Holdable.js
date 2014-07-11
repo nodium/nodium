@@ -56,6 +56,9 @@
 
 		var self = this;
 
+		// show a nice transition while we're at it
+		d3.select(node).classed('hover', true);
+
 		this.holdTimeoutId = setTimeout(function () {
 
 			// we're only really holding the node if we're not dragging
@@ -63,9 +66,8 @@
 				console.log("holding");
 				self.holding = true;
 
-				// show a nice transition while we're at it
-				console.log(node);
-				d3.select(node).select('.top-circle').classed('hover', true);
+				d3.select(node).classed('hold', true);
+				
 				// self.scaleNode(node, 1.3);
 
 				$('#hold-action-notification').toggle();
@@ -121,9 +123,12 @@
 			}
 		}
 
+		d3.select(node)
+				.classed('hover', false)
+				.classed('hold', false);
+
 		if (this.holding) {
 			//this.scaleNode(node, 1);
-			d3.select(node).select('.top-circle').classed('hover', false);
 
 			this.holding = false;
 			$('#hold-action-notification').toggle();
