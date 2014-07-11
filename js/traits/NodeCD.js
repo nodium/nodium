@@ -32,7 +32,7 @@
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
 		$('#node-form').on('submit', updateNode);
-		$(this).on('drag-up', loadNode);
+		$(this).on('node-clicked', loadNode);
 		$('#new-property').on('click', addProperty);
 		$('.delete-property').on('click', deleteProperty);
 	};
@@ -117,8 +117,6 @@
 	 * Read the node into the edit form
 	 */
 	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
-
-		console.log("handling node selected");
 
 		// fix this differently
 		this.selectedNode = {
@@ -227,7 +225,7 @@
 	};
 
 	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
-		
+
 	};
 
 }(window, jQuery, d3));
