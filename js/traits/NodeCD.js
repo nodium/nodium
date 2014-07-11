@@ -212,7 +212,7 @@
 			value = $('.node-value', fields[i]).val();
 
 			// skip if the key is empty
-			if (key == "") {
+			if (key == "" || value == "") {
 				continue;
 			}
 
@@ -263,10 +263,11 @@
 		event.preventDefault();
 
 		fieldHTML = fieldPrototype
-				.replace(/__field__/g, '')
-				.replace(/__value__/, '')
-				.replace(/__rows__/, 5);
-			$('#node-fields').append(fieldHTML);
+			.replace(/__field__/g, '')
+			.replace(/__value__/, '')
+			.replace(/__rows__/, 1);
+
+		$('input', $(fieldHTML).appendTo('#node-fields')).focus();
 	};
 
 	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
