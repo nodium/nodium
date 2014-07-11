@@ -27,6 +27,7 @@
 
 		var createNode = window.curry(this.handleNodeCreate, this),
 			deleteNode = window.curry(this.handleNodeDelete, this),
+			deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
 			updateNode = window.curry(this.handleNodeUpdate, this),
 			loadNode = window.curry(this.handleNodeSelected, this),
 			unloadNode = window.curry(this.handleNodeUnselected, this),
@@ -36,7 +37,7 @@
 		$(this).on('drag-down', deleteNode);
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
-		$('#node-form').on('submit', deleteNode);
+		$('#node-form').on('submit', deleteNodeButton);
 		$('#node-form').on('focusout', updateNode);
 		$(this).on('node-clicked', loadNode);
 		$(this).on('node-deleted', unloadNode);
@@ -49,6 +50,8 @@
 		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
 			$('#node-form').addClass('hidden');
 		}
+
+		this.selectedNode = null;
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
