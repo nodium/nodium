@@ -83,11 +83,10 @@
 		this.nodes = graph.nodes || [];
 		this.edges = graph.edges || [];
 
-		// this.graphType = graph.graphType;
-
-		this.parseGraphData();
-
-		// d3.select(this.selector).classed(this.graphType, true);
+		// add fields metadata to nodes
+		for (var i = 0; i < this.nodes; i++) {
+			// for (var f )
+		}
 
 		// draw the graph
 		this.force = this.createForce();
@@ -100,27 +99,6 @@
 		this.force.on('tick', tickHandler);
 
 		this.handleWindowResize();
-	};
-
-	/**
-	 * Parse and analyze the graph data
-	 */
-	graph.Graph.prototype.parseGraphData = function () {
-
-		// var node;
-		// 	nextNodeId = 0;
-
-		// for (var i = 0; i < this.nodes.length; i++) {
-		// 	node = this.nodes[i];
-		// 	if (node.id >= nextNodeId) {
-		// 		nextNodeId = node.id + 1;
-		// 	}
-		// }
-
-		// this.nextNodeId = nextNodeId;
-		
-		this.nodeCount = this.nodes.length;
-		this.edgeCount = this.edges.length;
 	};
 
 	graph.Graph.prototype.createForce = function () {
