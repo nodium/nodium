@@ -1,0 +1,72 @@
+ * {
+ 	@include box-sizing(border-box);
+ 	margin: 0;
+ 	padding: 0;
+ }
+
+html {
+	font-size: 62.5%;
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+
+	background: $color-light;
+	font-size: 1.6rem;
+}
+
+button, input, textarea, select, label {
+	width: 100%;
+	padding: 8px;
+
+	border: none;
+	font-size: 1.6rem;
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+	font-weight: 300;
+}
+
+textarea, input, select {
+	background: #c2b9c2;
+	color: $color-light;
+}
+
+aside textarea,
+aside input,
+aside select {
+	color: $color-dark;
+}
+
+aside button,
+aside input[type=button],
+aside input[type=submit] {
+	width: 304px;
+	margin: 8px;
+}
+
+
+::-webkit-input-placeholder {
+	color: inherit;
+	font-variant: small-caps;
+	text-transform: lowercase;
+}
+
+::-moz-placeholder {
+	color: inherit;
+	font-variant: small-caps;
+	text-transform: lowercase;
+}
+
+:-moz-placeholder {
+	color: inherit;
+	font-variant: small-caps;
+	text-transform: lowercase;
+}
+
+:-ms-input-placeholder {
+	color: inherit;
+	font-variant: small-caps;
+	text-transform: lowercase;
+}

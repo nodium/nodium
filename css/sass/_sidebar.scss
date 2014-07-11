@@ -1,0 +1,107 @@
+aside {
+	font-weight: 300;
+}
+
+#inspector {
+	padding-top: 8px;
+
+	form > button {
+		text-align: left;
+
+		span[class^=icon] {
+			display: inline-block;
+			width: 38px;
+			text-align: center;
+			margin-left: -8px;
+		}
+	}
+
+	form > div {
+		label[class^=icon] {
+			color: $color-dark;
+			position: absolute;
+			width: 38px;
+			text-align: center;
+			padding: 9px 0;
+		}
+
+		input {
+			padding-left: 38px;
+		}
+	}
+}
+
+.node-field > div,
+.node-field > textarea {
+	width: 50%;
+	min-width: 50%;
+	max-width: 50%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.node-field > div {
+	position: relative;
+	height: auto;
+}
+
+.node-field input {
+	left: 0;
+	right: 0;
+	padding-left: 38px;
+}
+
+.node-field button {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	color: #b3b3b3;
+}
+
+.node-field button,
+#new-property {
+	text-align: center;
+	font-size: 10px;
+	font-size: 1.0rem;
+	width: 38px;
+	margin: 0;
+	background: transparent;
+}
+
+#new-property {
+	color: $color-light;
+	height: 35px;
+}
+
+#delete-button {
+	background: $color-red;
+	color: $color-dark;
+}
+
+.node-field input,
+.node-field textarea {
+	background: transparent;
+	color: $color-light;
+}
+
+#node-fields {
+	li:last-child {
+		border-bottom: 1px solid #b3b3b3;
+	}
+
+	&::before {
+		content: 'Properties';
+		width:100%;
+		padding: 6px 0 6px 38px;
+		display: block;
+		font-size: 14px;
+		font-size: 1.4rem;
+		letter-spacing: (20/1000) + em;
+
+		text-transform: lowercase;
+		font-variant: small-caps;
+		color: #b3b3b3;
+		border-bottom: 1px solid #b3b3b3;
+	}
+}

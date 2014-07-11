@@ -426,12 +426,7 @@ text {
 }
 
 /* line 43, sass/_nodes.scss */
-.selected .top-circle {
-  fill: #64baf1;
-}
-
-/* line 47, sass/_nodes.scss */
-.node.hover .top-circle {
+.node.selected .top-circle {
   stroke-width: 5px;
 }
 

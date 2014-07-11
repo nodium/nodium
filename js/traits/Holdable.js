@@ -57,7 +57,7 @@
 		var self = this;
 
 		// show a nice transition while we're at it
-		d3.select(node).classed('hover', true);
+		d3.select(node).classed('selected', true);
 
 		this.holdTimeoutId = setTimeout(function () {
 
@@ -122,7 +122,7 @@
 		}
 
 		d3.select(node)
-				.classed('hover', false)
+				.classed('selected', false)
 				.classed('hold', false);
 
 		if (this.holding) {

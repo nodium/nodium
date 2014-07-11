@@ -1,0 +1,45 @@
+circle {
+	cursor: pointer;
+
+	&.background {
+		fill: rgb(36, 161, 241);
+    	opacity: 0.3;
+	}
+
+	&.invisible {
+		opacity: 0;
+	}
+}
+
+text {
+	@include select-none;
+
+	cursor: pointer;
+}
+
+.top-circle {
+	fill: rgb(210, 210, 210);
+	opacity: 1;
+	stroke: shade(rgb(210, 210, 210), 30%);
+	stroke-width: 0;
+	-webkit-transition: stroke-width 0.03s linear;
+	transition: stroke-width 0.03s linear;
+}
+
+.accepted .top-circle {
+	fill: rgb(0, 182, 124);
+	opacity: 1;
+}
+
+.denied .top-circle {
+	fill: rgb(226, 171, 185);
+	opacity: 1;
+}
+
+.filtered .top-circle {
+	fill: rgb(241, 241, 241);
+}
+
+.node.selected .top-circle {
+	stroke-width: 5px;
+}
