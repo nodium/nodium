@@ -138,9 +138,20 @@
 
 		nodeId = data.id.substring(index+1, data.id.length);
 
-		query = "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r";
+		// TODO this query should work, but can't find parameter nodeId
+		// query = {
+		//  	"query" : "START n=node({nodeId}) OPTIONAL MATCH n-[r]-() DELETE n,r",
+		//  	"params" : {
+		//  		"nodeId": nodeId
+		// 	}
+		// };
+		query = {
+		 	"query" : "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r",
+		 	"params" : {}
+		};
 
-		console.log(query); return;
+
+		console.log(query);
 
 		$.post('http://localhost:7474/db/data/cypher', query)
 		 .done(function (result) {

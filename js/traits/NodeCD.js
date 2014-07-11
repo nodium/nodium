@@ -103,15 +103,16 @@
 		this.nodes.splice(data.index, 1);
 
 		// update the indices of all nodes behind it
-		for (var i = data.index; i < this.nodes.length; i++) {
-			console.log(i + ' ' + this.nodes[i].index);
-			// this.nodes[i].index = i;
-		}
+		// yes? no?
+		// for (var i = data.index; i < this.nodes.length; i++) {
+		// 	console.log(i + ' ' + this.nodes[i].index);
+		// 	this.nodes[i].index = i;
+		// }
 
 		console.log(this.nodes);
 
-		// this.drawLinks();
-		this.drawNodes();
+		this.drawLinks();
+		this.redrawNodes();
 		this.force.start();
 
 		$(this).trigger('node-deleted', [data]);
