@@ -99,8 +99,6 @@
 		this.nodes = graph.nodes || [];
 		this.edges = graph.edges || [];
 
-		console.log(this.nodes);
-
 		// draw the graph
 		this.force = this.createForce();
 		this.force.start();
@@ -478,8 +476,6 @@
 			data: data,
 			node: this
 		};
-
-		// console.log(graph.hoveredNode);
 	};
 
 	graph.Graph.prototype.handleMouseOut = function (graph, data) {

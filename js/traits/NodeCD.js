@@ -34,7 +34,8 @@
 		$('#node-form').on('submit', updateNode);
 		$(this).on('node-clicked', loadNode);
 		$('#new-property').on('click', addProperty);
-		$('.delete-property').on('click', deleteProperty);
+		$('#node-fields').on('click', '.delete-property', deleteProperty);
+		// $('.delete-property').on('click', deleteProperty);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -50,8 +51,6 @@
 
 	graph.NodeCD.prototype.createNode = function (name) {
 
-		console.log("name");
-
 		if (name == '') {
 			return;
 		}
@@ -59,8 +58,6 @@
 		var data = {
 			name: name
 		};
-
-		console.log(data);
 
 		this.nodes.push(data);
 
@@ -129,8 +126,6 @@
 			data: data
 		};
 
-		console.log(data.id);
-
 		var fieldPrototype = $('#node-fields').data('prototype'),
 			fieldHTML,
 			fieldName,
@@ -169,13 +164,15 @@
 		var titleField = this.getNodeTitleKey(),
 			fields = $('#node-fields').children(),
 			key,
-			value;
+			value,
+			result = {};
 
 		// clear the fields metadata, we'll refill this
 		data.fields = [titleField];
 
 		// set the title field separately
 		data[titleField] = $('#node-title').val();
+		result[titleField] = data[titleField];
 
 		for (var i = 0; i < fields.length; i++) {
 			key = $('.node-key', fields[i]).val();
@@ -183,20 +180,24 @@
 
 			data.fields.push(key);
 			data[key] = value;
+			result[key] = value;
 		}
 
 		// TODO maybe we should try to remove the unused fields from the node data,
 		// but this is not strictly necessary, the fields metadata works as a filter
+
+		return result;
 	};
 
 	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
 
-		var data = {},
+		var data,
 			fieldName,
 			titleField = this.getNodeTitleKey(),
 			nodeData = this.selectedNode.data;
 
 		event.preventDefault();
+		event.stopPropagation();
 
 		console.log("handling node update");
 
@@ -204,18 +205,12 @@
 			return;
 		}
 
-		this.updateNodeDataWithFields(nodeData);
-
-		// build the data to send
-		for (var i = 0; i < nodeData.fields.length; i++) {
-			fieldName = nodeData.fields[i];
-			data[fieldName] = nodeData[fieldName];
-		};
+		data = this.updateNodeDataWithFields(nodeData);
 
 		this.redrawNodes();
 		this.force.start();
 
-		$(this).trigger('node-updated', [data, this.selectedNode.data.id]);
+		$(this).trigger('node-updated', [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handlePropertyAdded = function (event) {
@@ -234,6 +229,16 @@
 
 	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
 
+		var nodeData = this.selectedNode.data,
+			data;
+
+		event.preventDefault();
+
+		$(event.target).closest('li').remove();
+
+		data = this.updateNodeDataWithFields(nodeData);
+
+		$(this).trigger('node-updated', [data, nodeData.id]);
 	};
 
 }(window, jQuery, d3));
