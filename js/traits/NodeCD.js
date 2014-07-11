@@ -22,20 +22,33 @@
 	 */
 	graph.NodeCD.prototype.attachNodeCD = function () {
 
-		var createNode = window.curry(this.handleNodeCreate, this);
-		var deleteNode = window.curry(this.handleNodeDelete, this);
-		var updateNode = window.curry(this.handleNodeUpdate, this);
-		var loadNode = window.curry(this.handleNodeSelected, this);
-		var addProperty = window.curry(this.handlePropertyAdded, this);
-		var deleteProperty = window.curry(this.handlePropertyDeleted, this);
+		// start out hidden
+		$('#node-form').addClass('hidden');
+
+		var createNode = window.curry(this.handleNodeCreate, this),
+			deleteNode = window.curry(this.handleNodeDelete, this),
+			updateNode = window.curry(this.handleNodeUpdate, this),
+			loadNode = window.curry(this.handleNodeSelected, this),
+			unloadNode = window.curry(this.handleNodeUnselected, this),
+			addProperty = window.curry(this.handlePropertyAdded, this),
+			deleteProperty = window.curry(this.handlePropertyDeleted, this);
+
 		$(this).on('drag-down', deleteNode);
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
-		$('#node-form').on('submit', updateNode);
+		$('#node-form').on('submit', deleteNode);
+		$('#node-form').on('focusout', updateNode);
 		$(this).on('node-clicked', loadNode);
+		$(this).on('node-deleted', unloadNode);
 		$('#new-property').on('click', addProperty);
 		$('#node-fields').on('click', '.delete-property', deleteProperty);
-		// $('.delete-property').on('click', deleteProperty);
+	};
+
+	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
+
+		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
+			$('#node-form').addClass('hidden');
+		}
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -59,15 +72,33 @@
 			name: name
 		};
 
-		this.nodes.push(data);
+		// first trigger with filtered data
+		$(this).trigger('node-created', [data]);
 
+		// then add node metadata
+		this.addNodeMetadata(data);
+
+		// then let d3 add other properties
+		this.nodes.push(data);
 		this.drawNodes();
 		this.force.start();
-
-		$(this).trigger('node-created', [data]);
 	};
 
 	graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
+
+		event.preventDefault();
+        event.stopPropagation();
+
+		this.deleteNode(data);
+	};
+
+	graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
+
+		if (!this.selectedNode) {
+			return;
+		}
+
+		var data = this.selectedNode.data;
 
 		event.preventDefault();
         event.stopPropagation();
@@ -131,6 +162,8 @@
 			fieldName,
 			titleField = this.getNodeTitleKey();
 
+		$('#node-form').removeClass('hidden');
+
 		// set the title field
 		$('#node-title').val('');
 		if (data.hasOwnProperty(titleField)) {
@@ -151,7 +184,7 @@
 			fieldHTML = fieldPrototype
 				.replace(/__field__/g, fieldName)
 				.replace(/__value__/, data[fieldName])
-				.replace(/__rows__/, 5);
+				.replace(/__rows__/, 1);
 			$('#node-fields').append(fieldHTML);
 		}
 	};
@@ -178,6 +211,11 @@
 			key = $('.node-key', fields[i]).val();
 			value = $('.node-value', fields[i]).val();
 
+			// skip if the key is empty
+			if (key == "") {
+				continue;
+			}
+
 			data.fields.push(key);
 			data[key] = value;
 			result[key] = value;
@@ -190,6 +228,10 @@
 	};
 
 	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
+
+		if (!this.selectedNode) {
+			return;
+		}
 
 		var data,
 			fieldName,
