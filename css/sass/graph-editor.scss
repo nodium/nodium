@@ -1,4 +1,4 @@
-@import "mixins.scss";
+@import "_mixins.scss";
 
 /*
  * Global styles
@@ -23,6 +23,26 @@ aside, body, button, form, input, label, li, nav, section, span, svg, ul  {
 	margin: 0;
 
 	box-sizing: border-box;
+}
+
+button, input, textarea, label {
+	width: 100%;
+
+	border: none;
+	font-size: 1.6rem;
+}
+
+textarea, input[type=text] {
+	margin: 8px;
+	padding: 8px;
+
+
+}
+
+button,
+input[type=button],
+input[type=submit] {
+
 }
 
 /*
