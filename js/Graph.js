@@ -368,8 +368,12 @@
 	 * Get the text that should be shown on the node from the data
 	 * Should return null when text not there
 	 */
+	graph.Graph.prototype.getNodeTitleKey = function (data) {
+		return 'name';
+	};
+
 	graph.Graph.prototype.getNodeText = function (data) {
-		return data.name;
+		return data[this.getNodeTitleKey()];
 	};
 
 	graph.Graph.prototype.drawNodeTexts = function (nodeEnter) {

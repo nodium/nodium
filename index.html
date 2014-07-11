@@ -8,8 +8,10 @@
 		<aside id="inspector">
 			<div id="inspector-node">
 				<form id="node-form" action="post">
-					<div id="node-fields">
-					</div>
+					<input type="text" id="node-title" />
+					<ul id="node-fields" data-prototype='<li class="node-field"><div><button class="delete-property">X</button><input type="text" class="node-key" value="__field__" /></div><textarea class="node-value" rows="__rows__">__value__</textarea></li>'>
+					</ul>
+					<button id="new-property">Add property</button>
 					<input type="submit" value="Update node" />
 				</form>
 			</div>
