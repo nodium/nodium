@@ -14,7 +14,7 @@
 /* line 7, sass/_dom-overrides.scss */
 html {
   font-size: 62.5%;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* line 12, sass/_dom-overrides.scss */
@@ -32,22 +32,24 @@ button, input, textarea, select, label {
   padding: 8px;
   border: none;
   font-size: 1.6rem;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 300;
 }
 
-/* line 29, sass/_dom-overrides.scss */
+/* line 31, sass/_dom-overrides.scss */
 textarea, input, select {
   background: #c2b9c2;
   color: white;
 }
 
-/* line 36, sass/_dom-overrides.scss */
+/* line 38, sass/_dom-overrides.scss */
 aside textarea,
 aside input,
 aside select {
   color: #331833;
 }
 
-/* line 42, sass/_dom-overrides.scss */
+/* line 44, sass/_dom-overrides.scss */
 aside button,
 aside input[type=button],
 aside input[type=submit] {
@@ -55,28 +57,28 @@ aside input[type=submit] {
   margin: 8px;
 }
 
-/* line 48, sass/_dom-overrides.scss */
+/* line 50, sass/_dom-overrides.scss */
 ::-webkit-input-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 54, sass/_dom-overrides.scss */
+/* line 56, sass/_dom-overrides.scss */
 ::-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 60, sass/_dom-overrides.scss */
+/* line 62, sass/_dom-overrides.scss */
 :-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 66, sass/_dom-overrides.scss */
+/* line 68, sass/_dom-overrides.scss */
 :-ms-input-placeholder {
   color: inherit;
   font-variant: small-caps;
@@ -86,37 +88,90 @@ aside input[type=submit] {
 /**
  * Sidebar
  */
-/* line 2, sass/_sidebar.scss */
-.property > div,
-.property > textarea {
-  width: 50%;
+/* line 1, sass/_sidebar.scss */
+aside {
+  font-weight: 300;
 }
 
-/* line 6, sass/_sidebar.scss */
-.property > div {
-  position: relative;
+/* line 5, sass/_sidebar.scss */
+#inspector {
+  padding-top: 10px;
 }
 
 /* line 10, sass/_sidebar.scss */
-.property input {
-  position: absolute;
+.node-field > div,
+.node-field > textarea {
+  width: 50%;
+  min-width: 50%;
+  max-width: 50%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* line 18, sass/_sidebar.scss */
+.node-field > div {
+  position: relative;
+  height: auto;
+}
+
+/* line 23, sass/_sidebar.scss */
+.node-field input {
   left: 0;
   right: 0;
-  padding: 38px;
+  padding-left: 38px;
 }
 
-/* line 17, sass/_sidebar.scss */
-.property button {
+/* line 29, sass/_sidebar.scss */
+.node-field button {
   position: absolute;
+  top: 0;
   left: 0;
-  width: 38px;
-  text-align: center;
+  bottom: 0;
 }
 
-/* line 24, sass/_sidebar.scss */
+/* line 37, sass/_sidebar.scss */
+.node-field button,
+#new-property {
+  text-align: center;
+  font-size: 10px;
+  font-size: 1.0rem;
+  width: 38px;
+  margin: 0;
+  background: transparent;
+  color: #b3b3b3;
+}
+
+/* line 47, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
+}
+
+/* line 53, sass/_sidebar.scss */
+.node-field input,
+.node-field textarea {
+  background: transparent;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* line 60, sass/_sidebar.scss */
+#node-fields li:last-child {
+  border-bottom: 1px solid white;
+}
+/* line 64, sass/_sidebar.scss */
+#node-fields::before {
+  content: 'Properties';
+  width: 100%;
+  padding: 6px 0 6px 38px;
+  display: block;
+  font-size: 14px;
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+  color: white;
+  border-bottom: 1px solid white;
 }
 
 /*
@@ -312,11 +367,10 @@ text {
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
-  font-family: Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
 
-/* line 22, sass/_nodes.scss */
+/* line 20, sass/_nodes.scss */
 .top-circle {
   fill: #d2d2d2;
   opacity: 1;
@@ -326,29 +380,29 @@ text {
   transition: stroke-width 0.03s linear;
 }
 
-/* line 31, sass/_nodes.scss */
+/* line 29, sass/_nodes.scss */
 .accepted .top-circle {
   fill: #00b67c;
   opacity: 1;
 }
 
-/* line 36, sass/_nodes.scss */
+/* line 34, sass/_nodes.scss */
 .denied .top-circle {
   fill: #e2abb9;
   opacity: 1;
 }
 
-/* line 41, sass/_nodes.scss */
+/* line 39, sass/_nodes.scss */
 .filtered .top-circle {
   fill: #f1f1f1;
 }
 
-/* line 45, sass/_nodes.scss */
+/* line 43, sass/_nodes.scss */
 .selected .top-circle {
   fill: #64baf1;
 }
 
-/* line 49, sass/_nodes.scss */
+/* line 47, sass/_nodes.scss */
 .node.hover .top-circle {
   stroke-width: 5px;
 }
