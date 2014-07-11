@@ -26,12 +26,11 @@
 		var deleteNode = window.curry(this.handleNodeDelete, this);
 		var updateNode = window.curry(this.handleNodeUpdate, this);
 		var loadNode = window.curry(this.handleNodeSelected, this);
-		// $(this).on('create-node', nodeCreator);
 		$(this).on('drag-down', deleteNode);
 		this.holdActions[graph.Drag.DOWN] = "Delete";
 		$('#new-node-form').on('submit', createNode);
 		$('#node-form').on('submit', updateNode);
-		$(this).on('node-clicked', loadNode);
+		$(this).on('drag-up', loadNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -54,10 +53,8 @@
 		}
 
 		var data = {
-			// id: this.nextNodeId,
 			name: name
 		};
-		// this.nextNodeId++;
 
 		console.log(data);
 
@@ -112,22 +109,48 @@
 		$(this).trigger('node-deleted', [data]);
 	};
 
+	graph.NodeCD.prototype.getFieldSelector = function (name) {
+		return '#node-' + name;
+	}
+
 	/**
 	 * Read the node into the edit form
 	 */
-	graph.NodeCD.prototype.handleNodeSelected = function (node, data) {
-		var name = data.name,
-			content = data.content || "";
-			// id = data.id;
+	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
 
-		// $('#node-id').val(id);
-		$('#node-name').val(name);
-		$('#node-content').val(content);
+		console.log("handling node selected");
+		console.log(data);
 
-		// TODO fully generic/dynamic creation of node's fields	
+		// fix this differently
+		this.selectedNode = {
+			node: node,
+			data: data
+		};
+
+		var fieldPrototype = '<textarea id="node-__field__" rows="__rows__" placeholder="__field__">__value__</textarea>',
+			fieldHTML,
+			fieldName;
+
+		// create the html form elements
+		$('#node-fields').empty();
+
+		for (var i = 0; i < data.fields.length; i++) {
+			fieldName = data.fields[i];
+			console.log(data[fieldName]);
+			fieldHTML = fieldPrototype
+				.replace(/__field__/g, fieldName)
+				.replace(/__value__/, data[fieldName])
+				.replace(/__rows__/, fieldName == 'name' ? 1 : 5);
+			$('#node-fields').append(fieldHTML);
+		}
 	}
 
 	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
+
+		var data = {},
+			fieldName;
+
+		event.preventDefault();
 
 		console.log("handling node update");
 
@@ -135,23 +158,19 @@
 			return;
 		}
 
-		// hardcoded name and content for now, 
-		// generalize plz
-		var data = {
-			// 'id': $('#node-id').val(),
-			'name': $('#node-name').val(),
-			'content': $('#node-content').val()
+		// build the data to send
+		for (var i = 0; i < this.selectedNode.data.fields.length; i++) {
+			fieldName = this.selectedNode.data.fields[i];
+			data[fieldName] = $(this.getFieldSelector(fieldName)).val();
 		};
 
 		var selectedData = this.selectedNode.data;
-		console.log(selectedData);
 		$.extend(selectedData, data);
-		console.log(selectedData);
 
 		this.redrawNodes();
 		this.force.start();
 
-		$(this).trigger('node-updated', [data]);
+		$(this).trigger('node-updated', [data, this.selectedNode.data.id]);
 	};
 
 }(window, jQuery, d3));
