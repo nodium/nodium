@@ -1,60 +1,24 @@
 @import "compass";
 @import "_mixins.scss";
 
+$color-dark:	#331833;
+$color-light:	#FFF;
+
+$color-red:		#e97777;
+$color-blue:	#5cabd3;
+$color-green:	#5cc6b8;
+$color-gray:	#d5d5d5;
+
 /*
  * Global styles
  */
- * {
- 	@include box-sizing(border-box);
- }
+@import "_dom-overrides.scss";
 
-html {
-	font-size: 62.5%;
-	font-family: Helvetica, Arial, sans-serif;
-}
+/**
+ * Sidebar
+ */
 
-body {
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-
-	background: rgb(255, 255, 255);
-	font-size: 1.6rem;
-}
-
-aside, body, button, form, input, label, li, nav, section, span, svg, ul  {
-	padding: 0;
-	margin: 0;
-}
-
-button, input, textarea, select, label {
-	width: 100%;
-	padding: 8px;
-
-	border: none;
-	font-size: 1.6rem;
-}
-
-textarea, input, select {
-	background: #b3b3b3;
-	color: #331833;
-}
-
-aside button,
-aside input[type=button],
-aside input[type=submit] {
-	width: 304px;
-	margin: 8px;
-}
-
-::-webkit-input-placeholder,
-:-moz-placeholder,
-::-moz-placeholder,
-:-ms-input-placeholder,
-#placeholder {
-	color: #331833;
-	font-variant: small-caps;
-}
+@import "_sidebar.scss";
 
 /*
  * Navigation Bar
@@ -184,6 +148,9 @@ label > input[type=radio] {
 
 circle {
 	cursor: pointer;
+	stroke-width: 0;
+	-webkit-transition: stroke-width 0.08s linear;
+	transition: stroke-width 0.08s linear;
 
 	&.background {
 		fill: rgb(36, 161, 241);
@@ -193,6 +160,10 @@ circle {
 	&.invisible {
 		opacity: 0;
 	}
+}
+
+.hover {
+	stroke-width: 5;
 }
 
 text {
@@ -206,6 +177,7 @@ text {
 .top-circle {
 	fill: rgb(210, 210, 210);
 	opacity: 1;
+	stroke: shade(rgb(210, 210, 210), 30%);
 }
 
 .accepted .top-circle {
