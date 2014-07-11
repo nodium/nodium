@@ -19,9 +19,11 @@
 		$(g).on('edge-created', createEdge);
 		var deleteEdge = window.curry(this.handleEdgeDeleted, this);
 		$(g).on('edge-deleted', deleteEdge);
+		var updateNode = window.curry(this.handleNodeUpdated, this);
+		$(g).on('node-updated', updateNode);
 	};
 
-	graph.API.prototype.get = function (callback) {
+	graph.API.prototype.get = function (callback, addNodeMetadata) {
 
 		// OPTIONAL MATCH n-[r]-m
 		var nodeQuery = {
@@ -62,10 +64,12 @@
 		 			continue;
 		 		}
 
+		 		addNodeMetadata(node.data);
+
 		 		nodeMap[node.self] = nodeCount;
 		 		nodeCount++;
 
-		 		node.data['id'] = node.self;
+		 		node.data.id = node.self;
 		 		nodes.push(node.data);
 		 	}
 
@@ -174,18 +178,12 @@
 		});
 	};
 
-	graph.API.prototype.handleNodeUpdated = function (event, data) {
-
-		console.log("updating neo4j node");
-		console.log(data.id);
-
-		// copy the data and remove the id
-		console.log(data);
-		throw {};
+	graph.API.prototype.handleNodeUpdated = function (event, data, id) {
 
 		$.ajax({
-			url: data.id + '/properties',
+			url: id + '/properties',
 			type: 'PUT',
+			data: data
 		})
 		.done(function (result) {
 		 	console.log(result);

@@ -26,7 +26,7 @@
 	};
 
 	graph.MindMap.prototype.getGraphData = function () {
-		this.api.get(window.curry(this.handleGraphData, this));
+		this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
 	};
 
 	/**

@@ -72,21 +72,34 @@
 		var graphData = $(this.selector).data('graph');
 		$(this.selector).attr('data-graph', null);
 
+		for (var i = 0; i < graphData.nodes.length; i++) {
+			this.addNodeMetadata(graphData.nodes[i]);
+		}
+
 		this.handleGraphData(graphData);
 	};
 
+	graph.Graph.prototype.addNodeMetadata = function (node) {
+		var fields = [],
+			key;
+
+		for (key in node) {
+			fields.push(key);
+		}
+
+		node.fields = fields;
+	}
+
 	/**
 	 * asynchronous callback function incase of database call
+	 * expects a graph object with nodes and edges properties
 	 */
 	graph.Graph.prototype.handleGraphData = function (graph) {
 
 		this.nodes = graph.nodes || [];
 		this.edges = graph.edges || [];
 
-		// add fields metadata to nodes
-		for (var i = 0; i < this.nodes; i++) {
-			// for (var f )
-		}
+		console.log(this.nodes);
 
 		// draw the graph
 		this.force = this.createForce();
