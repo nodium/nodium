@@ -25,21 +25,27 @@
 		// start out hidden
 		$('#node-form').addClass('hidden');
 
-		var createNode = window.curry(this.handleNodeCreate, this),
-			deleteNode = window.curry(this.handleNodeDelete, this),
-			updateNode = window.curry(this.handleNodeUpdate, this),
-			loadNode = window.curry(this.handleNodeSelected, this),
+		var loadNode = window.curry(this.handleNodeSelected, this),
 			unloadNode = window.curry(this.handleNodeUnselected, this),
+			createNode = window.curry(this.handleNodeCreate, this),
+			deleteNode = window.curry(this.handleNodeDelete, this),
+			deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
+			updateNode = window.curry(this.handleNodeUpdate, this),
 			addProperty = window.curry(this.handlePropertyAdded, this),
 			deleteProperty = window.curry(this.handlePropertyDeleted, this);
 
-		$(this).on('drag-down', deleteNode);
-		this.holdActions[graph.Drag.DOWN] = "Delete";
-		$('#new-node-form').on('submit', createNode);
-		$('#node-form').on('submit', deleteNode);
-		$('#node-form').on('focusout', updateNode);
+		// select / deselect node
 		$(this).on('node-clicked', loadNode);
 		$(this).on('node-deleted', unloadNode);
+
+		// node CRUD
+		$('#new-node-form').on('submit', createNode);
+		$(this).on('drag-down', deleteNode);
+		this.holdActions[graph.Drag.DOWN] = "Delete";
+		$('#node-form').on('submit', deleteNodeButton);
+		$('#node-form').on('focusout', updateNode);
+
+		// properties
 		$('#new-property').on('click', addProperty);
 		$('#node-fields').on('click', '.delete-property', deleteProperty);
 	};
@@ -49,6 +55,8 @@
 		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
 			$('#node-form').addClass('hidden');
 		}
+
+		this.selectedNode = null;
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -94,14 +102,14 @@
 
 	graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
 
+		event.preventDefault();
+        event.stopPropagation();
+
 		if (!this.selectedNode) {
 			return;
 		}
 
 		var data = this.selectedNode.data;
-
-		event.preventDefault();
-        event.stopPropagation();
 
 		this.deleteNode(data);
 	};
