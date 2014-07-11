@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/graph-editor.css" />
+	</head>
+	<body>
+		<aside id="inspector">
+			<div id="inspector-node">
+				<form id="node-form" action="post">
+					<textarea id="node-name" rows="3" name="name" placeholder="Name"></textarea>
+					<textarea id="node-content" name="content" placeholder="Content"></textarea>
+					<input id="node-id" type="hidden" name="id" />
+					<input type="submit" value="Update" />
+				</form>
+			</div>
+		</aside>
+		<svg id="graph">
+			<marker id="arrow" orient="auto"
+				markerWidth="10" markerHeight="10"
+				refX="2" refY="5">
+				<path class="marker" d='M 2 2 L 7 5 L 2 8' />
+			</marker>
+			<g class="graph-viewport">
+				<g class="graph-content">
+					<rect width="10000" height="10000" fill="white"></rect>
+					<g class="links"></g>
+					<g class="nodes"></g>
+				</g>
+			</g>
+		</svg>
+		<div id="info" style="position: absolute; z-index: 1; left: 0px; top: 0px">
+			<form method="POST" id="new-node-form">
+	            <input type="text" name="node-name" id="node-name" placeholder="Name of the node.." />
+	        </form>
+	        <span id="hold-action-notification"></span>
+	    </div>
+	</body>
+	<!--<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>-->
+	<!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
+	<!--<script src="//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>-->
+	<script src="javascript/jquery-2.1.1.min.js"></script>
+	<!--<script src="javascript/jquery.watch.min.js"></script>-->
+	<script src="javascript/d3.min.js"></script>
+	<script src="javascript/mousetrap.min.js"></script>
+	<script src="javascript/mousetrap-global-min.js"></script>
+	<script src="javascript/Util.js"></script>
+	<script src="javascript/Graph.js"></script>
+	<script src="javascript/GraphAPI.js"></script>
+	<script src="javascript/MindMap.js"></script>
+	<script src="javascript/traits/Zoomable.js"></script>
+	<script src="javascript/traits/EdgeCD.js"></script>
+	<script src="javascript/traits/NodeCD.js"></script>
+	<script src="javascript/traits/Holdable.js"></script>
+	<script type="text/javascript">
+
+		var graph = window.setNamespace('app.graph');
+
+		$(document).on('ready', function () {
+
+			var g = new graph.MindMap('#graph');
+
+			g.addTraits(
+				new graph.Zoomable(),
+				new graph.Holdable(),
+				new graph.EdgeCD(),
+				// new graph.Exportable(),
+				new graph.NodeCD()
+			);
+
+			g.initialize();
+		});
+	</script>
+</html>
