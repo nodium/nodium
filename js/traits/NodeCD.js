@@ -32,7 +32,9 @@
 			deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
 			updateNode = window.curry(this.handleNodeUpdate, this),
 			addProperty = window.curry(this.handlePropertyAdded, this),
-			deleteProperty = window.curry(this.handlePropertyDeleted, this);
+			deleteProperty = window.curry(this.handlePropertyDeleted, this),
+
+			createChildNode = window.curry(this.handleCreateChildNode, this);
 
 		// select / deselect node
 		$(this).on('node-clicked', loadNode);
@@ -48,6 +50,8 @@
 		// properties
 		$('#new-property').on('click', addProperty);
 		$('#node-fields').on('click', '.delete-property', deleteProperty);
+
+		$(this).on('drag-up', createChildNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
@@ -65,6 +69,10 @@
         event.stopPropagation();
 
         var input = $('#new-node-name').val();
+        if (input == '') {
+        	return;
+        }
+
         $('#new-node-name').val('');
 
         this.createNode(input);
@@ -72,16 +80,14 @@
 
 	graph.NodeCD.prototype.createNode = function (name) {
 
-		if (name == '') {
-			return;
-		}
-
 		var data = {
 			name: name
 		};
 
 		// first trigger with filtered data
-		$(this).trigger('node-created', [data]);
+		if (data.name) {
+			$(this).trigger('node-created', [data]);
+		}
 
 		// then add node metadata
 		this.addNodeMetadata(data);
@@ -90,6 +96,8 @@
 		this.nodes.push(data);
 		this.drawNodes();
 		this.force.start();
+
+		return data;
 	};
 
 	graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
@@ -260,6 +268,10 @@
 		this.redrawNodes();
 		this.force.start();
 
+		if (!data[titleField] || data[titleField] == "") {
+			return;
+		}
+
 		$(this).trigger('node-updated', [data, nodeData.id]);
 	};
 
@@ -290,6 +302,17 @@
 		data = this.updateNodeDataWithFields(nodeData);
 
 		$(this).trigger('node-updated', [data, nodeData.id]);
+	};
+
+	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
+
+		var newData = this.createNode(),
+			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.selector);
+
+		console.log(newData);
+		console.log(newNode);
+
+		$(this).trigger('node-clicked', newNode, newData);
 	};
 
 }(window, jQuery, d3));
