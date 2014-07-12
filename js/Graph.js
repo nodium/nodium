@@ -79,6 +79,10 @@
 		this.handleGraphData(graphData);
 	};
 
+	/** 
+	 * Adds the metadata so we can distinguish the actual data
+	 * fields from the properties added by d3
+	 */
 	graph.Graph.prototype.addNodeMetadata = function (node) {
 		var fields = [],
 			key;
@@ -87,8 +91,35 @@
 			fields.push(key);
 		}
 
-		node.fields = fields;
-	}
+		node._fields = fields;
+	};
+
+	/**
+	 * Returns an object with only the real data of the node
+	 */
+	graph.Graph.prototype.getCleanNodeData = function (data) {
+
+		var fields = data._fields,
+			cleaned = {},
+			value;
+
+		if (!fields) {
+			return cleaned;
+		}
+
+		for (var i = 0; i < fields.length; i++) {
+			key = fields[i];
+			value = data[key];
+
+			if (!value) {
+				continue;
+			}
+
+			cleaned[key] = value;
+		}
+
+		return cleaned;
+	};
 
 	/**
 	 * asynchronous callback function incase of database call

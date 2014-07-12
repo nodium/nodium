@@ -37,7 +37,7 @@
 		}
 
 		if (this.draggedNode && this.hoveredNode) {
-			this.updateLink(this.draggedNode.data, this.hoveredNode.data, 'OI');
+			this.updateLink(this.draggedNode.data, this.hoveredNode.data);
 		}
 	};
 
@@ -50,6 +50,8 @@
 			i,
 			toDelete,
 			deletered = false;
+
+		type = type === undefined ? "POINTS_TO" : type;
 
 		console.log("updating link");
 
