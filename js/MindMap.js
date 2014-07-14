@@ -16,6 +16,14 @@
 		this.selector = selector;
 
 		this.api = new graph.API(this);
+
+		// here we put the actual linking of traits to events
+		// so that the traits contain only the logic and are kept generic
+		var pinnableConfig = {
+			'drag-right': 'handleNodePinned'
+		};
+
+		this.trait(new graph.Pinnable(), pinnableConfig);
 	};
 
 	graph.MindMap.prototype = new graph.Graph();

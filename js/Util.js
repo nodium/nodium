@@ -55,6 +55,15 @@
         };
     };
 
+    window.partial = function (fn) {
+        var aps = Array.prototype.slice,
+            args = aps.call(arguments, 1);
+      
+        return function () {
+            return fn.apply(this, args.concat(aps.call(arguments)));
+        };
+    }
+
     /**
      * Sets the current namespace
      * @param string namespace

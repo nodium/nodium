@@ -29,7 +29,7 @@
 		// the node that was clicked on
 		this.selectedNode = null;
 
-		this.traitEvents = [];
+		this._traitEvents = [];
 
 		// set during initialization
 		this.nodeCount;
@@ -37,27 +37,60 @@
 	};
 
 	/**
-	 * Give as many traits as you like
+	 * Add one trait
+	 */
+	graph.Graph.prototype.trait = function (trait, config) {
+
+		var traitEvent = {
+			config: config
+		};
+
+		events = $._data($(trait)[0], "events");
+
+		// add the handler to the traitEvents array
+		if (events && events['trait']) {
+			for (var e = 0; e < events['trait'].length; e++) {
+				traitEvent.attach = events['trait'][e].handler;
+			}
+		}
+
+		this._traitEvents.push(traitEvent);
+
+		$.extend(this, trait);
+
+		return this;
+	};
+
+	/**
+	 * Give as many traits as you like without config, prolly deprecated soon
 	 */
 	graph.Graph.prototype.addTraits = function () {
 
 		var events;
 
 		for (var i = 0; i < arguments.length; i++) {
-			events = $._data($(arguments[i])[0], "events");
-
-			// add the handler to the traitEvents array
-			if (events && events['trait']) {
-				for (var e = 0; e < events['trait'].length; e++) {
-					this.traitEvents.push(events['trait'][e].handler);
-				}
-			}
-
-			$.extend(this, arguments[i]);
+			this.trait(arguments[i]);
 		}
 
 		return this;
 	};
+
+	graph.Graph.prototype.attachConfigEvents = function (config) {
+
+		var key,
+			value;
+
+		for (key in config) {
+			value = config[key];
+
+			if (this.hasOwnProperty(value) && typeof(this[value]) === "function") {
+				console.log("attaching " + key + " to " + value);
+				$(this).on(key, window.curry(this[value], this));
+			} else {
+				console.log("couldn't attach " + key + " to " + value);
+			}
+		}
+	}
 
 
 	/*
@@ -180,35 +213,26 @@
 		this.initializeViewport();
 
 		this.getGraphData();
-
-		// var graph = this.getGraphData();
-		// this.nodes = graph.nodes || [];
-		// this.edges = graph.edges || [];
-		// // this.graphType = graph.graphType;
-
-		// this.parseGraphData();
-
-		// // d3.select(this.selector).classed(this.graphType, true);
-
-		// // draw the graph
-		// this.force = this.createForce();
-		// this.force.start();
-		// this.drawLinks();
-		// this.drawNodes();
-
-		// // NOTE: handleTick currently is dependent on this.node initialized in drawNodes()
-		// tickHandler = window.curry(this.handleTick, this);
-		// this.force.on('tick', tickHandler);
-
-		// this.handleWindowResize();
 	};
 
 	graph.Graph.prototype.initializeType = function () {};
 
 	graph.Graph.prototype.initializeTraits = function () {
 
-		for (var i = 0; i < this.traitEvents.length; i++) {
-			this.traitEvents[i].call(this);
+		var attach,
+			config;
+
+		for (var i = 0; i < this._traitEvents.length; i++) {
+			attach = this._traitEvents[i].attach;
+			config = this._traitEvents[i].config;
+			
+			if (attach) {
+				attach.call(this);
+			}
+
+			if (config) {
+				this.attachConfigEvents(config)
+			}
 		}
 	};
 
