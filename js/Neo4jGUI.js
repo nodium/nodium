@@ -6,11 +6,11 @@
 	 * Characteristics of the kinect graph:
 	 * - controllable through the kinect C:
 	 */
-	graph.MindMap = function (selector) {
+	graph.Neo4jGUI = function (selector) {
 
 		// enforce use of new on constructor
-		if ((this instanceof graph.MindMap) === false) {
-			return new graph.MindMap(arguments);
+		if ((this instanceof graph.Neo4jGUI) === false) {
+			return new graph.Neo4jGUI(arguments);
 		}
 
 		this.selector = selector;
@@ -19,21 +19,36 @@
 
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
-		var pinnableConfig = {
-			'drag-right': 'handleNodePinned'
-		};
 
-		this.trait(new graph.Pinnable(), pinnableConfig);
+		// TODO choose whether we put the whole config in one
+		// object, or per trait
+
+		this.addTraits(
+			new graph.Zoomable(),
+			new graph.Holdable(),
+			new graph.EdgeCD(),
+			new graph.NodeCD()
+		);
+
+		this
+		.trait(new graph.Pinnable(), {
+			'drag-right': 'handleNodePinned'
+		})
+		.trait(new graph.Stylable(), {
+			'node-pinned': 'handleNodeStyled',
+		});
+
+		this.initialize();
 	};
 
-	graph.MindMap.prototype = new graph.Graph();
+	graph.Neo4jGUI.prototype = new graph.Graph();
 
-	graph.MindMap.prototype.getBase = function () {
+	graph.Neo4jGUI.prototype.getBase = function () {
 
 		return this.__proto__.__proto__;
 	};
 
-	graph.MindMap.prototype.getGraphData = function () {
+	graph.Neo4jGUI.prototype.getGraphData = function () {
 		this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
 	};
 

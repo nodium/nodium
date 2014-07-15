@@ -68,7 +68,7 @@
 
 				d3.select(node).classed('hold', true);
 				
-				// self.scaleNode(node, 1.3);
+				self.scaleNode(node, 1.3);
 
 				$('#hold-action-notification').toggle();
 			}
@@ -126,7 +126,7 @@
 				.classed('hold', false);
 
 		if (this.holding) {
-			//this.scaleNode(node, 1);
+			this.scaleNode(node, 1);
 
 			this.holding = false;
 			$('#hold-action-notification').toggle();

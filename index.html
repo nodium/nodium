@@ -51,7 +51,7 @@
 	<script src="js/Util.js"></script>
 	<script src="js/Graph.js"></script>
 	<script src="js/GraphAPI.js"></script>
-	<script src="js/MindMap.js"></script>
+	<script src="js/Neo4jGUI.js"></script>
 	<script src="js/traits/Zoomable.js"></script>
 	<script src="js/traits/EdgeCD.js"></script>
 	<script src="js/traits/NodeCD.js"></script>
@@ -63,17 +63,7 @@
 
 		$(document).on('ready', function () {
 
-			var g = new graph.MindMap('#graph');
-
-			g.addTraits(
-				new graph.Zoomable(),
-				new graph.Holdable(),
-				new graph.EdgeCD(),
-				// new graph.Exportable(),
-				new graph.NodeCD()
-			);
-
-			g.initialize();
+			var g = new graph.Neo4jGUI('#graph');
 		});
 	</script>
 </html>

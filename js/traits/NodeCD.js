@@ -316,9 +316,6 @@
 			newData = this.createNode({}, data.x + 20, data.y + 20),
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.selector);
 
-		// make sure the held node remains fixed while linking
-		data.fixed = true;
-
 		// create the link after the node has its id
 		$(this).trigger('node-created', [newData, function () {
 
@@ -327,8 +324,6 @@
 
 		// select node in inspector
 		$(this).trigger('node-clicked', [newNode, newData]);
-
-		data.fixed = false;
 	};
 
 }(window, jQuery, d3));
