@@ -3,7 +3,7 @@
 		app   = window.setNamespace('app');
 
 	/**
-	 * Linkable trait
+	 * EdgeCD trait
 	 *
 	 * Adds functionality to link nodes by hovering them on top of each other
 	 */
@@ -18,7 +18,12 @@
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.EdgeCD.prototype.initialize = function () {};
+	graph.EdgeCD.prototype.initialize = function () {
+
+		// non-customizable event
+		var createEdge = window.curry(this.handleCreateEdge, this);
+		$(this.graph).on('create-edge', createEdge);
+	};
 
 	/**
 	 * Handles the event 
@@ -33,6 +38,13 @@
 		if (this.graph.draggedNode && this.graph.hoveredNode) {
 			this.updateLink(this.graph.draggedNode.data, this.graph.hoveredNode.data);
 		}
+	};
+
+	graph.EdgeCD.prototype.handleCreateEdge = function (event, source, target) {
+
+		console.log('handling edge creation');
+
+		this.updateLink(source, target);
 	};
 
 	/**
