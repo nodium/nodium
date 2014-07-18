@@ -93,13 +93,8 @@
 			}
 
 			value = e.slice(1);
-
-			// check if the value is an array
-			// if it is, parse it
-			if (value.length > 1) {
-				args = value.slice(1);
-				value = value[0];
-			}
+			args = value.slice(1);
+			value = value[0];
 
 			if (!value) {
 				continue;

@@ -135,11 +135,12 @@
      */
     window.getFunction = function (functionPath) {
 
+        console.log(functionPath);
+
         var components = functionPath.split('.'),
             parent = window,
             child;
 
-        console.log(functionPath);
         console.log(components);
 
         while (child = components.shift()) {
