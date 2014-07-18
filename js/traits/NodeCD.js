@@ -82,6 +82,7 @@
 		data.y = y || 0;
 
 		// then let d3 add other properties
+		// TODO do this after the trigger
 		this.graph.nodes.push(data);
 		this.graph.drawNodes();
 		this.graph.force.start();
@@ -319,10 +320,12 @@
 
 			// TODO solve somehow
 			// self.updateLink(data, newData);
+			$(self.graph).trigger('create-edge', [data, newData]);
 		}]);
 
 		// select node in inspector
-		$(this.graph).trigger('node-clicked', [newNode, newData]);
+		// TODO make inspector listen to node-created instead?
+		// $(this.graph).trigger('node-clicked', [newNode, newData]);
 	};
 
 }(window, jQuery, d3));

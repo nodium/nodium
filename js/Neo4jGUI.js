@@ -27,7 +27,8 @@
 			['node-selected', 'app.graph.graphics.handleNodeSelected'],
 			['node-unselected', 'app.graph.graphics.handleNodeSelected'],
 			['node-deleted', 'handleNodeUnselected'],
-			['drag-down', 'handleNodeDelete']
+			['drag-down', 'handleNodeDelete'],
+			['drag-up', 'handleCreateChildNode']
 		])
 		.trait(new graph.EdgeCD(), [
 			['drag-end', 'handleLinking']
