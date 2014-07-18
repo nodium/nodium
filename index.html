@@ -54,12 +54,14 @@
 	<script src="js/ui/PanelContainer.js"></script>
 	<script src="js/ui/NodeEditPanel.js"></script>
 	<script src="js/Graph.js"></script>
+	<script src="js/Animations.js"></script>
 	<script src="js/GraphAPI.js"></script>
-	<script src="js/MindMap.js"></script>
+	<script src="js/Neo4jGUI.js"></script>
 	<script src="js/traits/Zoomable.js"></script>
 	<script src="js/traits/EdgeCD.js"></script>
 	<script src="js/traits/NodeCD.js"></script>
 	<script src="js/traits/Holdable.js"></script>
+	<script src="js/traits/Pinnable.js"></script>
 	<script type="text/javascript">
 
 		var graph = window.setNamespace('app.graph'),
@@ -67,18 +69,7 @@
 
 		$(document).on('ready', function () {
 
-			var g = new graph.MindMap('#graph');
-
-			g.addTraits(
-				new graph.Zoomable(),
-				new graph.Holdable(),
-				new graph.EdgeCD(),
-				// new graph.Exportable(),
-				new graph.NodeCD()
-			);
-
-			g.initialize();
-
+			var g = new graph.Neo4jGUI('#graph');
 			var menu = new ui.PanelContainer('#inspector', {});
 			menu
 				.init()

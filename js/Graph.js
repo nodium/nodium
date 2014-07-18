@@ -29,7 +29,7 @@
 		// the node that was clicked on
 		this.selectedNode = null;
 
-		this.traitEvents = [];
+		this._traits = [];
 
 		// set during initialization
 		this.nodeCount;
@@ -37,27 +37,91 @@
 	};
 
 	/**
-	 * Give as many traits as you like
+	 * Add one trait
+	 */
+	graph.Graph.prototype.trait = function (trait, events) {
+
+		// events = $._data($(trait)[0], "events");
+
+		// // add the handler to the traitEvents array
+		// if (events && events['trait']) {
+		// 	for (var e = 0; e < events['trait'].length; e++) {
+		// 		traitEvent.attach = events['trait'][e].handler;
+		// 	}
+		// }
+
+		trait.graph = this;
+
+		this._traits.push({
+			trait: trait,
+			events: events
+		});
+
+		// $.extend(this, trait);
+
+		return this;
+	};
+
+	/**
+	 * Give as many traits as you like without config, prolly deprecated soon
 	 */
 	graph.Graph.prototype.addTraits = function () {
 
 		var events;
 
 		for (var i = 0; i < arguments.length; i++) {
-			events = $._data($(arguments[i])[0], "events");
-
-			// add the handler to the traitEvents array
-			if (events && events['trait']) {
-				for (var e = 0; e < events['trait'].length; e++) {
-					this.traitEvents.push(events['trait'][e].handler);
-				}
-			}
-
-			$.extend(this, arguments[i]);
+			this.trait(arguments[i]);
 		}
 
 		return this;
 	};
+
+	graph.Graph.prototype.attachTraitEvents = function (events, trait) {
+
+		var e,
+			key,
+			value,
+			func,
+			args = [];
+
+		for (var i = 0; i < events.length; i++) {
+			e = events[i];
+			key = e[0];
+
+			if (!key) {
+				continue;
+			}
+
+			value = e.slice(1);
+
+			// check if the value is an array
+			// if it is, parse it
+			if (value.length > 1) {
+				args = value.slice(1);
+				value = value[0];
+			}
+
+			if (!value) {
+				continue;
+			}
+
+			// try to either get the function from the trait or from the full name
+			if (trait[value] && typeof(trait[value]) === "function") {
+				func = trait[value];
+			} else {
+				func = window.getFunction(value);
+			}
+
+			console.log(window.partial(func, trait, args));
+
+			if (func) {
+				console.log("attaching " + value + " to " + key);
+				$(this).on(key, window.partial(func, trait, args));
+			} else {
+				console.log("couldn't attach " + value + " to " + key);
+			}
+		}
+	}
 
 
 	/*
@@ -79,6 +143,10 @@
 		this.handleGraphData(graphData);
 	};
 
+	/** 
+	 * Adds the metadata so we can distinguish the actual data
+	 * fields from the properties added by d3
+	 */
 	graph.Graph.prototype.addNodeMetadata = function (node) {
 		var fields = [],
 			key;
@@ -87,8 +155,35 @@
 			fields.push(key);
 		}
 
-		node.fields = fields;
-	}
+		node._fields = fields;
+	};
+
+	/**
+	 * Returns an object with only the real data of the node
+	 */
+	graph.Graph.prototype.getCleanNodeData = function (data) {
+
+		var fields = data._fields,
+			cleaned = {},
+			value;
+
+		if (!fields) {
+			return cleaned;
+		}
+
+		for (var i = 0; i < fields.length; i++) {
+			key = fields[i];
+			value = data[key];
+
+			if (!value) {
+				continue;
+			}
+
+			cleaned[key] = value;
+		}
+
+		return cleaned;
+	};
 
 	/**
 	 * asynchronous callback function incase of database call
@@ -149,35 +244,26 @@
 		this.initializeViewport();
 
 		this.getGraphData();
-
-		// var graph = this.getGraphData();
-		// this.nodes = graph.nodes || [];
-		// this.edges = graph.edges || [];
-		// // this.graphType = graph.graphType;
-
-		// this.parseGraphData();
-
-		// // d3.select(this.selector).classed(this.graphType, true);
-
-		// // draw the graph
-		// this.force = this.createForce();
-		// this.force.start();
-		// this.drawLinks();
-		// this.drawNodes();
-
-		// // NOTE: handleTick currently is dependent on this.node initialized in drawNodes()
-		// tickHandler = window.curry(this.handleTick, this);
-		// this.force.on('tick', tickHandler);
-
-		// this.handleWindowResize();
 	};
 
 	graph.Graph.prototype.initializeType = function () {};
 
 	graph.Graph.prototype.initializeTraits = function () {
 
-		for (var i = 0; i < this.traitEvents.length; i++) {
-			this.traitEvents[i].call(this);
+		var trait,
+			events;
+
+		for (var i = 0; i < this._traits.length; i++) {
+			trait = this._traits[i].trait;
+			events = this._traits[i].events;
+
+			if (events) {
+				this.attachTraitEvents(events, trait);
+			}
+
+			if (typeof(trait.initialize) === "function") {
+				trait.initialize();
+			}
 		}
 	};
 

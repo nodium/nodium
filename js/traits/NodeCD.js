@@ -20,7 +20,7 @@
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.NodeCD.prototype.attachNodeCD = function () {
+	graph.NodeCD.prototype.initialize = function () {
 
 		// start out hidden
 		$('#node-form').addClass('hidden');
@@ -65,6 +65,8 @@
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
 
+		var newNode;
+
 		event.preventDefault();
         event.stopPropagation();
 
@@ -75,27 +77,27 @@
 
         $('#new-node-name').val('');
 
-        this.createNode(input);
+        newNode = this.createNode({name: input});
+        $(this).trigger('node-created', [newNode]);
 	};
 
-	graph.NodeCD.prototype.createNode = function (name) {
-
-		var data = {
-			name: name
-		};
-
-		// first trigger with filtered data
-		if (data.name) {
-			$(this).trigger('node-created', [data]);
-		}
+	/**
+	 * Create a node from a given set of key value pairs
+	 */
+	graph.NodeCD.prototype.createNode = function (data, x, y) {
 
 		// then add node metadata
 		this.addNodeMetadata(data);
+
+		data.x = x;
+		data.y = y;
 
 		// then let d3 add other properties
 		this.nodes.push(data);
 		this.drawNodes();
 		this.force.start();
+
+		// $(this).trigger('node-created', [data]);
 
 		return data;
 	};
@@ -167,6 +169,9 @@
 	 */
 	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
 
+		console.log("node clicked");
+		console.log(arguments);
+
 		// fix this differently
 		this.selectedNode = {
 			node: node,
@@ -180,17 +185,18 @@
 
 		$('#node-form').removeClass('hidden');
 
-		// set the title field
+		// set and focus the title field
 		$('#node-title').val('');
 		if (data.hasOwnProperty(titleField)) {
 			$('#node-title').val(data[titleField]);
 		}
+		$('#node-title').focus();
 
 		// create the html form elements
 		$('#node-fields').empty();
 
-		for (var i = 0; i < data.fields.length; i++) {
-			fieldName = data.fields[i];
+		for (var i = 0; i < data._fields.length; i++) {
+			fieldName = data._fields[i];
 
 			// the title property is rendered differently
 			if (fieldName == titleField) {
@@ -217,7 +223,7 @@
 			result = {};
 
 		// clear the fields metadata, we'll refill this
-		data.fields = [titleField];
+		data._fields = [titleField];
 
 		// set the title field separately
 		data[titleField] = $('#node-title').val();
@@ -232,7 +238,7 @@
 				continue;
 			}
 
-			data.fields.push(key);
+			data._fields.push(key);
 			data[key] = value;
 			result[key] = value;
 		}
@@ -306,13 +312,18 @@
 
 	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
 
-		var newData = this.createNode(),
+		var self = this,
+			newData = this.createNode({}, data.x + 20, data.y + 20),
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.selector);
 
-		console.log(newData);
-		console.log(newNode);
+		// create the link after the node has its id
+		$(this).trigger('node-created', [newData, function () {
 
-		$(this).trigger('node-clicked', newNode, newData);
+			self.updateLink(data, newData);
+		}]);
+
+		// select node in inspector
+		$(this).trigger('node-clicked', [newNode, newData]);
 	};
 
 }(window, jQuery, d3));

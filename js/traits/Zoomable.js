@@ -13,14 +13,15 @@
 		if ((this instanceof graph.Zoomable) === false) {
 			return new graph.Zoomable(arguments);
 		}
-
-		$(this).on('trait', this.attachZoomable);
 	};
 
-	graph.Zoomable.prototype.attachZoomable = function () {
+	graph.Zoomable.prototype.initialize = function () {
 		
+		console.log(this.graph);
+		console.log(d3.select(this.graph.selector + ' .graph-viewport'));
+
 		var zoomHandler = window.curry(this.handleZoom, this);
-		d3.select(this.selector + ' .graph-viewport')
+		d3.select(this.graph.selector + ' .graph-viewport')
 		  .call(d3.behavior.zoom().on("zoom", zoomHandler));
 	};
 
@@ -31,7 +32,7 @@
 				.replace(/__translate__/g, d3.event.translate)
 				.replace(/__scale__/g, d3.event.scale);
 
-		d3.select(this.selector).select('.graph-content').attr('transform', transform);
+		d3.select(this.graph.selector).select('.graph-content').attr('transform', transform);
 	};
 
 }(window, jQuery, d3));

@@ -106,16 +106,20 @@
 	 * Create a node in the neo4j database
 	 * Store the id to easily delete the node later
 	 */
-	graph.API.prototype.handleNodeCreated = function (event, data) {
+	graph.API.prototype.handleNodeCreated = function (event, data, callback) {
 
-		var props = {
-			name: this.graph.getNodeText(data)
-		};
+		var props = this.graph.getCleanNodeData(data);
 
 		$.post('http://localhost:7474/db/data/node', props)
-		 .done(function (newNode) {
-		 	console.log(newNode);
-		 	data['id'] = newNode.self;
+		 .done(function (result) {
+		 	console.log(result);
+		 	data.id = result.self;
+
+		 	console.log(data);
+
+		 	if (callback) {
+		 		callback(result);
+		 	}
 		 });
 	};
 
