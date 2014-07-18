@@ -7,7 +7,7 @@
 	</head>
 	<body>
 		<aside id="inspector">
-			<div id="inspector-node">
+			<div id="inspector-node" class="panel">
 				<form id="node-form" action="post">
 					<div>
 						<label for="node-title" class="icon-pencil"></label>
@@ -19,6 +19,8 @@
 					<button id="delete-button" type="submit"><span class="icon-trash"></span>Delete node</button>
 				</form>
 			</div>
+			<nav class="panel-navigation" data-prototype="<button class=&quot;{icon}&quot; type=&quot;button&quot;></button>">
+			</nav>
 		</aside>
 		<svg id="graph">
 			<marker id="arrow" orient="auto"
@@ -49,6 +51,8 @@
 	<script src="js/mousetrap.min.js"></script>
 	<script src="js/mousetrap-global-min.js"></script>
 	<script src="js/Util.js"></script>
+	<script src="js/ui/PanelContainer.js"></script>
+	<script src="js/ui/NodeEditPanel.js"></script>
 	<script src="js/Graph.js"></script>
 	<script src="js/GraphAPI.js"></script>
 	<script src="js/MindMap.js"></script>
@@ -58,7 +62,8 @@
 	<script src="js/traits/Holdable.js"></script>
 	<script type="text/javascript">
 
-		var graph = window.setNamespace('app.graph');
+		var graph = window.setNamespace('app.graph'),
+			ui = window.setNamespace('app.ui');
 
 		$(document).on('ready', function () {
 
@@ -73,6 +78,11 @@
 			);
 
 			g.initialize();
+
+			var menu = new ui.PanelContainer('#inspector', {});
+			menu
+				.init()
+				.addPanel(new ui.NodeEditPanel('#inspector-node', {}));
 		});
 	</script>
 </html>

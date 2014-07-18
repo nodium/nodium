@@ -202,4 +202,24 @@
         return false;
     };
 
+    window.createFromPrototype = function (view, parameters) {
+        var prototype = view.data('prototype'),
+            key,
+            instance,
+            parameter;
+
+        for (key in parameters) {
+
+            if (false === parameters.hasOwnProperty(key)) {
+                continue;
+            }
+
+            parameter = '{' + key + '}';
+
+            instance = (instance || prototype).replace(parameter, parameters[key])
+        }
+
+        return instance;
+    };
+
 }(window, jQuery));
