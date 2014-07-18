@@ -54,7 +54,7 @@
 		var graph = this.graph;
 
 		// show a nice transition while we're at it
-		d3.select(node).classed('selected', true);
+		// d3.select(node).classed('selected', true);
 
 		this.holdTimeoutId = setTimeout(function () {
 
@@ -63,7 +63,7 @@
 				console.log("holding");
 				graph.holding = true;
 
-				d3.select(node).classed('hold', true);
+				// d3.select(node).classed('hold', true);
 				
 				// self.scaleNode(1.3, node);
 
@@ -121,12 +121,11 @@
 			}
 		}
 
-		d3.select(node)
-			.classed('selected', false)
-			.classed('hold', false);
+		// d3.select(node)
+		// 	.classed('selected', false)
+		// 	.classed('hold', false);
 
 		if (this.graph.holding) {
-			// this.scaleNode(1, node);
 
 			this.graph.holding = false;
 			$('#hold-action-notification').toggle();

@@ -25,42 +25,33 @@
 		// start out hidden
 		$('#node-form').addClass('hidden');
 
-		var loadNode = window.curry(this.handleNodeSelected, this),
-			unloadNode = window.curry(this.handleNodeUnselected, this),
-			createNode = window.curry(this.handleNodeCreate, this),
-			deleteNode = window.curry(this.handleNodeDelete, this),
-			deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
-			updateNode = window.curry(this.handleNodeUpdate, this),
-			addProperty = window.curry(this.handlePropertyAdded, this),
-			deleteProperty = window.curry(this.handlePropertyDeleted, this),
+		// var loadNode = window.curry(this.handleNodeSelected, this),
+		// 	unloadNode = window.curry(this.handleNodeUnselected, this),
+		// 	createNode = window.curry(this.handleNodeCreate, this),
+		// 	deleteNode = window.curry(this.handleNodeDelete, this),
+		// 	deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
+		// 	updateNode = window.curry(this.handleNodeUpdate, this),
+		// 	addProperty = window.curry(this.handlePropertyAdded, this),
+		// 	deleteProperty = window.curry(this.handlePropertyDeleted, this),
 
-			createChildNode = window.curry(this.handleCreateChildNode, this);
+		// 	createChildNode = window.curry(this.handleCreateChildNode, this);
 
-		// select / deselect node
-		$(this).on('node-clicked', loadNode);
-		$(this).on('node-deleted', unloadNode);
+		// // select / deselect node
+		// $(this).on('node-clicked', loadNode);
+		// $(this).on('node-deleted', unloadNode);
 
-		// node CRUD
-		$('#new-node-form').on('submit', createNode);
-		$(this).on('drag-down', deleteNode);
-		this.holdActions[graph.Drag.DOWN] = "Delete";
-		$('#node-form').on('submit', deleteNodeButton);
-		$('#node-form').on('focusout', updateNode);
+		// // node CRUD
+		// $('#new-node-form').on('submit', createNode);
+		// $(this).on('drag-down', deleteNode);
+		// this.holdActions[graph.Drag.DOWN] = "Delete";
+		// $('#node-form').on('submit', deleteNodeButton);
+		// $('#node-form').on('focusout', updateNode);
 
-		// properties
-		$('#new-property').on('click', addProperty);
-		$('#node-fields').on('click', '.delete-property', deleteProperty);
+		// // properties
+		// $('#new-property').on('click', addProperty);
+		// $('#node-fields').on('click', '.delete-property', deleteProperty);
 
-		$(this).on('drag-up', createChildNode);
-	};
-
-	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
-
-		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
-			$('#node-form').addClass('hidden');
-		}
-
-		this.selectedNode = null;
+		// $(this).on('drag-up', createChildNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -169,13 +160,12 @@
 	 */
 	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
 
-		console.log("node clicked");
-		console.log(arguments);
+		console.log('node clicked');
 
-		$(window).trigger('node-selected' [node, data]);
+		$(this.graph).trigger('node-selected', [node, data]);
 
-		// fix this differently
-		this.selectedNode = {
+		// TODO fix this differently
+		this.graph.selectedNode = {
 			node: node,
 			data: data
 		};
@@ -211,6 +201,15 @@
 		// 		.replace(/__rows__/, 1);
 		// 	$('#node-fields').append(fieldHTML);
 		// }
+	};
+
+	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
+
+		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
+			$('#node-form').addClass('hidden');
+		}
+
+		this.selectedNode = null;
 	};
 
 	/**

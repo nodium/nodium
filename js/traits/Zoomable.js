@@ -16,9 +16,6 @@
 	};
 
 	graph.Zoomable.prototype.initialize = function () {
-		
-		console.log(this.graph);
-		console.log(d3.select(this.graph.selector + ' .graph-viewport'));
 
 		var zoomHandler = window.curry(this.handleZoom, this);
 		d3.select(this.graph.selector + ' .graph-viewport')

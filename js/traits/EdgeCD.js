@@ -13,31 +13,25 @@
 		if ((this instanceof graph.EdgeCD) === false) {
 			return new graph.EdgeCD(arguments);
 		}
-
-		$(this).on('trait', this.attachEdgeCD);
 	};
 
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.EdgeCD.prototype.initialize = function () {
-
-		// make the base code fire a createLink event
-		var linkHandler = window.curry(this.handleLinking, this);
-		$(this).on('drag-end', linkHandler);
-	};
+	graph.EdgeCD.prototype.initialize = function () {};
 
 	/**
 	 * Handles the event 
 	 */
 	graph.EdgeCD.prototype.handleLinking = function () {
 
-		if (!this.dragging) {
+		if (!this.graph.dragging) {
 			return;
 		}
 
-		if (this.draggedNode && this.hoveredNode) {
-			this.updateLink(this.draggedNode.data, this.hoveredNode.data);
+		// TODO this can probably be done better (without using graph properties)
+		if (this.graph.draggedNode && this.graph.hoveredNode) {
+			this.updateLink(this.graph.draggedNode.data, this.graph.hoveredNode.data);
 		}
 	};
 
@@ -46,7 +40,8 @@
 	 * Deletes the edge if it exists.
 	 */
 	graph.EdgeCD.prototype.updateLink = function (source, target, type) {
-		var edge,
+		var edges = this.graph.edges,
+			edge,
 			i,
 			toDelete,
 			deletered = false;
@@ -60,8 +55,8 @@
 		}
 
 		// check if there's a edge already between source and target
-		for (i = this.edges.length-1; i >= 0; i--) {
-			edge = this.edges[i];
+		for (i = edges.length-1; i >= 0; i--) {
+			edge = edges[i];
 
 			// if (edge.type != type) {
 			// 	continue;
@@ -70,12 +65,9 @@
 			if ((edge.source.index == source.index && edge.target.index == target.index) ||
 				(edge.source.index == target.index && edge.target.index == source.index)) {
 
-				console.log(i);
-				console.log(edge);
-				this.edges.splice(i, 1);
+				edges.splice(i, 1);
 				deletered = true;
 				toDelete = edge;
-				// break;
 			}
 		}
 
@@ -89,17 +81,18 @@
 				type: type
 			};
 
-			this.edges.push(edge);
+			edges.push(edge);
 
-			$(this).trigger('edge-created', [edge, source, target]);
+			$(this.graph).trigger('edge-created', [edge, source, target]);
 		} else {
-			$(this).trigger('edge-deleted', [toDelete]);
+			$(this.graph).trigger('edge-deleted', [toDelete]);
 		}
 
 		// redraw the complete graph
-		this.drawLinks();
-		this.redrawNodes();
-		this.force.start();
+		// TODO move this to some edge-deleted/created handlers somewhere else
+		this.graph.drawLinks();
+		this.graph.redrawNodes();
+		this.graph.force.start();
 	};
 
 }(window, jQuery, d3));

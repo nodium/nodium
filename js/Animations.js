@@ -1,23 +1,32 @@
 (function (window, $, d3, undefined) {
 
-	graph 		= window.setNamespace('app.graph');
-	animations  = window.setNamespace('app.graph.animations');
+	graph 	  = window.setNamespace('app.graph');
+	graphics  = window.setNamespace('app.graph.graphics');
 
 	/*
 	 * Functions here are probably executed in scope of the trait
 	 */
 
-	animations.scaleNode = function (scale, node, graph) {
+	graphics.scaleNode = function (scale, node, graph) {
 
 		d3.select(node).select('circle').transition()
 		    .duration(400)
 		    .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
 	};
 
-	animations.handleNodeScale = function (scale, event, node, data) {
-		console.log(arguments);
+	graphics.handleNodeScale = function (scale, event, node) {
 
-		animations.scaleNode(scale, node, this.graph);
+		graphics.scaleNode(scale, node, this.graph);
+	};
+
+	graphics.handleNodeSelected = function (event, node) {
+
+		d3.select(node).classed('selected', true);
+	};
+
+	graphics.handleNodeUnselected = function (event, node) {
+
+		d3.select(node).classed('selected', false);
 	};
 
 })(window, jQuery, d3);

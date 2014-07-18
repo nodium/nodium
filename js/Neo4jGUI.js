@@ -20,25 +20,25 @@
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
 
-		// TODO choose whether we put the whole config in one
-		// object, or per trait
-
-		// this.addTraits(
-		// 	new graph.Zoomable(),
-		// 	new graph.Holdable(),
-		// 	new graph.EdgeCD(),
-		// 	new graph.NodeCD()
-		// );
-
 		this
 		.trait(new graph.Zoomable())
+		.trait(new graph.NodeCD(), [
+			['node-clicked', 'handleNodeSelected'],
+			['node-selected', 'app.graph.graphics.handleNodeSelected'],
+			['node-unselected', 'app.graph.graphics.handleNodeSelected'],
+			['node-deleted', 'handleNodeUnselected'],
+			['drag-down', 'handleNodeDelete']
+		])
+		.trait(new graph.EdgeCD(), [
+			['drag-end', 'handleLinking']
+		])
 		.trait(new graph.Holdable({
 			'duration': 400
 		}),[['mouse-down', 'handleHoldStart'],
 			['drag', 'handleHoldDrag'],
 			['drag-end', 'handleHoldEnd'],
-			['drag-end', 'app.graph.animations.handleNodeScale', 1],
-			['holding-node', 'app.graph.animations.handleNodeScale', 1.3]
+			['drag-end', 'app.graph.graphics.handleNodeScale', 1],
+			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3]
 		])
 		.trait(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']

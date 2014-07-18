@@ -5,7 +5,7 @@
 		NodeEditPanel,
 		_defaults;
 
-	NodeEditPanel = function (selector, options) {
+	NodeEditPanel = function (selector, options, graph) {
 
 		if (false === (this instanceof NodeEditPanel)) {
 			return new NodeEditPanel(arguments);
@@ -15,6 +15,7 @@
 		this.view = $(selector);
 		this.name = 'Node Editor';
 		this.icon = 'icon-pencil';
+		this.graph = graph;
 	};
 
 	NodeEditPanel.prototype.init = function (container) {
@@ -23,7 +24,7 @@
 			nodeSelectedHandler = window.curry(this.handleNodeSelected, this);
 
 		$(container).on('menu-collapse', collapseHandler);
-		$(window).on('node-selected', nodeSelectedHandler);
+		$(this.graph).on('node-selected', nodeSelectedHandler);
 
 		return this;
 	};
