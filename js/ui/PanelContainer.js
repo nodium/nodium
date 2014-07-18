@@ -4,7 +4,9 @@
 
     var ui = window.setNamespace('app.ui'),
         PanelContainer,
-        _defaults = {};
+        _defaults = {
+            expanded: false
+        };
 
     PanelContainer = function (selector, options) {
 
@@ -12,19 +14,26 @@
             return new PanelContainer(arguments);
         }
 
-        $.extend({}, _defaults, options);
+        this.options = $.extend({}, _defaults, options);
 
         this.view = $(selector);
     };
 
     PanelContainer.prototype.init = function () {
         this.panels = {};
+        this.isExpanded = this.options.expanded;
 
         var menuClickHandler = window.curry(this.handleMenuButtonClicked, this);
         $('.panel-navigation', this.view).on('click', 'button', menuClickHandler);
 
         var keyDownHandler = window.curry(this.handleKeyDown, this);
         $(window).on('keydown', keyDownHandler);
+
+        var showHandler = window.curry(this.handlePanelShow, this);
+        $(this.view).on('panel-show', '.panel', showHandler);
+
+        var hideHandler = window.curry(this.handlePanelHide, this);
+        $(this.view).on('panel-hide', '.panel', hideHandler);
 
         return this;
     };
@@ -61,14 +70,24 @@
 
     PanelContainer.prototype.expand = function (icon) {
         // $(this).trigger('expand', []);
+        this.visiblePanel = icon;
         this.panels[icon].show();
-        this.view.addClass('expanded');
+
+        if (!this.isExpanded) {
+            this.view.addClass('expanded');
+        }
+
+        this.isExpanded = true;
     };
 
     PanelContainer.prototype.collapse = function () {
 
-        this.view.removeClass('expanded');
-        $(this).trigger('menu-collapse');
+        if (this.isExpanded) {
+            this.view.removeClass('expanded');
+            $(this).trigger('menu-collapse');
+        }
+
+        this.isExpanded = false;
     };
 
     PanelContainer.prototype.createMenuItem = function (icon) {
@@ -87,16 +106,26 @@
      * Event Handlers
      */
 
-    PanelContainer.prototype.handleMenuButtonClicked = function (event) {
-
-        this.expand(event.currentTarget.className);
-    };
-
     PanelContainer.prototype.handleKeyDown = function (event) {
 
         if (event.keyCode === 27) {
             this.collapse();
         }
+    };
+
+    PanelContainer.prototype.handleMenuButtonClicked = function (event) {
+
+        this.expand(event.currentTarget.className);
+    };
+
+    PanelContainer.prototype.handlePanelShow = function (event, panel) {
+
+        if (this.isExpanded) {
+            this.collapse();
+            // this.panels[this.visiblePanel].hide();
+        }
+
+        this.expand(panel.icon);
     };
 
     ui.PanelContainer = PanelContainer;

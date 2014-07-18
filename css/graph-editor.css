@@ -51,21 +51,25 @@ button, input, textarea, select, label {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: 300;
 }
+/* line 42, sass/_dom-overrides.scss */
+button:focus, input:focus, textarea:focus, select:focus, label:focus {
+  outline: none;
+}
 
-/* line 43, sass/_dom-overrides.scss */
+/* line 47, sass/_dom-overrides.scss */
 textarea, input, select {
   background: #c2b9c2;
   color: white;
 }
 
-/* line 50, sass/_dom-overrides.scss */
+/* line 54, sass/_dom-overrides.scss */
 aside textarea,
 aside input,
 aside select {
   color: #331833;
 }
 
-/* line 56, sass/_dom-overrides.scss */
+/* line 60, sass/_dom-overrides.scss */
 aside button,
 aside input[type=button],
 aside input[type=submit] {
@@ -73,28 +77,28 @@ aside input[type=submit] {
   margin: 8px;
 }
 
-/* line 62, sass/_dom-overrides.scss */
+/* line 66, sass/_dom-overrides.scss */
 ::-webkit-input-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 68, sass/_dom-overrides.scss */
+/* line 72, sass/_dom-overrides.scss */
 ::-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 74, sass/_dom-overrides.scss */
+/* line 78, sass/_dom-overrides.scss */
 :-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 80, sass/_dom-overrides.scss */
+/* line 84, sass/_dom-overrides.scss */
 :-ms-input-placeholder {
   color: inherit;
   font-variant: small-caps;
@@ -170,8 +174,9 @@ aside {
   bottom: 0;
   margin-right: 0;
   transition: margin-right 0.18s linear;
+  z-index: 100;
 }
-/* line 71, sass/_sidebar.scss */
+/* line 72, sass/_sidebar.scss */
 .panel-navigation button {
   width: 38px;
   padding: 9px 0;
@@ -179,12 +184,12 @@ aside {
   background: transparent;
   color: white;
 }
-/* line 84, sass/_sidebar.scss */
+/* line 85, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 90, sass/_sidebar.scss */
+/* line 91, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -194,20 +199,20 @@ aside {
   vertical-align: top;
 }
 
-/* line 98, sass/_sidebar.scss */
+/* line 99, sass/_sidebar.scss */
 .node-field > div {
   position: relative;
   height: auto;
 }
 
-/* line 103, sass/_sidebar.scss */
+/* line 104, sass/_sidebar.scss */
 .node-field input {
   left: 0;
   right: 0;
   padding-left: 38px;
 }
 
-/* line 109, sass/_sidebar.scss */
+/* line 110, sass/_sidebar.scss */
 .node-field button {
   position: absolute;
   top: 0;
@@ -216,7 +221,7 @@ aside {
   color: #b3b3b3;
 }
 
-/* line 118, sass/_sidebar.scss */
+/* line 119, sass/_sidebar.scss */
 .node-field button,
 #new-property {
   text-align: center;
@@ -227,30 +232,30 @@ aside {
   background: transparent;
 }
 
-/* line 127, sass/_sidebar.scss */
+/* line 128, sass/_sidebar.scss */
 #new-property {
   color: white;
   height: 35px;
 }
 
-/* line 132, sass/_sidebar.scss */
+/* line 133, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 138, sass/_sidebar.scss */
+/* line 139, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
   color: white;
 }
 
-/* line 144, sass/_sidebar.scss */
+/* line 145, sass/_sidebar.scss */
 #node-fields li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 148, sass/_sidebar.scss */
+/* line 149, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
   width: 100%;

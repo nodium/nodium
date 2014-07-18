@@ -38,6 +38,10 @@ button, input, textarea, select, label {
 	font-size: 1.6rem;
 	font-family: Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 textarea, input, select {

@@ -21,10 +21,12 @@
 	NodeEditPanel.prototype.init = function (container) {
 
 		var collapseHandler = window.curry(this.handleCollapse, this),
-			nodeSelectedHandler = window.curry(this.handleNodeSelected, this);
+			nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
+			nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this);
 
 		$(container).on('menu-collapse', collapseHandler);
 		$(this.graph).on('node-selected', nodeSelectedHandler);
+		$(this.graph).on('node-unselected', nodeUnselectedHandler);
 
 		return this;
 	};
@@ -41,29 +43,28 @@
 
 	NodeEditPanel.prototype.show = function () {
 
+		var titleField = $('#node-title', this.view);
+
 		this.isVisible = true;
 		this.view.addClass('active');
 
-		$(this).trigger('panel-show');
+		window.setTimeout(function () {
+			titleField.focus()
+		}, 200);
 	};
 
-	NodeEditPanel.prototype.setData = function (node, data) {
+	NodeEditPanel.prototype.setData = function (data) {
 
 		var propertiesList = $('#node-fields', this.view),
 			fieldHTML,
 			fieldName,
-			titleField = this.getNodeTitleKey();
+			titleField = this.graph.getNodeTitleKey();
 
 		// set and focus the title field
 		var value = data[titleField] || '';
 
 		$('#node-title', this.view)
 			.val(value)
-			.focus();
-		// if (data.hasOwnProperty(titleField)) {
-		// 	$('#node-title').val(data[titleField]);
-		// }
-		// $('#node-title').focus();
 
 		// create the html form elements
 		propertiesList.empty();
@@ -82,20 +83,26 @@
 				rows: 1
 			});
 
-			// fieldHTML = fieldPrototype
-			// 	.replace(/__field__/g, fieldName)
-			// 	.replace(/__value__/, data[fieldName])
-			// 	.replace(/__rows__/, 1);
 			propertiesList.append(fieldHTML);
 		}
 	};
+
+	NodeEditPanel.prototype.unsetData = function (data) {
+
+		var propertiesList = $('#node-fields', this.view);
+
+		$('#node-title', this.view).val('');
+
+		// create the html form elements
+		propertiesList.empty();
+	};
+
 
 	/**
 	 * Event handlers
 	 */
 
 	NodeEditPanel.prototype.handleCollapse = function (event) {
-
 
 		if (this.isVisible) {
 			this.hide();
@@ -104,7 +111,15 @@
 
 	NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
 
-		this.setData(node, data);
+		this.setData(data);
+		$(this.view).trigger('panel-show', [this]);
+		
+	};
+
+	NodeEditPanel.prototype.handleNodeUnselected = function (event, node, data) {
+
+		this.unsetData();
+		$(this.view).trigger('panel-hide', [this]);
 	};
 
 	ui.NodeEditPanel = NodeEditPanel;

@@ -23,7 +23,7 @@
 	graph.NodeCD.prototype.initialize = function () {
 
 		// start out hidden
-		$('#node-form').addClass('hidden');
+		// $('#node-form').addClass('hidden');
 
 		// var loadNode = window.curry(this.handleNodeSelected, this),
 		// 	unloadNode = window.curry(this.handleNodeUnselected, this),
@@ -162,54 +162,24 @@
 
 		console.log('node clicked');
 
-		$(this.graph).trigger('node-selected', [node, data]);
-
 		// TODO fix this differently
 		this.graph.selectedNode = {
 			node: node,
 			data: data
 		};
 
-		// var fieldPrototype = $('#node-fields').data('prototype'),
-		// 	fieldHTML,
-		// 	fieldName,
-		// 	titleField = this.getNodeTitleKey();
-
-		// $('#node-form').removeClass('hidden');
-
-		// // set and focus the title field
-		// $('#node-title').val('');
-		// if (data.hasOwnProperty(titleField)) {
-		// 	$('#node-title').val(data[titleField]);
-		// }
-		// $('#node-title').focus();
-
-		// // create the html form elements
-		// $('#node-fields').empty();
-
-		// for (var i = 0; i < data._fields.length; i++) {
-		// 	fieldName = data._fields[i];
-
-		// 	// the title property is rendered differently
-		// 	if (fieldName == titleField) {
-		// 		continue;
-		// 	}
-
-		// 	fieldHTML = fieldPrototype
-		// 		.replace(/__field__/g, fieldName)
-		// 		.replace(/__value__/, data[fieldName])
-		// 		.replace(/__rows__/, 1);
-		// 	$('#node-fields').append(fieldHTML);
-		// }
+		$(this.graph).trigger('node-selected', [node, data]);
 	};
 
 	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
 
 		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
-			$('#node-form').addClass('hidden');
+			// $('#node-form').addClass('hidden');
 		}
 
 		this.selectedNode = null;
+
+		$(this.graph).trigger('node-unselected');
 	};
 
 	/**
