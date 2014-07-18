@@ -2,6 +2,18 @@
  	@include box-sizing(border-box);
  	margin: 0;
  	padding: 0;
+
+ 	&::before {
+		@include box-sizing(border-box);
+	 	margin: 0;
+	 	padding: 0; 		
+ 	}
+
+ 	&::after {
+ 		@include box-sizing(border-box);
+	 	margin: 0;
+	 	padding: 0;
+ 	}
  }
 
 html {
@@ -26,6 +38,10 @@ button, input, textarea, select, label {
 	font-size: 1.6rem;
 	font-family: Roboto, Helvetica, Arial, sans-serif;
 	font-weight: 300;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 textarea, input, select {

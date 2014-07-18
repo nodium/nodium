@@ -7,18 +7,20 @@
 	</head>
 	<body>
 		<aside id="inspector">
-			<div id="inspector-node">
+			<div id="inspector-node" class="panel">
 				<form id="node-form" action="post">
 					<div>
 						<label for="node-title" class="icon-pencil"></label>
 						<input type="text" id="node-title" />
 					</div>
-						<ul id="node-fields" data-prototype='<li class="node-field"><div><input type="text" class="node-key" value="__field__" /><button class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></div><textarea class="node-value" rows="__rows__">__value__</textarea></li>'>
+						<ul id="node-fields" data-prototype='<li class="node-field"><div><input type="text" class="node-key" value="{field}" /><button class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></div><textarea class="node-value" rows="{rows}">{value}</textarea></li>'>
 					</ul>
 					<button id="new-property"><span class="icon-plus"></span></button>
 					<button id="delete-button" type="submit"><span class="icon-trash"></span>Delete node</button>
 				</form>
 			</div>
+			<nav class="panel-navigation" data-prototype="<button class=&quot;{icon}&quot; type=&quot;button&quot;></button>">
+			</nav>
 		</aside>
 		<svg id="graph">
 			<marker id="arrow" orient="auto"
@@ -49,7 +51,10 @@
 	<script src="js/mousetrap.min.js"></script>
 	<script src="js/mousetrap-global-min.js"></script>
 	<script src="js/Util.js"></script>
+	<script src="js/ui/PanelContainer.js"></script>
+	<script src="js/ui/NodeEditPanel.js"></script>
 	<script src="js/Graph.js"></script>
+	<script src="js/Animations.js"></script>
 	<script src="js/GraphAPI.js"></script>
 	<script src="js/Neo4jGUI.js"></script>
 	<script src="js/traits/Zoomable.js"></script>
@@ -59,11 +64,17 @@
 	<script src="js/traits/Pinnable.js"></script>
 	<script type="text/javascript">
 
-		var graph = window.setNamespace('app.graph');
+		var graph = window.setNamespace('app.graph'),
+			ui = window.setNamespace('app.ui');
 
 		$(document).on('ready', function () {
 
-			var g = new graph.Neo4jGUI('#graph');
+			var g 		= new graph.Neo4jGUI('#graph'),
+				menu 	= new ui.PanelContainer('#inspector', {});
+
+			menu
+				.init()
+				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, g));
 		});
 	</script>
 </html>

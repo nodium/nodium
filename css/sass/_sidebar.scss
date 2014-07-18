@@ -4,6 +4,8 @@ aside {
 
 #inspector {
 	padding-top: 8px;
+	overflow: hidden;
+	background: transparent;
 
 	form > button {
 		text-align: left;
@@ -28,6 +30,60 @@ aside {
 		input {
 			padding-left: 38px;
 		}
+	}
+
+	&.expanded {
+		.panel-navigation {
+			margin-right: -38px;
+		}
+
+		.panel.active {
+			margin-right: 0;
+		}
+	}
+}
+
+.panel {
+	background: $color-dark;
+	margin-right: -320px;
+	position: absolute;
+	padding-top: 8px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 320px;
+	transition: margin-right 0.18s linear;
+}
+
+.panel-navigation {
+
+	$item-width: 38px;
+
+	background: $color-dark;
+	position: absolute;
+	padding-top: 8px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	margin-right: 0;
+	transition: margin-right 0.18s linear;
+	z-index: 100;
+
+	button {
+		width: 38px;
+		padding: 9px 0;
+		margin: 0;
+
+		background: transparent;
+		color: $color-light;
+	}
+
+	hr {
+
+	}
+
+	& .hidden {
+		margin-right: -38px;
 	}
 }
 

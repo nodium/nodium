@@ -55,12 +55,28 @@
         };
     };
 
-    window.partial = function (fn) {
+    window.partial = function (fn, scope) {
         var aps = Array.prototype.slice,
+            apc = Array.prototype.concat,
+            args;
+
+        if (scope) {
+            args = aps.call(arguments, 2);
+        } else {
             args = aps.call(arguments, 1);
+        }
+
+        // flatten the arguments
+        args = apc.apply([], args);
+
+        scope = scope || window;
+
+        console.log("partial");
+        console.log(scope);
+        console.log(args);
       
         return function () {
-            return fn.apply(this, args.concat(aps.call(arguments)));
+            return fn.apply(scope, args.concat(aps.call(arguments)));
         };
     }
 
@@ -113,6 +129,37 @@
 
         return parent;
     };
+
+    /**
+     * Try to get a function from a namespace
+     */
+    window.getFunction = function (functionPath) {
+
+        console.log(functionPath);
+
+        var components = functionPath.split('.'),
+            parent = window,
+            child;
+
+        console.log(components);
+
+        while (child = components.shift()) {
+            console.log(child);
+            if (!parent[child]) {
+                return null;
+            }
+
+            parent = parent[child];
+        }
+
+        console.log(parent);
+
+        if (typeof(parent) === 'function') {
+            return parent;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Dynamically loads a javascript file containing namespace
@@ -209,6 +256,26 @@
         }
 
         return false;
+    };
+
+    window.createFromPrototype = function (view, parameters) {
+        var prototype = view.data('prototype'),
+            key,
+            instance,
+            parameter;
+
+        for (key in parameters) {
+
+            if (false === parameters.hasOwnProperty(key)) {
+                continue;
+            }
+
+            parameter = '{' + key + '}';
+
+            instance = (instance || prototype).replace(parameter, parameters[key])
+        }
+
+        return instance;
     };
 
 }(window, jQuery));

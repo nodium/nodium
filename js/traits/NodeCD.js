@@ -13,54 +13,43 @@
 		if ((this instanceof graph.NodeCD) === false) {
 			return new graph.NodeCD(arguments);
 		}
-
-		$(this).on('trait', this.attachNodeCD);
 	};
 
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.NodeCD.prototype.attachNodeCD = function () {
+	graph.NodeCD.prototype.initialize = function () {
 
 		// start out hidden
-		$('#node-form').addClass('hidden');
+		// $('#node-form').addClass('hidden');
 
-		var loadNode = window.curry(this.handleNodeSelected, this),
-			unloadNode = window.curry(this.handleNodeUnselected, this),
-			createNode = window.curry(this.handleNodeCreate, this),
-			deleteNode = window.curry(this.handleNodeDelete, this),
-			deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
-			updateNode = window.curry(this.handleNodeUpdate, this),
-			addProperty = window.curry(this.handlePropertyAdded, this),
-			deleteProperty = window.curry(this.handlePropertyDeleted, this),
+		// var loadNode = window.curry(this.handleNodeSelected, this),
+		// 	unloadNode = window.curry(this.handleNodeUnselected, this),
+		// 	createNode = window.curry(this.handleNodeCreate, this),
+		// 	deleteNode = window.curry(this.handleNodeDelete, this),
+		// 	deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
+		// 	updateNode = window.curry(this.handleNodeUpdate, this),
+		// 	addProperty = window.curry(this.handlePropertyAdded, this),
+		// 	deleteProperty = window.curry(this.handlePropertyDeleted, this),
 
-			createChildNode = window.curry(this.handleCreateChildNode, this);
+		// 	createChildNode = window.curry(this.handleCreateChildNode, this);
 
-		// select / deselect node
-		$(this).on('node-clicked', loadNode);
-		$(this).on('node-deleted', unloadNode);
+		// // select / deselect node
+		// $(this).on('node-clicked', loadNode);
+		// $(this).on('node-deleted', unloadNode);
 
-		// node CRUD
-		$('#new-node-form').on('submit', createNode);
-		$(this).on('drag-down', deleteNode);
-		this.holdActions[graph.Drag.DOWN] = "Delete";
-		$('#node-form').on('submit', deleteNodeButton);
-		$('#node-form').on('focusout', updateNode);
+		// // node CRUD
+		// $('#new-node-form').on('submit', createNode);
+		// $(this).on('drag-down', deleteNode);
+		// this.holdActions[graph.Drag.DOWN] = "Delete";
+		// $('#node-form').on('submit', deleteNodeButton);
+		// $('#node-form').on('focusout', updateNode);
 
-		// properties
-		$('#new-property').on('click', addProperty);
-		$('#node-fields').on('click', '.delete-property', deleteProperty);
+		// // properties
+		// $('#new-property').on('click', addProperty);
+		// $('#node-fields').on('click', '.delete-property', deleteProperty);
 
-		$(this).on('drag-up', createChildNode);
-	};
-
-	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
-
-		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
-			$('#node-form').addClass('hidden');
-		}
-
-		this.selectedNode = null;
+		// $(this).on('drag-up', createChildNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -78,7 +67,7 @@
         $('#new-node-name').val('');
 
         newNode = this.createNode({name: input});
-        $(this).trigger('node-created', [newNode]);
+        $(this.graph).trigger('node-created', [newNode]);
 	};
 
 	/**
@@ -87,15 +76,16 @@
 	graph.NodeCD.prototype.createNode = function (data, x, y) {
 
 		// then add node metadata
-		this.addNodeMetadata(data);
+		this.graph.addNodeMetadata(data);
 
-		data.x = x;
-		data.y = y;
+		data.x = x || 0;
+		data.y = y || 0;
 
 		// then let d3 add other properties
-		this.nodes.push(data);
-		this.drawNodes();
-		this.force.start();
+		// TODO do this after the trigger
+		this.graph.nodes.push(data);
+		this.graph.drawNodes();
+		this.graph.force.start();
 
 		// $(this).trigger('node-created', [data]);
 
@@ -115,24 +105,25 @@
 		event.preventDefault();
         event.stopPropagation();
 
-		if (!this.selectedNode) {
+		if (!this.graph.selectedNode) {
 			return;
 		}
 
-		var data = this.selectedNode.data;
+		var data = this.graph.selectedNode.data;
 
 		this.deleteNode(data);
 	};
 
-	graph.NodeCD.prototype.deleteLinksForNode = function (nodeIndex) {
+	graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
 
-		var link;
+		var edges = this.graph.edges,
+			edge;
 
 		// start from top to remove multiple links correctly
-		for (var i = this.edges.length-1; i >= 0; i--) {
-			link = this.edges[i];
-			if (link.source.index == nodeIndex || link.target.index == nodeIndex) {
-				this.edges.splice(i, 1);
+		for (var i = edges.length-1; i >= 0; i--) {
+			edge = edges[i];
+			if (edge.source.index == nodeIndex || edge.target.index == nodeIndex) {
+				edges.splice(i, 1);
 			}
 		}
 	};
@@ -142,11 +133,10 @@
 	 */
 	graph.NodeCD.prototype.deleteNode = function (data) {
 
-		this.deleteLinksForNode(data.index);
+		this.deleteEdgesForNode(data.index);
 
 		// remove the node at the index
-		console.log(data.index);
-		this.nodes.splice(data.index, 1);
+		this.graph.nodes.splice(data.index, 1);
 
 		// update the indices of all nodes behind it
 		// yes? no?
@@ -155,13 +145,12 @@
 		// 	this.nodes[i].index = i;
 		// }
 
-		console.log(this.nodes);
+		// TODO move elsewhere
+		this.graph.drawLinks();
+		this.graph.redrawNodes();
+		this.graph.force.start();
 
-		this.drawLinks();
-		this.redrawNodes();
-		this.force.start();
-
-		$(this).trigger('node-deleted', [data]);
+		$(this.graph).trigger('node-deleted', [data]);
 	};
 
 	/**
@@ -169,46 +158,26 @@
 	 */
 	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
 
-		console.log("node clicked");
-		console.log(arguments);
+		console.log('node clicked');
 
-		// fix this differently
-		this.selectedNode = {
+		// TODO fix this differently
+		this.graph.selectedNode = {
 			node: node,
 			data: data
 		};
 
-		var fieldPrototype = $('#node-fields').data('prototype'),
-			fieldHTML,
-			fieldName,
-			titleField = this.getNodeTitleKey();
+		$(this.graph).trigger('node-selected', [node, data]);
+	};
 
-		$('#node-form').removeClass('hidden');
+	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
 
-		// set and focus the title field
-		$('#node-title').val('');
-		if (data.hasOwnProperty(titleField)) {
-			$('#node-title').val(data[titleField]);
+		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
+			// $('#node-form').addClass('hidden');
 		}
-		$('#node-title').focus();
 
-		// create the html form elements
-		$('#node-fields').empty();
+		this.graph.selectedNode = null;
 
-		for (var i = 0; i < data._fields.length; i++) {
-			fieldName = data._fields[i];
-
-			// the title property is rendered differently
-			if (fieldName == titleField) {
-				continue;
-			}
-
-			fieldHTML = fieldPrototype
-				.replace(/__field__/g, fieldName)
-				.replace(/__value__/, data[fieldName])
-				.replace(/__rows__/, 1);
-			$('#node-fields').append(fieldHTML);
-		}
+		$(this.graph).trigger('node-unselected');
 	};
 
 	/**
@@ -216,7 +185,7 @@
 	 */
 	graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
 
-		var titleField = this.getNodeTitleKey(),
+		var titleField = this.graph.getNodeTitleKey(),
 			fields = $('#node-fields').children(),
 			key,
 			value,
@@ -251,34 +220,34 @@
 
 	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
 
-		if (!this.selectedNode) {
+		if (!this.graph.selectedNode) {
 			return;
 		}
 
 		var data,
 			fieldName,
-			titleField = this.getNodeTitleKey(),
-			nodeData = this.selectedNode.data;
+			titleField = this.graph.getNodeTitleKey(),
+			nodeData = this.graph.selectedNode.data;
 
 		event.preventDefault();
 		event.stopPropagation();
 
 		console.log("handling node update");
 
-		if (!this.selectedNode) {
+		if (!this.graph.selectedNode) {
 			return;
 		}
 
 		data = this.updateNodeDataWithFields(nodeData);
 
-		this.redrawNodes();
-		this.force.start();
+		this.graph.redrawNodes();
+		this.graph.force.start();
 
 		if (!data[titleField] || data[titleField] == "") {
 			return;
 		}
 
-		$(this).trigger('node-updated', [data, nodeData.id]);
+		$(this.graph).trigger('node-updated', [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handlePropertyAdded = function (event) {
@@ -307,23 +276,26 @@
 
 		data = this.updateNodeDataWithFields(nodeData);
 
-		$(this).trigger('node-updated', [data, nodeData.id]);
+		$(this.graph).trigger('node-updated', [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
 
 		var self = this,
-			newData = this.createNode({}, data.x + 20, data.y + 20),
-			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.selector);
+			newData = this.createNode({}, data.x, data.y),
+			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
 		// create the link after the node has its id
-		$(this).trigger('node-created', [newData, function () {
+		$(this.graph).trigger('node-created', [newData, function () {
 
-			self.updateLink(data, newData);
+			// TODO solve somehow
+			// self.updateLink(data, newData);
+			$(self.graph).trigger('create-edge', [data, newData]);
 		}]);
 
 		// select node in inspector
-		$(this).trigger('node-clicked', [newNode, newData]);
+		// TODO make inspector listen to node-created instead?
+		// $(this.graph).trigger('node-clicked', [newNode, newData]);
 	};
 
 }(window, jQuery, d3));

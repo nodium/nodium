@@ -1,10 +1,10 @@
 (function (window, $, d3, undefined) {
-	var graph = window.setNamespace('app.graph'),
-		app   = window.setNamespace('app');
+	var app        = window.setNamespace('app'),
+		graph      = window.setNamespace('app.graph'),
+		animations = window.setNamespace('app.graph.animations');
 
 	/**
-	 * Characteristics of the kinect graph:
-	 * - controllable through the kinect C:
+	 * A generic neo4j user interface
 	 */
 	graph.Neo4jGUI = function (selector) {
 
@@ -20,30 +20,33 @@
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
 
-		// TODO choose whether we put the whole config in one
-		// object, or per trait
-
-		this.addTraits(
-			new graph.Zoomable(),
-			new graph.Holdable(),
-			new graph.EdgeCD(),
-			new graph.NodeCD()
-		);
-
 		this
-		.trait(new graph.Holdable(), {
-			'mouse-down': 'handleHoldStart',
-			'drag': 'handleHoldDrag',
-			'drag-end': 'handleHoldEnd'
-		},{
-			'duration': 
-		})
-		.trait(new graph.Pinnable(), {
-			'drag-right': 'handleNodePinned'
-		})
-		.trait(new graph.Stylable(), {
-			'node-pinned': 'handleNodeStyled',
-		});
+		.trait(new graph.Zoomable())
+		.trait(new graph.NodeCD(), [
+			['node-clicked', 'handleNodeSelected'],
+			['node-selected', 'app.graph.graphics.handleNodeSelected'],
+			['node-unselected', 'app.graph.graphics.handleNodeSelected'],
+			['node-deleted', 'handleNodeUnselected'],
+			['drag-down', 'handleNodeDelete'],
+			['drag-up', 'handleCreateChildNode']
+		])
+		.trait(new graph.EdgeCD(), [
+			['drag-end', 'handleLinking']
+		])
+		.trait(new graph.Holdable({
+			'duration': 400
+		}),[['mouse-down', 'handleHoldStart'],
+			['drag', 'handleHoldDrag'],
+			['drag-end', 'handleHoldEnd'],
+			['drag-end', 'app.graph.graphics.handleNodeScale', 1],
+			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3]
+		])
+		.trait(new graph.Pinnable(), [
+			['drag-right', 'handleNodePinned']
+		])
+		// .trait(new graph.Stylable(), {
+		// 	'node-pinned': 'handleNodeStyled',
+		// });
 
 		this.initialize();
 	};

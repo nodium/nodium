@@ -15,8 +15,6 @@
 		// contains a .graph-viewport and a .graph-content
 		this.selector = selector || this.selector;
 
-		// this.visibleNodes = this.nodes;
-
 		// to distinguish between node and canvas drags e.a.
 		this.draggedNode = null;
 		this.dragging = false;
@@ -29,7 +27,7 @@
 		// the node that was clicked on
 		this.selectedNode = null;
 
-		this._traitEvents = [];
+		this._traits = [];
 
 		// set during initialization
 		this.nodeCount;
@@ -39,24 +37,14 @@
 	/**
 	 * Add one trait
 	 */
-	graph.Graph.prototype.trait = function (trait, config) {
+	graph.Graph.prototype.trait = function (trait, events) {
 
-		var traitEvent = {
-			config: config
-		};
+		trait.graph = this;
 
-		events = $._data($(trait)[0], "events");
-
-		// add the handler to the traitEvents array
-		if (events && events['trait']) {
-			for (var e = 0; e < events['trait'].length; e++) {
-				traitEvent.attach = events['trait'][e].handler;
-			}
-		}
-
-		this._traitEvents.push(traitEvent);
-
-		$.extend(this, trait);
+		this._traits.push({
+			trait: trait,
+			events: events
+		});
 
 		return this;
 	};
@@ -75,19 +63,44 @@
 		return this;
 	};
 
-	graph.Graph.prototype.attachConfigEvents = function (config) {
+	graph.Graph.prototype.attachTraitEvents = function (events, trait) {
 
-		var key,
-			value;
+		var e,
+			key,
+			value,
+			func,
+			args = [];
 
-		for (key in config) {
-			value = config[key];
+		for (var i = 0; i < events.length; i++) {
+			e = events[i];
+			key = e[0];
 
-			if (this.hasOwnProperty(value) && typeof(this[value]) === "function") {
-				console.log("attaching " + key + " to " + value);
-				$(this).on(key, window.curry(this[value], this));
+			if (!key) {
+				continue;
+			}
+
+			value = e.slice(1);
+			args = value.slice(1);
+			value = value[0];
+
+			if (!value) {
+				continue;
+			}
+
+			// try to either get the function from the trait or from the full name
+			if (trait[value] && typeof(trait[value]) === "function") {
+				func = trait[value];
 			} else {
-				console.log("couldn't attach " + key + " to " + value);
+				func = window.getFunction(value);
+			}
+
+			console.log(window.partial(func, trait, args));
+
+			if (func) {
+				console.log("attaching " + value + " to " + key);
+				$(this).on(key, window.partial(func, trait, args));
+			} else {
+				console.log("couldn't attach " + value + " to " + key);
 			}
 		}
 	}
@@ -219,19 +232,19 @@
 
 	graph.Graph.prototype.initializeTraits = function () {
 
-		var attach,
-			config;
+		var trait,
+			events;
 
-		for (var i = 0; i < this._traitEvents.length; i++) {
-			attach = this._traitEvents[i].attach;
-			config = this._traitEvents[i].config;
-			
-			if (attach) {
-				attach.call(this);
+		for (var i = 0; i < this._traits.length; i++) {
+			trait = this._traits[i].trait;
+			events = this._traits[i].events;
+
+			if (events) {
+				this.attachTraitEvents(events, trait);
 			}
 
-			if (config) {
-				this.attachConfigEvents(config)
+			if (typeof(trait.initialize) === "function") {
+				trait.initialize();
 			}
 		}
 	};
