@@ -172,43 +172,45 @@
 		console.log("node clicked");
 		console.log(arguments);
 
+		$(window).trigger('node-selected' [node, data]);
+
 		// fix this differently
 		this.selectedNode = {
 			node: node,
 			data: data
 		};
 
-		var fieldPrototype = $('#node-fields').data('prototype'),
-			fieldHTML,
-			fieldName,
-			titleField = this.getNodeTitleKey();
+		// var fieldPrototype = $('#node-fields').data('prototype'),
+		// 	fieldHTML,
+		// 	fieldName,
+		// 	titleField = this.getNodeTitleKey();
 
-		$('#node-form').removeClass('hidden');
+		// $('#node-form').removeClass('hidden');
 
-		// set and focus the title field
-		$('#node-title').val('');
-		if (data.hasOwnProperty(titleField)) {
-			$('#node-title').val(data[titleField]);
-		}
-		$('#node-title').focus();
+		// // set and focus the title field
+		// $('#node-title').val('');
+		// if (data.hasOwnProperty(titleField)) {
+		// 	$('#node-title').val(data[titleField]);
+		// }
+		// $('#node-title').focus();
 
-		// create the html form elements
-		$('#node-fields').empty();
+		// // create the html form elements
+		// $('#node-fields').empty();
 
-		for (var i = 0; i < data._fields.length; i++) {
-			fieldName = data._fields[i];
+		// for (var i = 0; i < data._fields.length; i++) {
+		// 	fieldName = data._fields[i];
 
-			// the title property is rendered differently
-			if (fieldName == titleField) {
-				continue;
-			}
+		// 	// the title property is rendered differently
+		// 	if (fieldName == titleField) {
+		// 		continue;
+		// 	}
 
-			fieldHTML = fieldPrototype
-				.replace(/__field__/g, fieldName)
-				.replace(/__value__/, data[fieldName])
-				.replace(/__rows__/, 1);
-			$('#node-fields').append(fieldHTML);
-		}
+		// 	fieldHTML = fieldPrototype
+		// 		.replace(/__field__/g, fieldName)
+		// 		.replace(/__value__/, data[fieldName])
+		// 		.replace(/__rows__/, 1);
+		// 	$('#node-fields').append(fieldHTML);
+		// }
 	};
 
 	/**

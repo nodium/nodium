@@ -68,7 +68,7 @@
     PanelContainer.prototype.collapse = function () {
 
         this.view.removeClass('expanded');
-        $(this).trigger('collapse');
+        $(this).trigger('menu-collapse');
     };
 
     PanelContainer.prototype.createMenuItem = function (icon) {
