@@ -20,7 +20,7 @@
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.EdgeCD.prototype.attachEdgeCD = function () {
+	graph.EdgeCD.prototype.initialize = function () {
 
 		// make the base code fire a createLink event
 		var linkHandler = window.curry(this.handleLinking, this);

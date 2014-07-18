@@ -20,7 +20,7 @@
 	/**
 	 * Initializes variables and attaches events used for creating edges
 	 */
-	graph.NodeCD.prototype.attachNodeCD = function () {
+	graph.NodeCD.prototype.initialize = function () {
 
 		// start out hidden
 		$('#node-form').addClass('hidden');

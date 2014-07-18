@@ -29,7 +29,7 @@
 		// the node that was clicked on
 		this.selectedNode = null;
 
-		this._traitEvents = [];
+		this._traits = [];
 
 		// set during initialization
 		this.nodeCount;
@@ -39,24 +39,25 @@
 	/**
 	 * Add one trait
 	 */
-	graph.Graph.prototype.trait = function (trait, config) {
+	graph.Graph.prototype.trait = function (trait, events) {
 
-		var traitEvent = {
-			config: config
-		};
+		// events = $._data($(trait)[0], "events");
 
-		events = $._data($(trait)[0], "events");
+		// // add the handler to the traitEvents array
+		// if (events && events['trait']) {
+		// 	for (var e = 0; e < events['trait'].length; e++) {
+		// 		traitEvent.attach = events['trait'][e].handler;
+		// 	}
+		// }
 
-		// add the handler to the traitEvents array
-		if (events && events['trait']) {
-			for (var e = 0; e < events['trait'].length; e++) {
-				traitEvent.attach = events['trait'][e].handler;
-			}
-		}
+		trait.graph = this;
 
-		this._traitEvents.push(traitEvent);
+		this._traits.push({
+			trait: trait,
+			events: events
+		});
 
-		$.extend(this, trait);
+		// $.extend(this, trait);
 
 		return this;
 	};
@@ -75,17 +76,21 @@
 		return this;
 	};
 
-	graph.Graph.prototype.attachConfigEvents = function (config) {
+	graph.Graph.prototype.attachTraitEvents = function (events, trait) {
 
 		var key,
 			value;
 
-		for (key in config) {
-			value = config[key];
+		for (key in events) {
+			value = events[key];
 
-			if (this.hasOwnProperty(value) && typeof(this[value]) === "function") {
+			console.log(trait);
+			console.log(trait.hasOwnProperty(value));
+			console.log(typeof(trait[value]));
+
+			if (trait[value] && typeof(trait[value]) === "function") {
 				console.log("attaching " + key + " to " + value);
-				$(this).on(key, window.curry(this[value], this));
+				$(this).on(key, window.curry(trait[value], trait));
 			} else {
 				console.log("couldn't attach " + key + " to " + value);
 			}
@@ -219,19 +224,19 @@
 
 	graph.Graph.prototype.initializeTraits = function () {
 
-		var attach,
-			config;
+		var trait,
+			events;
 
-		for (var i = 0; i < this._traitEvents.length; i++) {
-			attach = this._traitEvents[i].attach;
-			config = this._traitEvents[i].config;
-			
-			if (attach) {
-				attach.call(this);
+		for (var i = 0; i < this._traits.length; i++) {
+			trait = this._traits[i].trait;
+			events = this._traits[i].events;
+
+			if (events) {
+				this.attachTraitEvents(events, trait);
 			}
 
-			if (config) {
-				this.attachConfigEvents(config)
+			if (typeof(trait.initialize) === "function") {
+				trait.initialize();
 			}
 		}
 	};

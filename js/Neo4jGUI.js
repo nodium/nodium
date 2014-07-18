@@ -23,20 +23,28 @@
 		// TODO choose whether we put the whole config in one
 		// object, or per trait
 
-		this.addTraits(
-			new graph.Zoomable(),
-			new graph.Holdable(),
-			new graph.EdgeCD(),
-			new graph.NodeCD()
-		);
+		// this.addTraits(
+		// 	new graph.Zoomable(),
+		// 	new graph.Holdable(),
+		// 	new graph.EdgeCD(),
+		// 	new graph.NodeCD()
+		// );
 
 		this
+		.trait(new graph.Zoomable())
+		.trait(new graph.Holdable({
+			'duration': 400
+		}), {
+			'mouse-down': 'handleHoldStart',
+			'drag': 'handleHoldDrag',
+			'drag-end': 'handleHoldEnd'
+		})
 		.trait(new graph.Pinnable(), {
 			'drag-right': 'handleNodePinned'
 		})
-		.trait(new graph.Stylable(), {
-			'node-pinned': 'handleNodeStyled',
-		});
+		// .trait(new graph.Stylable(), {
+		// 	'node-pinned': 'handleNodeStyled',
+		// });
 
 		this.initialize();
 	};
