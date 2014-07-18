@@ -15,8 +15,6 @@
 		// contains a .graph-viewport and a .graph-content
 		this.selector = selector || this.selector;
 
-		// this.visibleNodes = this.nodes;
-
 		// to distinguish between node and canvas drags e.a.
 		this.draggedNode = null;
 		this.dragging = false;
@@ -41,23 +39,12 @@
 	 */
 	graph.Graph.prototype.trait = function (trait, events) {
 
-		// events = $._data($(trait)[0], "events");
-
-		// // add the handler to the traitEvents array
-		// if (events && events['trait']) {
-		// 	for (var e = 0; e < events['trait'].length; e++) {
-		// 		traitEvent.attach = events['trait'][e].handler;
-		// 	}
-		// }
-
 		trait.graph = this;
 
 		this._traits.push({
 			trait: trait,
 			events: events
 		});
-
-		// $.extend(this, trait);
 
 		return this;
 	};
