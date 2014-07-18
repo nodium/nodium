@@ -22,12 +22,12 @@
 	 */
 	graph.Holdable.prototype.attachHoldable = function () {
 
-		var startHold = window.curry(this.handleHoldStart, this);
-		var dragHold = window.curry(this.handleHoldDrag, this);
-		var endHold = window.curry(this.handleHoldEnd, this);
-		$(this).on('mouse-down', startHold);
-		$(this).on('drag', dragHold);
-		$(this).on('drag-end', endHold);
+		// var startHold = window.curry(this.handleHoldStart, this);
+		// var dragHold = window.curry(this.handleHoldDrag, this);
+		// var endHold = window.curry(this.handleHoldEnd, this);
+		// $(this).on('mouse-down', startHold);
+		// $(this).on('drag', dragHold);
+		// $(this).on('drag-end', endHold);
 
 		this.holdActions = {};
 		this.holdActions[graph.Drag.LEFT] = "None";

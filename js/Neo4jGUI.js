@@ -31,6 +31,13 @@
 		);
 
 		this
+		.trait(new graph.Holdable(), {
+			'mouse-down': 'handleHoldStart',
+			'drag': 'handleHoldDrag',
+			'drag-end': 'handleHoldEnd'
+		},{
+			'duration': 
+		})
 		.trait(new graph.Pinnable(), {
 			'drag-right': 'handleNodePinned'
 		})
