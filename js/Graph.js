@@ -78,21 +78,47 @@
 
 	graph.Graph.prototype.attachTraitEvents = function (events, trait) {
 
-		var key,
-			value;
+		var e,
+			key,
+			value,
+			func,
+			args = [];
 
-		for (key in events) {
-			value = events[key];
+		for (var i = 0; i < events.length; i++) {
+			e = events[i];
+			key = e[0];
 
-			console.log(trait);
-			console.log(trait.hasOwnProperty(value));
-			console.log(typeof(trait[value]));
+			if (!key) {
+				continue;
+			}
 
+			value = e.slice(1);
+
+			// check if the value is an array
+			// if it is, parse it
+			if (value.length > 1) {
+				args = value.slice(1);
+				value = value[0];
+			}
+
+			if (!value) {
+				continue;
+			}
+
+			// try to either get the function from the trait or from the full name
 			if (trait[value] && typeof(trait[value]) === "function") {
-				console.log("attaching " + key + " to " + value);
-				$(this).on(key, window.curry(trait[value], trait));
+				func = trait[value];
 			} else {
-				console.log("couldn't attach " + key + " to " + value);
+				func = window.getFunction(value);
+			}
+
+			console.log(window.partial(func, trait, args));
+
+			if (func) {
+				console.log("attaching " + value + " to " + key);
+				$(this).on(key, window.partial(func, trait, args));
+			} else {
+				console.log("couldn't attach " + value + " to " + key);
 			}
 		}
 	}

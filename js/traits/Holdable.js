@@ -39,14 +39,14 @@
 	/**
 	 * Scale a node relative to the default size
 	 */
-	graph.Holdable.prototype.scaleNode = function (scale, node) {
+	// graph.Holdable.prototype.scaleNode = function (scale, node) {
 
-		var graph = this.graph;
+	// 	var graph = this.graph;
 
-		d3.select(node).select('circle').transition()
-		    .duration(400)
-		    .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
-	};
+	// 	d3.select(node).select('circle').transition()
+	// 	    .duration(400)
+	// 	    .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
+	// };
 
 	graph.Holdable.prototype.handleHoldStart = function (event, node, data) {
 
@@ -65,9 +65,10 @@
 
 				d3.select(node).classed('hold', true);
 				
-				self.scaleNode(1.3, node);
+				// self.scaleNode(1.3, node);
 
 				$('#hold-action-notification').toggle();
+				$(self.graph).trigger('holding-node', [node, data]);
 			}
 		}, 500);
 	};
@@ -97,6 +98,8 @@
 
 	graph.Holdable.prototype.handleHoldEnd = function (event, node, data) {
 
+		console.log('hold end');
+
 		clearTimeout(this.holdTimeoutId);
 
 		// dispatch menu action if node was held
@@ -123,7 +126,7 @@
 			.classed('hold', false);
 
 		if (this.graph.holding) {
-			this.scaleNode(1, node);
+			// this.scaleNode(1, node);
 
 			this.graph.holding = false;
 			$('#hold-action-notification').toggle();
