@@ -23,12 +23,12 @@
 		this
 		.trait(new graph.Zoomable())
 		.trait(new graph.NodeCD(), [
-			['node-clicked', 'handleNodeSelected'],
+			['node-clicked', 'handleSelectNode'],
 			['node-selected', 'app.graph.graphics.handleNodeSelected'],
-			['node-unselected', 'app.graph.graphics.handleNodeSelected'],
-			['node-deleted', 'handleNodeUnselected'],
+			['node-unselected', 'app.graph.graphics.handleNodeUnselected'],
+			['node-deleted', 'handleUnselectNode'],
 			['drag-down', 'handleNodeDelete'],
-			['drag-up', 'handleCreateChildNode']
+			['drag-up', 'handleCreateChildNode'],
 		])
 		.trait(new graph.EdgeCD(), [
 			['drag-end', 'handleLinking']
@@ -48,6 +48,10 @@
 		// 	'node-pinned': 'handleNodeStyled',
 		// });
 
+		// UI handlers that initiate an action event
+		var keyDownHandler = window.curry(this.handleKeyDown, this);
+        $(window).on('keydown', keyDownHandler);
+
 		this.initialize();
 	};
 
@@ -60,6 +64,15 @@
 
 	graph.Neo4jGUI.prototype.getGraphData = function () {
 		this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
+	};
+
+	graph.Neo4jGUI.prototype.handleKeyDown = function (event) {
+
+		console.log("handling key down");
+
+		if (event.keyCode === 27) {
+            $(this).trigger('unselect-node');
+        }
 	};
 
 	/**

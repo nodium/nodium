@@ -26,6 +26,8 @@
 
 	graphics.handleNodeUnselected = function (event, node) {
 
+		console.log("handling node unselected");
+
 		d3.select(node).classed('selected', false);
 	};
 

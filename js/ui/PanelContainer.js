@@ -120,12 +120,22 @@
 
     PanelContainer.prototype.handlePanelShow = function (event, panel) {
 
+        if (!this.isExpanded) {
+            this.expand(panel.icon);
+            // this.panels[this.visiblePanel].hide();
+        }
+
+        // this.expand(panel.icon);
+    };
+
+    PanelContainer.prototype.handlePanelHide = function (event, panel) {
+
         if (this.isExpanded) {
             this.collapse();
             // this.panels[this.visiblePanel].hide();
         }
 
-        this.expand(panel.icon);
+        // this.expand(panel.icon);
     };
 
     ui.PanelContainer = PanelContainer;

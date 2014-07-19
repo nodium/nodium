@@ -50,6 +50,10 @@
 		// $('#node-fields').on('click', '.delete-property', deleteProperty);
 
 		// $(this).on('drag-up', createChildNode);
+
+		// action events
+		var unselectNode = window.curry(this.handleUnselectNode, this);
+		$(this.graph).on('unselect-node', unselectNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -156,9 +160,15 @@
 	/**
 	 * Read the node into the edit form
 	 */
-	graph.NodeCD.prototype.handleNodeSelected = function (event, node, data) {
+	graph.NodeCD.prototype.handleSelectNode = function (event, node, data) {
 
 		console.log('node clicked');
+
+		var selectedNode = this.graph.selectedNode;
+
+		if (selectedNode) {
+			$(this.graph).trigger('unselect-node', [selectedNode.node, selectedNode.data]);
+		}
 
 		// TODO fix this differently
 		this.graph.selectedNode = {
@@ -169,15 +179,27 @@
 		$(this.graph).trigger('node-selected', [node, data]);
 	};
 
-	graph.NodeCD.prototype.handleNodeUnselected = function (event, data) {
+	/**
+	 *
+	 */
+	graph.NodeCD.prototype.handleUnselectNode = function (event, node, data) {
 
-		if (!this.selectedNode || this.selectedNode.data.index == data.index) {
-			// $('#node-form').addClass('hidden');
+		// if (!this.selectedNode || this.selectedNode.data.index == data.index) {
+		// 	// $('#node-form').addClass('hidden');
+		// }
+
+		// if node and data are null, unselect all nodes
+
+		console.log('handling unselecting node');
+
+		var selectedNode = this.graph.selectedNode;
+
+		if (selectedNode) {
+			console.log(selectedNode);
+			$(this.graph).trigger('node-unselected', [selectedNode.node, selectedNode.data]);
+
+			selectedNode = null;
 		}
-
-		this.graph.selectedNode = null;
-
-		$(this.graph).trigger('node-unselected');
 	};
 
 	/**
