@@ -36,23 +36,6 @@
             .on(NodeEvent.UPDATE, updateNode);
     };
 
-    graph.NodeCD.prototype.handleNodeCreate = function (event) {
-
-        var newNode;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        var input = $('#new-node-name').val();
-        if (input == '') {
-            return;
-        }
-
-        $('#new-node-name').val('');
-
-        newNode = this.createNode({name: input});
-    };
-
     /**
      * Create a node from a given set of key value pairs
      */
@@ -74,28 +57,6 @@
 
         return data;
     };
-
-    // graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
-
-    //  event.preventDefault();
- //        event.stopPropagation();
-
-    //  this.deleteNode(data);
-    // };
-
-    // graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
-
-    //  event.preventDefault();
- //        event.stopPropagation();
-
-    //  if (!this.graph.selectedNode) {
-    //      return;
-    //  }
-
-    //  var data = this.graph.selectedNode.data;
-
-    //  this.deleteNode(data);
-    // };
 
     graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
 
@@ -138,6 +99,48 @@
     };
 
     /**
+     * Update the data and return the filtered updated data
+     */
+    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+
+        var titleField = this.graph.getNodeTitleKey(),
+            fields = $('#node-fields').children(),
+            key,
+            value,
+            result = {};
+
+        // clear the fields metadata, we'll refill this
+        data._fields = [titleField];
+
+        // set the title field separately
+        data[titleField] = $('#node-title').val();
+        result[titleField] = data[titleField];
+
+        for (var i = 0; i < fields.length; i++) {
+            key = $('.node-key', fields[i]).val();
+            value = $('.node-value', fields[i]).val();
+
+            // skip if the key is empty
+            if (key == "" || value == "") {
+                continue;
+            }
+
+            data._fields.push(key);
+            data[key] = value;
+            result[key] = value;
+        }
+
+        // TODO maybe we should try to remove the unused fields from the node data,
+        // but this is not strictly necessary, the fields metadata works as a filter
+
+        return result;
+    };
+
+    /**
+     * Event Listeners
+     */
+
+    /**
      * Read the node into the edit form
      */
     graph.NodeCD.prototype.handleNodeSelect = function (event, node, data) {
@@ -178,76 +181,6 @@
         }
     };
 
-    /**
-     * Update the data and return the filtered updated data
-     */
-    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
-
-        var titleField = this.graph.getNodeTitleKey(),
-            fields = $('#node-fields').children(),
-            key,
-            value,
-            result = {};
-
-        // clear the fields metadata, we'll refill this
-        data._fields = [titleField];
-
-        // set the title field separately
-        data[titleField] = $('#node-title').val();
-        result[titleField] = data[titleField];
-
-        for (var i = 0; i < fields.length; i++) {
-            key = $('.node-key', fields[i]).val();
-            value = $('.node-value', fields[i]).val();
-
-            // skip if the key is empty
-            if (key == "" || value == "") {
-                continue;
-            }
-
-            data._fields.push(key);
-            data[key] = value;
-            result[key] = value;
-        }
-
-        // TODO maybe we should try to remove the unused fields from the node data,
-        // but this is not strictly necessary, the fields metadata works as a filter
-
-        return result;
-    };
-
-    graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
-
-        if (!this.graph.selectedNode) {
-            return;
-        }
-
-        var data,
-            fieldName,
-            titleField = this.graph.getNodeTitleKey(),
-            nodeData = this.graph.selectedNode.data;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        console.log("handling node update");
-
-        if (!this.graph.selectedNode) {
-            return;
-        }
-
-        data = this.updateNodeDataWithFields(nodeData);
-
-        this.graph.redrawNodes();
-        this.graph.force.start();
-
-        if (!data[titleField] || data[titleField] == "") {
-            return;
-        }
-
-        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
-    };
-
     graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
 
         var nodeData = this.selectedNode.data,
@@ -273,6 +206,53 @@
         // select node in inspector
         // TODO make inspector listen to node-created instead?
         // $(this.graph).trigger('node-clicked', [newNode, newData]);
+    };
+
+    graph.NodeCD.prototype.handleNodeCreate = function (event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var input = $('#new-node-name').val();
+        if (input == '') {
+            return;
+        }
+
+        $('#new-node-name').val('');
+
+        this.createNode({name: input});
+    };
+
+    graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!this.graph.selectedNode) {
+            return;
+        }
+
+        var data,
+            fieldName,
+            titleField = this.graph.getNodeTitleKey(),
+            nodeData = this.graph.selectedNode.data;      
+
+        console.log("handling node update");
+
+        if (!this.graph.selectedNode) {
+            return;
+        }
+
+        data = this.updateNodeDataWithFields(nodeData);
+
+        this.graph.redrawNodes();
+        this.graph.force.start();
+
+        if (!data[titleField] || data[titleField] == "") {
+            return;
+        }
+
+        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
     };
 
     graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
