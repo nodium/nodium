@@ -1,7 +1,8 @@
 (function (window, $, d3, undefined) {
 	var app        = window.setNamespace('app'),
 		graph      = window.setNamespace('app.graph'),
-		animations = window.setNamespace('app.graph.animations');
+		animations = window.setNamespace('app.graph.animations'),
+		NodeEvent  = window.use('app.event.NodeEvent');
 
 	/**
 	 * A generic neo4j user interface
@@ -24,9 +25,9 @@
 		.register(new graph.Zoomable())
 		.register(new graph.NodeCD(), [
 			['node-clicked', 'handleSelectNode'],
-			['node-selected', 'app.graph.graphics.handleNodeSelected'],
-			['node-unselected', 'app.graph.graphics.handleNodeUnselected'],
-			['node-deleted', 'handleUnselectNode'],
+			[NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
+			[NodeEvent.UNSELECTED, 'app.graph.graphics.handleNodeUnselected'],
+			[NodeEvent.DESTROYED, 'handleUnselectNode'],
 			['drag-down', 'handleNodeDestroy'],
 			['drag-up', 'handleCreateChildNode'],
 		])
