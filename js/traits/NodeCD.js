@@ -72,7 +72,7 @@
         $('#new-node-name').val('');
 
         newNode = this.createNode({name: input});
-        $(this.graph).trigger('node-created', [newNode]);
+        $(this.graph).trigger(NodeEvent.CREATED, [newNode]);
 	};
 
 	/**
@@ -97,27 +97,27 @@
 		return data;
 	};
 
-	graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
+	// graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
 
-		event.preventDefault();
-        event.stopPropagation();
+	// 	event.preventDefault();
+ //        event.stopPropagation();
 
-		this.deleteNode(data);
-	};
+	// 	this.deleteNode(data);
+	// };
 
-	graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
+	// graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
 
-		event.preventDefault();
-        event.stopPropagation();
+	// 	event.preventDefault();
+ //        event.stopPropagation();
 
-		if (!this.graph.selectedNode) {
-			return;
-		}
+	// 	if (!this.graph.selectedNode) {
+	// 		return;
+	// 	}
 
-		var data = this.graph.selectedNode.data;
+	// 	var data = this.graph.selectedNode.data;
 
-		this.deleteNode(data);
-	};
+	// 	this.deleteNode(data);
+	// };
 
 	graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
 
@@ -136,12 +136,13 @@
 	/**
 	 * Handles the delete-node event
 	 */
-	graph.NodeCD.prototype.deleteNode = function (data) {
+	graph.NodeCD.prototype.destroyNode = function (data) {
 
+		var graph = this.graph;
 		this.deleteEdgesForNode(data.index);
 
 		// remove the node at the index
-		this.graph.nodes.splice(data.index, 1);
+		graph.nodes.splice(data.index, 1);
 
 		// update the indices of all nodes behind it
 		// yes? no?
@@ -151,11 +152,11 @@
 		// }
 
 		// TODO move elsewhere
-		this.graph.drawLinks();
-		this.graph.redrawNodes();
-		this.graph.force.start();
+		graph.drawLinks();
+		graph.redrawNodes();
+		graph.force.start();
 
-		$(this.graph).trigger(NodeEvent.DESTROYED, [data]);
+		$(graph).trigger(NodeEvent.DESTROYED, [data]);
 	};
 
 	/**
@@ -273,20 +274,20 @@
 		$(this.graph).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
 	};
 
-	graph.NodeCD.prototype.handlePropertyAdded = function (event) {
+	// graph.NodeCD.prototype.handlePropertyAdded = function (event) {
 
-		var fieldPrototype = $('#node-fields').data('prototype'),
-			fieldHTML;
+	// 	var fieldPrototype = $('#node-fields').data('prototype'),
+	// 		fieldHTML;
 
-		event.preventDefault();
+	// 	event.preventDefault();
 
-		fieldHTML = fieldPrototype
-			.replace(/__field__/g, '')
-			.replace(/__value__/, '')
-			.replace(/__rows__/, 1);
+	// 	fieldHTML = fieldPrototype
+	// 		.replace(/__field__/g, '')
+	// 		.replace(/__value__/, '')
+	// 		.replace(/__rows__/, 1);
 
-		$('input', $(fieldHTML).appendTo('#node-fields')).focus();
-	};
+	// 	$('input', $(fieldHTML).appendTo('#node-fields')).focus();
+	// };
 
 	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
 
@@ -319,6 +320,15 @@
 		// select node in inspector
 		// TODO make inspector listen to node-created instead?
 		// $(this.graph).trigger('node-clicked', [newNode, newData]);
+	};
+
+	graph.NodeCD.prototype.handleNodeDestroy = function (event) {
+
+		var selectedNode = this.graph.selectedNode;
+
+		if (selectedNode) {
+			this.destroyNode(selectedNode.data);
+		}
 	};
 
 }(window, jQuery, d3));

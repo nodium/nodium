@@ -3,6 +3,7 @@
 
 	var ui = window.setNamespace('app.ui'),
 		NodeEvent = window.use('app.event.NodeEvent'),
+		Event = window.use('app.event.Event'),
 		NodeEditPanel,
 		_defaults;
 
@@ -24,13 +25,16 @@
 		var collapseHandler = window.curry(this.handleCollapse, this),
 			nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
 			nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
-			deleteButtonClickHandler = window.curry(this.handleDeleteButtonClick, this);
-
+			focusOutHandler = window.curry(this.handleFocusOut, this),
+			formSubmitHandler = window.curry(this.handleFormSubmit, this),
+			newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this);
 
 		$(container).on('menu-collapse', collapseHandler);
 		$(this.graph).on(NodeEvent.SELECT, nodeSelectedHandler);
 		$(this.graph).on(NodeEvent.UNSELECT, nodeUnselectedHandler);
-		$('#delete-button', this.view).on(Event.CLICK, deleteButtonClickHandler);
+		$('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
+		$('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea' focusOutHandler);
+		$('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
 
 		return this;
 	};
@@ -58,15 +62,44 @@
 		}, 200);
 	};
 
+	NodeEditPanel.prototype.createProperty = function () {
+
+		var fieldHTML,
+			propertiesList = $('#node-fields', this.view);
+
+		fieldHTML = window.createFromPrototype(propertiesList, {
+			field: '',
+			value: '',
+			rows: 1
+		});
+
+		$('input', $(fieldHTML).appendTo(propertiesList)).focus();
+	};
+
+	NodeEditPanel.prototype.updateData = function (field) {
+		var property,
+			value;
+
+		property = $(field).prev().val();
+		value = $(field).val();
+
+		this.nodeData[property] = value;
+
+		$(this.graph).trigger(NodeEvent.UPDATE, this.nodeData);
+	};
+
 	NodeEditPanel.prototype.setData = function (data) {
 
 		var propertiesList = $('#node-fields', this.view),
 			fieldHTML,
 			fieldName,
-			titleField = this.graph.getNodeTitleKey();
+			titleField = this.graph.getNodeTitleKey(),
+			value;
+
+		this.nodeData = data;
 
 		// set and focus the title field
-		var value = data[titleField] || '';
+		value = data[titleField] || '';
 
 		$('#node-title', this.view)
 			.val(value)
@@ -114,9 +147,28 @@
 		}
 	};
 
-	NodeEditPanel.prototype.handleDeleteButtonClick = function (event) {
-		
-		$(this.graph).trigger(NodeEvent.DELETE);
+	NodeEditPanel.prototype.handleFocusOut = function (event) {
+
+		this.updateData(event.currentTarget);
+	};
+
+	NodeEditPanel.prototype.handleFormSubmit = function (event) {
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		$(this.graph).trigger(NodeEvent.DESTROY);
+		$(this.view).trigger('panel-hide', [this]);
+	};
+
+	NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		console.log('stuff');
+
+		this.createProperty();
 	};
 
 	NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
