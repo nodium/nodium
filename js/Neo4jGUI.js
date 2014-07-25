@@ -24,10 +24,10 @@
 		this
 		.register(new graph.Zoomable())
 		.register(new graph.NodeCD(), [
-			['node-clicked', 'handleSelectNode'],
+			['node-clicked', 'handleNodeSelect'],
 			[NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
 			[NodeEvent.UNSELECTED, 'app.graph.graphics.handleNodeUnselected'],
-			[NodeEvent.DESTROYED, 'handleUnselectNode'],
+			[NodeEvent.DESTROYED, 'handleNodeUnselect'],
 			['drag-down', 'handleNodeDestroy'],
 			['drag-up', 'handleCreateChildNode'],
 		])
