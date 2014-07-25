@@ -53,8 +53,12 @@
 		// $(this).on('drag-up', createChildNode);
 
 		// action events
-		var unselectNode = window.curry(this.handleUnselectNode, this);
-		$(this.kernel).on('unselect-node', unselectNode);
+		var selectNode = window.curry(this.handleNodeSelect, this);
+		$(this.kernel).on(NodeEvent.SELECT, selectNode);
+		var unselectNode = window.curry(this.handleNodeUnselect, this);
+		$(this.kernel).on(NodeEvent.UNSELECT, unselectNode);
+		var updateNode = window.curry(this.handleNodeUpdate, this);
+		$(this.kernel).on(NodeEvent.UPDATE, updateNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -72,7 +76,6 @@
         $('#new-node-name').val('');
 
         newNode = this.createNode({name: input});
-        $(this.kernel).trigger(NodeEvent.CREATED, [newNode]);
 	};
 
 	/**
@@ -92,7 +95,7 @@
 		this.graph.drawNodes();
 		this.graph.force.start();
 
-		// $(this).trigger('node-created', [data]);
+		$(this.kernel).trigger(NodeEvent.CREATED, [data]);
 
 		return data;
 	};
@@ -162,7 +165,7 @@
 	/**
 	 * Read the node into the edit form
 	 */
-	graph.NodeCD.prototype.handleSelectNode = function (event, node, data) {
+	graph.NodeCD.prototype.handleNodeSelect = function (event, node, data) {
 
 		console.log('node clicked');
 
@@ -178,17 +181,13 @@
 			data: data
 		};
 
-		$(this.kernel).trigger(NodeEvent.SELECT, [node, data]);
+		$(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
 	};
 
 	/**
 	 *
 	 */
-	graph.NodeCD.prototype.handleUnselectNode = function (event, node, data) {
-
-		// if (!this.selectedNode || this.selectedNode.data.index == data.index) {
-		// 	// $('#node-form').addClass('hidden');
-		// }
+	graph.NodeCD.prototype.handleNodeUnselect = function (event, node, data) {
 
 		// if node and data are null, unselect all nodes
 
@@ -198,7 +197,7 @@
 
 		if (selectedNode) {
 			console.log(selectedNode);
-			$(this.kernel).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
+			$(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
 
 			selectedNode = null;
 		}
@@ -309,13 +308,7 @@
 			newData = this.createNode({}, data.x, data.y),
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
-		// create the link after the node has its id
-		$(this.kernel).trigger(NodeEvent.CREATE, [newData, function () {
-
-			// TODO solve somehow
-			// self.updateLink(data, newData);
-			$(self.kernel).trigger('create-edge', [data, newData]);
-		}]);
+		$(this.kernel).trigger('create-edge', [data, newData]);
 
 		// select node in inspector
 		// TODO make inspector listen to node-created instead?
