@@ -27,7 +27,8 @@
             nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
             focusOutHandler = window.curry(this.handleFocusOut, this),
             formSubmitHandler = window.curry(this.handleFormSubmit, this),
-            newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this);
+            newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this),
+            deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this);
 
         $(container).on('menu-collapse', collapseHandler);
         $(this.graph).on(NodeEvent.SELECT, nodeSelectedHandler);
@@ -35,6 +36,7 @@
         $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
         $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
+        $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
 
         return this;
     };
@@ -58,7 +60,7 @@
 
         // delay setting focus to titleField to prevent breaking the layout
         window.setTimeout(function () {
-            titleField.focus()
+            titleField.focus();
         }, 200);
     };
 
@@ -76,19 +78,17 @@
         $('input', $(fieldHTML).appendTo(propertiesList)).focus();
     };
 
-    NodeEditPanel.prototype.destroyProperty = function (propertyField) {
+    NodeEditPanel.prototype.destroyProperty = function (deleteButton) {
 
 
-        var fieldHTML,
-            propertiesList = $('#node-fields', this.view);
+        var field = $(deleteButton).closest('.node-field'),
+            property = $('input', field).val();
 
-        fieldHTML = window.createFromPrototype(propertiesList, {
-            field: '',
-            value: '',
-            rows: 1
-        });
+        delete this.nodeData[property];
 
-        $('input', $(fieldHTML).appendTo(propertiesList)).focus();
+        field.remove();
+
+        $(this.graph).trigger(NodeEvent.UPDATE, [this.nodeData]);
     };
 
     NodeEditPanel.prototype.updateData = function (field) {
@@ -100,7 +100,7 @@
 
         this.nodeData[property] = value;
 
-        $(this.graph).trigger(NodeEvent.UPDATE, this.nodeData);
+        $(this.graph).trigger(NodeEvent.UPDATE, [this.nodeData]);
     };
 
     NodeEditPanel.prototype.setData = function (data) {
@@ -109,24 +109,24 @@
             fieldHTML,
             fieldName,
             titleField = this.graph.getNodeTitleKey(),
-            value;
+            value,
+            i;
 
         this.nodeData = data;
 
         // set and focus the title field
         value = data[titleField] || '';
 
-        $('#node-title', this.view)
-            .val(value)
+        $('#node-title', this.view).val(value);
 
         // create the html form elements
         propertiesList.empty();
 
-        for (var i = 0; i < data._fields.length; i++) {
+        for (i = 0; i < data._fields.length; i++) {
             fieldName = data._fields[i];
 
             // the title property is rendered differently
-            if (fieldName == titleField) {
+            if (fieldName === titleField) {
                 continue;
             }
 
@@ -162,6 +162,11 @@
         }
     };
 
+    NodeEditPanel.prototype.handleDeletePropertyButtonClick = function (event) {
+
+        this.destroyProperty(event.currentTarget);
+    };
+
     NodeEditPanel.prototype.handleFocusOut = function (event) {
 
         this.updateData(event.currentTarget);
@@ -187,7 +192,6 @@
 
         this.setData(data);
         $(this.view).trigger('panel-show', [this]);
-        
     };
 
     NodeEditPanel.prototype.handleNodeUnselected = function (event, node, data) {

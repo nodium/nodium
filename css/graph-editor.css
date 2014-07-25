@@ -149,9 +149,10 @@ aside {
 /* line 40, sass/_sidebar.scss */
 #inspector.expanded .panel.active {
   margin-right: 0;
+  pointer-events: auto;
 }
 
-/* line 46, sass/_sidebar.scss */
+/* line 47, sass/_sidebar.scss */
 .panel {
   background: #331833;
   margin-right: -320px;
@@ -162,9 +163,10 @@ aside {
   bottom: 0;
   width: 320px;
   transition: margin-right 0.18s linear;
+  pointer-events: none;
 }
 
-/* line 58, sass/_sidebar.scss */
+/* line 60, sass/_sidebar.scss */
 .panel-navigation {
   background: #331833;
   position: absolute;
@@ -176,7 +178,7 @@ aside {
   transition: margin-right 0.18s linear;
   z-index: 100;
 }
-/* line 72, sass/_sidebar.scss */
+/* line 74, sass/_sidebar.scss */
 .panel-navigation button {
   width: 38px;
   padding: 9px 0;
@@ -184,12 +186,12 @@ aside {
   background: transparent;
   color: white;
 }
-/* line 85, sass/_sidebar.scss */
+/* line 87, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 91, sass/_sidebar.scss */
+/* line 93, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -199,20 +201,20 @@ aside {
   vertical-align: top;
 }
 
-/* line 99, sass/_sidebar.scss */
+/* line 101, sass/_sidebar.scss */
 .node-field > div {
   position: relative;
   height: auto;
 }
 
-/* line 104, sass/_sidebar.scss */
+/* line 106, sass/_sidebar.scss */
 .node-field input {
   left: 0;
   right: 0;
   padding-left: 38px;
 }
 
-/* line 110, sass/_sidebar.scss */
+/* line 112, sass/_sidebar.scss */
 .node-field button {
   position: absolute;
   top: 0;
@@ -221,7 +223,7 @@ aside {
   color: #b3b3b3;
 }
 
-/* line 119, sass/_sidebar.scss */
+/* line 121, sass/_sidebar.scss */
 .node-field button,
 #new-property {
   text-align: center;
@@ -232,30 +234,30 @@ aside {
   background: transparent;
 }
 
-/* line 128, sass/_sidebar.scss */
+/* line 130, sass/_sidebar.scss */
 #new-property {
   color: white;
   height: 35px;
 }
 
-/* line 133, sass/_sidebar.scss */
+/* line 135, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 139, sass/_sidebar.scss */
+/* line 141, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
   color: white;
 }
 
-/* line 145, sass/_sidebar.scss */
+/* line 147, sass/_sidebar.scss */
 #node-fields li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 149, sass/_sidebar.scss */
+/* line 151, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
   width: 100%;

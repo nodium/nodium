@@ -39,6 +39,7 @@ aside {
 
 		.panel.active {
 			margin-right: 0;
+			pointer-events: auto;
 		}
 	}
 }
@@ -53,6 +54,7 @@ aside {
 	bottom: 0;
 	width: 320px;
 	transition: margin-right 0.18s linear;
+	pointer-events:none;
 }
 
 .panel-navigation {
