@@ -242,7 +242,7 @@
 		return result;
 	};
 
-	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
+	graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
 
 		if (!this.graph.selectedNode) {
 			return;
@@ -271,7 +271,7 @@
 			return;
 		}
 
-		$(this.kernel).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
+		$(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
 	};
 
 	// graph.NodeCD.prototype.handlePropertyAdded = function (event) {
@@ -296,11 +296,11 @@
 
 		event.preventDefault();
 
-		$(event.target).closest('li').remove();
+		// $(event.target).closest('li').remove();
 
 		data = this.updateNodeDataWithFields(nodeData);
 
-		$(this.kernel).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
+		$(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
@@ -324,12 +324,13 @@
 
 	graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
 
-		var selectedNode = this.graph.selectedNode;
+		var selectedNode = this.graph.selectedNode,
+			nodeData;
 
-		if (data) {
-			this.destroyNode(data);
-		} else if (selectedNode) {
-			this.destroyNode(selectedNode.data);
+		nodeData = data || (selectedNode && selectedNode.data);
+
+		if (nodeData) {
+			this.destroyNode(nodeData);
 		}
 	};
 

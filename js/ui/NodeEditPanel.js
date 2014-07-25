@@ -7,7 +7,7 @@
         NodeEditPanel,
         _defaults;
 
-    NodeEditPanel = function (selector, options, graph) {
+    NodeEditPanel = function (selector, options, kernel) {
 
         if (false === (this instanceof NodeEditPanel)) {
             return new NodeEditPanel(arguments);
@@ -17,12 +17,13 @@
         this.view = $(selector);
         this.name = 'Node Editor';
         this.icon = 'icon-pencil';
-        this.graph = graph;
+        this.kernel = kernel;
     };
 
     NodeEditPanel.prototype.init = function (container) {
 
         var collapseHandler = window.curry(this.handleCollapse, this),
+            nodeCreatedHandler = window.curry(this.handleNodeCreated, this),
             nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
             nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
             focusOutHandler = window.curry(this.handleFocusOut, this),
@@ -31,8 +32,9 @@
             deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this);
 
         $(container).on('menu-collapse', collapseHandler);
-        $(this.graph).on(NodeEvent.SELECT, nodeSelectedHandler);
-        $(this.graph).on(NodeEvent.UNSELECT, nodeUnselectedHandler);
+        $(this.kernel).on(NodeEvent.SELECT, nodeSelectedHandler);
+        $(this.kernel).on(NodeEvent.UNSELECT, nodeUnselectedHandler);
+        $(this.kernel).on(NodeEvent.CREAETED, nodeCreatedHandler);
         $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
         $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
@@ -88,10 +90,10 @@
 
         field.remove();
 
-        $(this.graph).trigger(NodeEvent.UPDATE, [this.nodeData]);
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
     };
 
-    NodeEditPanel.prototype.updateData = function (field) {
+    NodeEditPanel.prototype.updateProperty = function (field) {
         var property,
             value;
 
@@ -100,7 +102,7 @@
 
         this.nodeData[property] = value;
 
-        $(this.graph).trigger(NodeEvent.UPDATE, [this.nodeData]);
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
     };
 
     NodeEditPanel.prototype.setData = function (data) {
@@ -108,13 +110,13 @@
         var propertiesList = $('#node-fields', this.view),
             fieldHTML,
             fieldName,
-            titleField = this.graph.getNodeTitleKey(),
+            titleField = this.kernel.getNodeTitleKey(),
             value,
             i;
 
         this.nodeData = data;
 
-        // set and focus the title field
+        // set the title field
         value = data[titleField] || '';
 
         $('#node-title', this.view).val(value);
@@ -122,7 +124,8 @@
         // create the html form elements
         propertiesList.empty();
 
-        for (i = 0; i < data._fields.length; i++) {
+        for (i = data._fields.length; i > 0; i--) {
+
             fieldName = data._fields[i];
 
             // the title property is rendered differently
@@ -136,7 +139,7 @@
                 rows: 1
             });
 
-            propertiesList.append(fieldHTML);
+            propertiesList.prepend(fieldHTML);
         }
     };
 
@@ -148,6 +151,7 @@
 
         // create the html form elements
         propertiesList.empty();
+        this.nodeData = null;
     };
 
 
@@ -169,7 +173,7 @@
 
     NodeEditPanel.prototype.handleFocusOut = function (event) {
 
-        this.updateData(event.currentTarget);
+        this.updateProperty(event.currentTarget);
     };
 
     NodeEditPanel.prototype.handleFormSubmit = function (event) {
@@ -177,27 +181,31 @@
         event.preventDefault();
         event.stopPropagation();
 
-        $(this.graph).trigger(NodeEvent.DESTROY);
-        $(this.view).trigger('panel-hide', [this]);
+        $(this.kernel).trigger(NodeEvent.DESTROY);
+        this.view.trigger('panel-hide', [this]);
     };
 
     NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
 
-        console.log('stuff');
-
         this.createProperty();
+    };
+
+    NodeEditPanel.prototype.handleNodeCreated = function (event, node, data) {
+
+        this.setData(data);
+        this.view.trigger('panel-show', [this]);
     };
 
     NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
 
         this.setData(data);
-        $(this.view).trigger('panel-show', [this]);
+        this.view.trigger('panel-show', [this]);
     };
 
     NodeEditPanel.prototype.handleNodeUnselected = function (event, node, data) {
 
         this.unsetData();
-        $(this.view).trigger('panel-hide', [this]);
+        this.view.trigger('panel-hide', [this]);
     };
 
     ui.NodeEditPanel = NodeEditPanel;
