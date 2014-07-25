@@ -278,4 +278,12 @@
         return instance;
     };
 
+    window.bindAll = function (array, self) {
+        var i;
+
+        for (i = array.length; i > 0; i--) {
+            array[i] = window.curry(array[i], self);
+        }
+    };
+
 }(window, jQuery));

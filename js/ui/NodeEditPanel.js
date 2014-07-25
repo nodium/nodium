@@ -2,6 +2,7 @@
 	'use strict';
 
 	var ui = window.setNamespace('app.ui'),
+		NodeEvent = window.use('app.event.NodeEvent'),
 		NodeEditPanel,
 		_defaults;
 
@@ -22,11 +23,14 @@
 
 		var collapseHandler = window.curry(this.handleCollapse, this),
 			nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
-			nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this);
+			nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
+			deleteButtonClickHandler = window.curry(this.handleDeleteButtonClick, this);
+
 
 		$(container).on('menu-collapse', collapseHandler);
-		$(this.graph).on('node-selected', nodeSelectedHandler);
-		$(this.graph).on('node-unselected', nodeUnselectedHandler);
+		$(this.graph).on(NodeEvent.SELECT, nodeSelectedHandler);
+		$(this.graph).on(NodeEvent.UNSELECT, nodeUnselectedHandler);
+		$('#delete-button', this.view).on(Event.CLICK, deleteButtonClickHandler);
 
 		return this;
 	};
@@ -108,6 +112,11 @@
 		if (this.isVisible) {
 			this.hide();
 		}
+	};
+
+	NodeEditPanel.prototype.handleDeleteButtonClick = function (event) {
+		
+		$(this.graph).trigger(NodeEvent.DELETE);
 	};
 
 	NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {

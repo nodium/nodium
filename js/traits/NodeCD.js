@@ -1,6 +1,7 @@
 (function (window, $, d3, undefined) {
 	var graph = window.setNamespace('app.graph'),
-		app   = window.setNamespace('app');
+		app   = window.setNamespace('app'),
+		NodeEvent = window.use('app.event.NodeEvent');
 
 	/**
 	 * NodeEditor trait
@@ -154,7 +155,7 @@
 		this.graph.redrawNodes();
 		this.graph.force.start();
 
-		$(this.graph).trigger('node-deleted', [data]);
+		$(this.graph).trigger(NodeEvent.DESTROYED, [data]);
 	};
 
 	/**
@@ -176,7 +177,7 @@
 			data: data
 		};
 
-		$(this.graph).trigger('node-selected', [node, data]);
+		$(this.graph).trigger(NodeEvent.SELECT, [node, data]);
 	};
 
 	/**
@@ -196,7 +197,7 @@
 
 		if (selectedNode) {
 			console.log(selectedNode);
-			$(this.graph).trigger('node-unselected', [selectedNode.node, selectedNode.data]);
+			$(this.graph).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
 
 			selectedNode = null;
 		}
@@ -269,7 +270,7 @@
 			return;
 		}
 
-		$(this.graph).trigger('node-updated', [data, nodeData.id]);
+		$(this.graph).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handlePropertyAdded = function (event) {
@@ -298,7 +299,7 @@
 
 		data = this.updateNodeDataWithFields(nodeData);
 
-		$(this.graph).trigger('node-updated', [data, nodeData.id]);
+		$(this.graph).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
@@ -308,7 +309,7 @@
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
 		// create the link after the node has its id
-		$(this.graph).trigger('node-created', [newData, function () {
+		$(this.graph).trigger(NodeEvent.CREATE, [newData, function () {
 
 			// TODO solve somehow
 			// self.updateLink(data, newData);
