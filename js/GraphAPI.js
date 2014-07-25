@@ -1,26 +1,42 @@
 (function (window, $, undefined) {
 	var graph = window.setNamespace('app.graph');
 
-	graph.API = function (g) {
+	graph.API = function (options) {
 
 		// enforce use of new on constructor
 		if ((this instanceof graph.API) === false) {
 			return new graph.API(arguments);
 		}
 
-		// the graph instance it should listen to
-		this.graph = g;
+		var _defaults = {
+			host: 'localhost',
+			port: '7474'
+		};
 
+		this.options = $.extend({}, _defaults, options);
+	};
+
+	graph.API.prototype.url = function (path) {
+		var url = 'http://' + this.options.host + ':' + this.options.port;
+
+		if (path) {
+			url += path;
+		}
+
+		return url;
+	};
+
+	graph.API.prototype.initialize = function () {
 		var createNode = window.curry(this.handleNodeCreated, this);
-		$(g).on('node-created', createNode);
+		$(this.kernel).on('node-created', createNode);
 		var deleteNode = window.curry(this.handleNodeDeleted, this);
-		$(g).on('node-deleted', deleteNode);
+		$(this.kernel).on('node-deleted', deleteNode);
 		var createEdge = window.curry(this.handleEdgeCreated, this);
-		$(g).on('edge-created', createEdge);
+		$(this.kernel).on('edge-created', createEdge);
 		var deleteEdge = window.curry(this.handleEdgeDeleted, this);
-		$(g).on('edge-deleted', deleteEdge);
+		$(this.kernel).on('edge-deleted', deleteEdge);
 		var updateNode = window.curry(this.handleNodeUpdated, this);
-		$(g).on('node-updated', updateNode);
+		$(this.kernel).on('node-updated', updateNode);
 	};
 
 	graph.API.prototype.get = function (callback, addNodeMetadata) {
@@ -30,16 +46,16 @@
 		  "query" : "START n=node(*) RETURN n",
 		  "params" : {}
 		};
-
-		$.post('http://localhost:7474/db/data/cypher', nodeQuery)
-		 .done(function (nodeData) {
-
-	 	var edgeQuery = {
+		var edgeQuery = {
 		  "query" : "START r=relationship(*) RETURN r",
 		  "params" : {}
 		};
+		var url = this.url('/db/data/cypher');
 
-		$.post('http://localhost:7474/db/data/cypher', edgeQuery)
+		$.post(url, nodeQuery)
+		 .done(function (nodeData) {
+
+		$.post(url, edgeQuery)
 		 .done(function (edgeData) {
 
 		 	// console.log(data);
@@ -108,9 +124,10 @@
 	 */
 	graph.API.prototype.handleNodeCreated = function (event, data, callback) {
 
-		var props = this.graph.getCleanNodeData(data);
+		var props = this.graph.getCleanNodeData(data),
+			url = this.url('/db/data/node');
 
-		$.post('http://localhost:7474/db/data/node', props)
+		$.post(url, props)
 		 .done(function (result) {
 		 	console.log(result);
 		 	data.id = result.self;
@@ -133,7 +150,8 @@
 
 		var nodeId,
 			index,
-			query;
+			query,
+			url = this.url('/db/data/cypher');
 
 		index = data.id.lastIndexOf('/');
 		if (index == -1) {
@@ -157,7 +175,7 @@
 
 		console.log(query);
 
-		$.post('http://localhost:7474/db/data/cypher', query)
+		$.post(url, query)
 		 .done(function (result) {
 		 	console.log(result);
 		});

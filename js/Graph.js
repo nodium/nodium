@@ -27,7 +27,7 @@
 		// the node that was clicked on
 		this.selectedNode = null;
 
-		this._traits = [];
+		this._modules = [];
 
 		// set during initialization
 		this.nodeCount;
@@ -37,28 +37,12 @@
 	/**
 	 * Add one trait
 	 */
-	graph.Graph.prototype.trait = function (trait, events) {
+	graph.Graph.prototype.register = function (trait, events) {
 
-		trait.graph = this;
-
-		this._traits.push({
+		this._modules.push({
 			trait: trait,
 			events: events
 		});
-
-		return this;
-	};
-
-	/**
-	 * Give as many traits as you like without config, prolly deprecated soon
-	 */
-	graph.Graph.prototype.addTraits = function () {
-
-		var events;
-
-		for (var i = 0; i < arguments.length; i++) {
-			this.trait(arguments[i]);
-		}
 
 		return this;
 	};
@@ -235,9 +219,14 @@
 		var trait,
 			events;
 
-		for (var i = 0; i < this._traits.length; i++) {
-			trait = this._traits[i].trait;
-			events = this._traits[i].events;
+		for (var i = 0; i < this._modules.length; i++) {
+			trait = this._modules[i].trait;
+			events = this._modules[i].events;
+
+			trait.graph = this;
+
+			// kernel should have its own class
+			trait.kernel = this;
 
 			if (events) {
 				this.attachTraitEvents(events, trait);

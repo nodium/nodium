@@ -21,8 +21,8 @@
 		// so that the traits contain only the logic and are kept generic
 
 		this
-		.trait(new graph.Zoomable())
-		.trait(new graph.NodeCD(), [
+		.register(new graph.Zoomable())
+		.register(new graph.NodeCD(), [
 			['node-clicked', 'handleSelectNode'],
 			['node-selected', 'app.graph.graphics.handleNodeSelected'],
 			['node-unselected', 'app.graph.graphics.handleNodeUnselected'],
@@ -30,10 +30,10 @@
 			['drag-down', 'handleNodeDelete'],
 			['drag-up', 'handleCreateChildNode'],
 		])
-		.trait(new graph.EdgeCD(), [
+		.register(new graph.EdgeCD(), [
 			['drag-end', 'handleLinking']
 		])
-		.trait(new graph.Holdable({
+		.register(new graph.Holdable({
 			'duration': 400
 		}),[['mouse-down', 'handleHoldStart'],
 			['drag', 'handleHoldDrag'],
@@ -41,7 +41,7 @@
 			['drag-end', 'app.graph.graphics.handleNodeScale', 1],
 			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3]
 		])
-		.trait(new graph.Pinnable(), [
+		.register(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']
 		])
 		// .trait(new graph.Stylable(), {
@@ -56,11 +56,6 @@
 	};
 
 	graph.Neo4jGUI.prototype = new graph.Graph();
-
-	graph.Neo4jGUI.prototype.getBase = function () {
-
-		return this.__proto__.__proto__;
-	};
 
 	graph.Neo4jGUI.prototype.getGraphData = function () {
 		this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
