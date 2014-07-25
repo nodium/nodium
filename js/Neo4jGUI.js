@@ -46,7 +46,7 @@
 			['drag-right', 'handleNodePinned']
 		])
 		.register(this.api)
-		// .trait(new graph.Stylable(), {
+		// .register(new graph.Stylable(), {
 		// 	'node-pinned': 'handleNodeStyled',
 		// });
 
@@ -68,7 +68,9 @@
 		console.log("handling key down");
 
 		if (event.keyCode === 27) {
-            $(this).trigger('unselect-node');
+            $(this).trigger(NodeEvent.UNSELECT);
+        } else if (event.keyCode === 90 && event.ctrlKey) {
+        	console.log("CTRLz");
         }
 	};
 

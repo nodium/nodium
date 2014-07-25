@@ -329,7 +329,7 @@
 		// in case you only want to draw a subset
 		var nodes = this.getVisibleNodes(),
 			node = d3.select(this.selector + ' .nodes').selectAll('.node')
-				.data(nodes/*, function(d) { return d.id; }*/),
+				.data(nodes),
 			nodeEnter = node.enter().append('g');
 
 		this.drawNodeExit(node.exit());
