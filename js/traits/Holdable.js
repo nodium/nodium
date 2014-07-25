@@ -49,7 +49,7 @@
 				graph.holding = true;
 
 				$('#hold-action-notification').toggle();
-				$(self.graph).trigger('holding-node', [node, data]);
+				$(self.kernel).trigger('holding-node', [node, data]);
 			}
 		}, 500);
 	};
@@ -88,16 +88,16 @@
 		if (this.graph.holding && this.graph.dragDistance > 100) {
 			switch(this.graph.dragDirection) {
 				case graph.Drag.LEFT:
-					$(this.graph).trigger('drag-left', [node, data]);
+					$(this.kernel).trigger('drag-left', [node, data]);
 					break;
 				case graph.Drag.RIGHT:
-					$(this.graph).trigger('drag-right', [node, data]);
+					$(this.kernel).trigger('drag-right', [node, data]);
 					break;
 				case graph.Drag.UP:
-					$(this.graph).trigger('drag-up', [node, data]);
+					$(this.kernel).trigger('drag-up', [node, data]);
 					break;
 				case graph.Drag.DOWN:
-					$(this.graph).trigger('drag-down', [node, data]);
+					$(this.kernel).trigger('drag-down', [node, data]);
 					break;
 			}
 		}

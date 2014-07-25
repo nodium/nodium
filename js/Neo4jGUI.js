@@ -15,7 +15,7 @@
 
 		this.selector = selector;
 
-		this.api = new graph.API(this);
+		this.api = new graph.API();
 
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
@@ -27,7 +27,7 @@
 			['node-selected', 'app.graph.graphics.handleNodeSelected'],
 			['node-unselected', 'app.graph.graphics.handleNodeUnselected'],
 			['node-deleted', 'handleUnselectNode'],
-			['drag-down', 'handleNodeDelete'],
+			['drag-down', 'handleNodeDestroy'],
 			['drag-up', 'handleCreateChildNode'],
 		])
 		.register(new graph.EdgeCD(), [
@@ -44,6 +44,7 @@
 		.register(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']
 		])
+		.register(this.api)
 		// .trait(new graph.Stylable(), {
 		// 	'node-pinned': 'handleNodeStyled',
 		// });

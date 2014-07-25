@@ -54,7 +54,7 @@
 
 		// action events
 		var unselectNode = window.curry(this.handleUnselectNode, this);
-		$(this.graph).on('unselect-node', unselectNode);
+		$(this.kernel).on('unselect-node', unselectNode);
 	};
 
 	graph.NodeCD.prototype.handleNodeCreate = function (event) {
@@ -72,7 +72,7 @@
         $('#new-node-name').val('');
 
         newNode = this.createNode({name: input});
-        $(this.graph).trigger(NodeEvent.CREATED, [newNode]);
+        $(this.kernel).trigger(NodeEvent.CREATED, [newNode]);
 	};
 
 	/**
@@ -156,7 +156,7 @@
 		graph.redrawNodes();
 		graph.force.start();
 
-		$(graph).trigger(NodeEvent.DESTROYED, [data]);
+		$(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
 	};
 
 	/**
@@ -169,7 +169,7 @@
 		var selectedNode = this.graph.selectedNode;
 
 		if (selectedNode) {
-			$(this.graph).trigger('unselect-node', [selectedNode.node, selectedNode.data]);
+			$(this.kernel).trigger('unselect-node', [selectedNode.node, selectedNode.data]);
 		}
 
 		// TODO fix this differently
@@ -178,7 +178,7 @@
 			data: data
 		};
 
-		$(this.graph).trigger(NodeEvent.SELECT, [node, data]);
+		$(this.kernel).trigger(NodeEvent.SELECT, [node, data]);
 	};
 
 	/**
@@ -198,7 +198,7 @@
 
 		if (selectedNode) {
 			console.log(selectedNode);
-			$(this.graph).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
+			$(this.kernel).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
 
 			selectedNode = null;
 		}
@@ -271,7 +271,7 @@
 			return;
 		}
 
-		$(this.graph).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
+		$(this.kernel).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
 	};
 
 	// graph.NodeCD.prototype.handlePropertyAdded = function (event) {
@@ -300,7 +300,7 @@
 
 		data = this.updateNodeDataWithFields(nodeData);
 
-		$(this.graph).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
+		$(this.kernel).trigger(NodeEvent.UPDATE, [data, nodeData.id]);
 	};
 
 	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
@@ -310,11 +310,11 @@
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
 		// create the link after the node has its id
-		$(this.graph).trigger(NodeEvent.CREATE, [newData, function () {
+		$(this.kernel).trigger(NodeEvent.CREATE, [newData, function () {
 
 			// TODO solve somehow
 			// self.updateLink(data, newData);
-			$(self.graph).trigger('create-edge', [data, newData]);
+			$(self.kernel).trigger('create-edge', [data, newData]);
 		}]);
 
 		// select node in inspector
@@ -322,11 +322,13 @@
 		// $(this.graph).trigger('node-clicked', [newNode, newData]);
 	};
 
-	graph.NodeCD.prototype.handleNodeDestroy = function (event) {
+	graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
 
 		var selectedNode = this.graph.selectedNode;
 
-		if (selectedNode) {
+		if (data) {
+			this.destroyNode(data);
+		} else if (selectedNode) {
 			this.destroyNode(selectedNode.data);
 		}
 	};
