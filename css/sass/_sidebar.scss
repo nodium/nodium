@@ -6,6 +6,7 @@ aside {
 	padding-top: 8px;
 	overflow: hidden;
 	background: transparent;
+	pointer-events: none;
 
 	form > button {
 		text-align: left;
@@ -33,6 +34,9 @@ aside {
 	}
 
 	&.expanded {
+
+		pointer-events: auto;
+
 		.panel-navigation {
 			margin-right: -38px;
 		}
@@ -54,7 +58,6 @@ aside {
 	bottom: 0;
 	width: 320px;
 	transition: margin-right 0.18s linear;
-	pointer-events:none;
 }
 
 .panel-navigation {
@@ -70,6 +73,7 @@ aside {
 	margin-right: 0;
 	transition: margin-right 0.18s linear;
 	z-index: 100;
+	pointer-events: auto;
 
 	button {
 		width: 38px;

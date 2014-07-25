@@ -118,19 +118,20 @@ aside {
   padding-top: 8px;
   overflow: hidden;
   background: transparent;
+  pointer-events: none;
 }
-/* line 10, sass/_sidebar.scss */
+/* line 11, sass/_sidebar.scss */
 #inspector form > button {
   text-align: left;
 }
-/* line 13, sass/_sidebar.scss */
+/* line 14, sass/_sidebar.scss */
 #inspector form > button span[class^=icon] {
   display: inline-block;
   width: 38px;
   text-align: center;
   margin-left: -8px;
 }
-/* line 22, sass/_sidebar.scss */
+/* line 23, sass/_sidebar.scss */
 #inspector form > div label[class^=icon] {
   color: #331833;
   position: absolute;
@@ -138,21 +139,25 @@ aside {
   text-align: center;
   padding: 9px 0;
 }
-/* line 30, sass/_sidebar.scss */
+/* line 31, sass/_sidebar.scss */
 #inspector form > div input {
   padding-left: 38px;
 }
 /* line 36, sass/_sidebar.scss */
+#inspector.expanded {
+  pointer-events: auto;
+}
+/* line 40, sass/_sidebar.scss */
 #inspector.expanded .panel-navigation {
   margin-right: -38px;
 }
-/* line 40, sass/_sidebar.scss */
+/* line 44, sass/_sidebar.scss */
 #inspector.expanded .panel.active {
   margin-right: 0;
   pointer-events: auto;
 }
 
-/* line 47, sass/_sidebar.scss */
+/* line 51, sass/_sidebar.scss */
 .panel {
   background: #331833;
   margin-right: -320px;
@@ -163,10 +168,9 @@ aside {
   bottom: 0;
   width: 320px;
   transition: margin-right 0.18s linear;
-  pointer-events: none;
 }
 
-/* line 60, sass/_sidebar.scss */
+/* line 63, sass/_sidebar.scss */
 .panel-navigation {
   background: #331833;
   position: absolute;
@@ -177,8 +181,9 @@ aside {
   margin-right: 0;
   transition: margin-right 0.18s linear;
   z-index: 100;
+  pointer-events: auto;
 }
-/* line 74, sass/_sidebar.scss */
+/* line 78, sass/_sidebar.scss */
 .panel-navigation button {
   width: 38px;
   padding: 9px 0;
@@ -186,12 +191,12 @@ aside {
   background: transparent;
   color: white;
 }
-/* line 87, sass/_sidebar.scss */
+/* line 91, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 93, sass/_sidebar.scss */
+/* line 97, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -201,20 +206,20 @@ aside {
   vertical-align: top;
 }
 
-/* line 101, sass/_sidebar.scss */
+/* line 105, sass/_sidebar.scss */
 .node-field > div {
   position: relative;
   height: auto;
 }
 
-/* line 106, sass/_sidebar.scss */
+/* line 110, sass/_sidebar.scss */
 .node-field input {
   left: 0;
   right: 0;
   padding-left: 38px;
 }
 
-/* line 112, sass/_sidebar.scss */
+/* line 116, sass/_sidebar.scss */
 .node-field button {
   position: absolute;
   top: 0;
@@ -223,7 +228,7 @@ aside {
   color: #b3b3b3;
 }
 
-/* line 121, sass/_sidebar.scss */
+/* line 125, sass/_sidebar.scss */
 .node-field button,
 #new-property {
   text-align: center;
@@ -234,30 +239,30 @@ aside {
   background: transparent;
 }
 
-/* line 130, sass/_sidebar.scss */
+/* line 134, sass/_sidebar.scss */
 #new-property {
   color: white;
   height: 35px;
 }
 
-/* line 135, sass/_sidebar.scss */
+/* line 139, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 141, sass/_sidebar.scss */
+/* line 145, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
   color: white;
 }
 
-/* line 147, sass/_sidebar.scss */
+/* line 151, sass/_sidebar.scss */
 #node-fields li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 151, sass/_sidebar.scss */
+/* line 155, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
   width: 100%;
