@@ -6,11 +6,13 @@
 		CREATE: 'node-create',
 		UPDATE: 'node-update',
 		DESTROY: 'node-delete',
-		SELECT: 'node-selected',
-		UNSELECT: 'node-unselected',
+		SELECT: 'node-select',
+		UNSELECT: 'node-unselect',
 		CREATED: 'node-created',
 		UPDATED: 'node-updated',
-		DESTROYED: 'node-destroyed'
+		DESTROYED: 'node-destroyed',
+		SELECTED: 'node-selected',
+		UNSELECTED: 'node-unselected'
 	};
 
 	event.NodeEvent = NodeEvent;

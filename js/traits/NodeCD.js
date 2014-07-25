@@ -1,330 +1,298 @@
 (function (window, $, d3, undefined) {
-	var graph = window.setNamespace('app.graph'),
-		app   = window.setNamespace('app'),
-		NodeEvent = window.use('app.event.NodeEvent');
+    var graph = window.setNamespace('app.graph'),
+        app   = window.setNamespace('app'),
+        NodeEvent = window.use('app.event.NodeEvent');
 
-	/**
-	 * NodeEditor trait
-	 *
-	 * Adds functionality to create new nodes
-	 */
-	graph.NodeCD = function () {
+    /**
+     * NodeEditor trait
+     *
+     * Adds functionality to create new nodes
+     */
+    graph.NodeCD = function () {
 
-		// enforce use of new on constructor
-		if ((this instanceof graph.NodeCD) === false) {
-			return new graph.NodeCD(arguments);
-		}
-	};
+        // enforce use of new on constructor
+        if ((this instanceof graph.NodeCD) === false) {
+            return new graph.NodeCD(arguments);
+        }
+    };
 
-	/**
-	 * Initializes variables and attaches events used for creating edges
-	 */
-	graph.NodeCD.prototype.initialize = function () {
+    /**
+     * Initializes variables and attaches events used for creating edges
+     */
+    graph.NodeCD.prototype.initialize = function () {
 
-		// start out hidden
-		// $('#node-form').addClass('hidden');
+        var selectNode,
+            unselectNode,
+            updateNode;
 
-		// var loadNode = window.curry(this.handleNodeSelected, this),
-		// 	unloadNode = window.curry(this.handleNodeUnselected, this),
-		// 	createNode = window.curry(this.handleNodeCreate, this),
-		// 	deleteNode = window.curry(this.handleNodeDelete, this),
-		// 	deleteNodeButton = window.curry(this.handleNodeDeleteButton, this),
-		// 	updateNode = window.curry(this.handleNodeUpdate, this),
-		// 	addProperty = window.curry(this.handlePropertyAdded, this),
-		// 	deleteProperty = window.curry(this.handlePropertyDeleted, this),
+        // action events
+        selectNode   = window.curry(this.handleNodeSelect, this);
+        unselectNode = window.curry(this.handleNodeUnselect, this);
+        updateNode   = window.curry(this.handleNodeUpdate, this);
 
-		// 	createChildNode = window.curry(this.handleCreateChildNode, this);
+        $(this.kernel)
+            .on(NodeEvent.SELECT, selectNode)
+            .on(NodeEvent.UNSELECT, unselectNode)
+            .on(NodeEvent.UPDATE, updateNode);
+    };
 
-		// // select / deselect node
-		// $(this).on('node-clicked', loadNode);
-		// $(this).on('node-deleted', unloadNode);
+    graph.NodeCD.prototype.handleNodeCreate = function (event) {
 
-		// // node CRUD
-		// $('#new-node-form').on('submit', createNode);
-		// $(this).on('drag-down', deleteNode);
-		// this.holdActions[graph.Drag.DOWN] = "Delete";
-		// $('#node-form').on('submit', deleteNodeButton);
-		// $('#node-form').on('focusout', updateNode);
+        var newNode;
 
-		// // properties
-		// $('#new-property').on('click', addProperty);
-		// $('#node-fields').on('click', '.delete-property', deleteProperty);
-
-		// $(this).on('drag-up', createChildNode);
-
-		// action events
-		var selectNode = window.curry(this.handleNodeSelect, this);
-		$(this.kernel).on(NodeEvent.SELECT, selectNode);
-		var unselectNode = window.curry(this.handleNodeUnselect, this);
-		$(this.kernel).on(NodeEvent.UNSELECT, unselectNode);
-		var updateNode = window.curry(this.handleNodeUpdate, this);
-		$(this.kernel).on(NodeEvent.UPDATE, updateNode);
-	};
-
-	graph.NodeCD.prototype.handleNodeCreate = function (event) {
-
-		var newNode;
-
-		event.preventDefault();
+        event.preventDefault();
         event.stopPropagation();
 
         var input = $('#new-node-name').val();
         if (input == '') {
-        	return;
+            return;
         }
 
         $('#new-node-name').val('');
 
         newNode = this.createNode({name: input});
-	};
+    };
 
-	/**
-	 * Create a node from a given set of key value pairs
-	 */
-	graph.NodeCD.prototype.createNode = function (data, x, y) {
+    /**
+     * Create a node from a given set of key value pairs
+     */
+    graph.NodeCD.prototype.createNode = function (data, x, y) {
 
-		// then add node metadata
-		this.graph.addNodeMetadata(data);
+        // then add node metadata
+        this.graph.addNodeMetadata(data);
 
-		data.x = x || 0;
-		data.y = y || 0;
+        data.x = x || 0;
+        data.y = y || 0;
 
-		// then let d3 add other properties
-		// TODO do this after the trigger
-		this.graph.nodes.push(data);
-		this.graph.drawNodes();
-		this.graph.force.start();
+        // then let d3 add other properties
+        // TODO do this after the trigger
+        this.graph.nodes.push(data);
+        this.graph.drawNodes();
+        this.graph.force.start();
 
-		$(this.kernel).trigger(NodeEvent.CREATED, [null, data]);
+        $(this.kernel).trigger(NodeEvent.CREATED, [data]);
 
-		return data;
-	};
+        return data;
+    };
 
-	// graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
+    // graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
 
-	// 	event.preventDefault();
+    //  event.preventDefault();
  //        event.stopPropagation();
 
-	// 	this.deleteNode(data);
-	// };
+    //  this.deleteNode(data);
+    // };
 
-	// graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
+    // graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
 
-	// 	event.preventDefault();
+    //  event.preventDefault();
  //        event.stopPropagation();
 
-	// 	if (!this.graph.selectedNode) {
-	// 		return;
-	// 	}
+    //  if (!this.graph.selectedNode) {
+    //      return;
+    //  }
 
-	// 	var data = this.graph.selectedNode.data;
+    //  var data = this.graph.selectedNode.data;
 
-	// 	this.deleteNode(data);
-	// };
+    //  this.deleteNode(data);
+    // };
 
-	graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
+    graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
 
-		var edges = this.graph.edges,
-			edge;
+        var edges = this.graph.edges,
+            edge;
 
-		// start from top to remove multiple links correctly
-		for (var i = edges.length-1; i >= 0; i--) {
-			edge = edges[i];
-			if (edge.source.index == nodeIndex || edge.target.index == nodeIndex) {
-				edges.splice(i, 1);
-			}
-		}
-	};
+        // start from top to remove multiple links correctly
+        for (var i = edges.length-1; i >= 0; i--) {
+            edge = edges[i];
+            if (edge.source.index == nodeIndex || edge.target.index == nodeIndex) {
+                edges.splice(i, 1);
+            }
+        }
+    };
 
-	/**
-	 * Handles the delete-node event
-	 */
-	graph.NodeCD.prototype.destroyNode = function (data) {
+    /**
+     * Handles the delete-node event
+     */
+    graph.NodeCD.prototype.destroyNode = function (data) {
 
-		var graph = this.graph;
-		this.deleteEdgesForNode(data.index);
+        var graph = this.graph;
+        this.deleteEdgesForNode(data.index);
 
-		// remove the node at the index
-		graph.nodes.splice(data.index, 1);
+        // remove the node at the index
+        graph.nodes.splice(data.index, 1);
 
-		// update the indices of all nodes behind it
-		// yes? no?
-		// for (var i = data.index; i < this.nodes.length; i++) {
-		// 	console.log(i + ' ' + this.nodes[i].index);
-		// 	this.nodes[i].index = i;
-		// }
+        // update the indices of all nodes behind it
+        // yes? no?
+        // for (var i = data.index; i < this.nodes.length; i++) {
+        //  console.log(i + ' ' + this.nodes[i].index);
+        //  this.nodes[i].index = i;
+        // }
 
-		// TODO move elsewhere
-		graph.drawLinks();
-		graph.redrawNodes();
-		graph.force.start();
+        // TODO move elsewhere
+        graph.drawLinks();
+        graph.redrawNodes();
+        graph.force.start();
 
-		$(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
-	};
+        $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
+    };
 
-	/**
-	 * Read the node into the edit form
-	 */
-	graph.NodeCD.prototype.handleNodeSelect = function (event, node, data) {
+    /**
+     * Read the node into the edit form
+     */
+    graph.NodeCD.prototype.handleNodeSelect = function (event, node, data) {
 
-		console.log('node clicked');
+        console.log('node select');
 
-		var selectedNode = this.graph.selectedNode;
+        var selectedNode = this.graph.selectedNode;
 
-		if (selectedNode) {
-			$(this.kernel).trigger('unselect-node', [selectedNode.node, selectedNode.data]);
-		}
+        if (selectedNode) {
+            $(this.kernel).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
+        }
 
-		// TODO fix this differently
-		this.graph.selectedNode = {
-			node: node,
-			data: data
-		};
+        // TODO fix this differently
+        this.graph.selectedNode = {
+            node: node,
+            data: data
+        };
 
-		$(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
-	};
+        console.log("yo2");
+        console.log(node);
+        console.log(data);
 
-	/**
-	 *
-	 */
-	graph.NodeCD.prototype.handleNodeUnselect = function (event, node, data) {
+        $(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
+    };
 
-		// if node and data are null, unselect all nodes
+    /**
+     *
+     */
+    graph.NodeCD.prototype.handleNodeUnselect = function (event, node, data) {
 
-		console.log('handling unselecting node');
+        // if node and data are null, unselect all nodes
+        var selectedNode = this.graph.selectedNode;
 
-		var selectedNode = this.graph.selectedNode;
+        console.log('handling unselecting node');
 
-		if (selectedNode) {
-			console.log(selectedNode);
-			$(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
+        if (data) {
+            $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
+        } else {
+            $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
+        }
 
-			selectedNode = null;
-		}
-	};
+        if (selectedNode) {
+            console.log(selectedNode);
 
-	/**
-	 * Update the data and return the filtered updated data
-	 */
-	graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+            this.graph.selectedNode = null;
+        }
+    };
 
-		var titleField = this.graph.getNodeTitleKey(),
-			fields = $('#node-fields').children(),
-			key,
-			value,
-			result = {};
+    /**
+     * Update the data and return the filtered updated data
+     */
+    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
 
-		// clear the fields metadata, we'll refill this
-		data._fields = [titleField];
+        var titleField = this.graph.getNodeTitleKey(),
+            fields = $('#node-fields').children(),
+            key,
+            value,
+            result = {};
 
-		// set the title field separately
-		data[titleField] = $('#node-title').val();
-		result[titleField] = data[titleField];
+        // clear the fields metadata, we'll refill this
+        data._fields = [titleField];
 
-		for (var i = 0; i < fields.length; i++) {
-			key = $('.node-key', fields[i]).val();
-			value = $('.node-value', fields[i]).val();
+        // set the title field separately
+        data[titleField] = $('#node-title').val();
+        result[titleField] = data[titleField];
 
-			// skip if the key is empty
-			if (key == "" || value == "") {
-				continue;
-			}
+        for (var i = 0; i < fields.length; i++) {
+            key = $('.node-key', fields[i]).val();
+            value = $('.node-value', fields[i]).val();
 
-			data._fields.push(key);
-			data[key] = value;
-			result[key] = value;
-		}
+            // skip if the key is empty
+            if (key == "" || value == "") {
+                continue;
+            }
 
-		// TODO maybe we should try to remove the unused fields from the node data,
-		// but this is not strictly necessary, the fields metadata works as a filter
+            data._fields.push(key);
+            data[key] = value;
+            result[key] = value;
+        }
 
-		return result;
-	};
+        // TODO maybe we should try to remove the unused fields from the node data,
+        // but this is not strictly necessary, the fields metadata works as a filter
 
-	graph.NodeCD.prototype.handleNodeUpdate = function (event) {
+        return result;
+    };
 
-		if (!this.graph.selectedNode) {
-			return;
-		}
+    graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
 
-		var data,
-			fieldName,
-			titleField = this.graph.getNodeTitleKey(),
-			nodeData = this.graph.selectedNode.data;
+        if (!this.graph.selectedNode) {
+            return;
+        }
 
-		event.preventDefault();
-		event.stopPropagation();
+        var data,
+            fieldName,
+            titleField = this.graph.getNodeTitleKey(),
+            nodeData = this.graph.selectedNode.data;
 
-		console.log("handling node update");
+        event.preventDefault();
+        event.stopPropagation();
 
-		if (!this.graph.selectedNode) {
-			return;
-		}
+        console.log("handling node update");
 
-		data = this.updateNodeDataWithFields(nodeData);
+        if (!this.graph.selectedNode) {
+            return;
+        }
 
-		this.graph.redrawNodes();
-		this.graph.force.start();
+        data = this.updateNodeDataWithFields(nodeData);
 
-		if (!data[titleField] || data[titleField] == "") {
-			return;
-		}
+        this.graph.redrawNodes();
+        this.graph.force.start();
 
-		$(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
-	};
+        if (!data[titleField] || data[titleField] == "") {
+            return;
+        }
 
-	// graph.NodeCD.prototype.handlePropertyAdded = function (event) {
+        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
+    };
 
-	// 	var fieldPrototype = $('#node-fields').data('prototype'),
-	// 		fieldHTML;
+    graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
 
-	// 	event.preventDefault();
+        var nodeData = this.selectedNode.data,
+            data;
 
-	// 	fieldHTML = fieldPrototype
-	// 		.replace(/__field__/g, '')
-	// 		.replace(/__value__/, '')
-	// 		.replace(/__rows__/, 1);
+        event.preventDefault();
 
-	// 	$('input', $(fieldHTML).appendTo('#node-fields')).focus();
-	// };
+        // $(event.target).closest('li').remove();
 
-	graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
+        data = this.updateNodeDataWithFields(nodeData);
 
-		var nodeData = this.selectedNode.data,
-			data;
+        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
+    };
 
-		event.preventDefault();
+    graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
 
-		$(event.target).closest('li').remove();
+        var self = this,
+            newData = this.createNode({}, data.x, data.y),
+            newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
-		data = this.updateNodeDataWithFields(nodeData);
-
-		$(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
-	};
-
-	graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
-
-		var self = this,
-			newData = this.createNode({}, data.x, data.y),
-			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
+        console.log("yo");
+        console.log(newNode.node());
 
 		$(this.kernel).trigger('create-edge', [data, newData]);
-		$(this.kernel).trigger(NodeEvent.SELECT, [newNode, newData]);
+		$(this.kernel).trigger(NodeEvent.SELECT, [newNode.node(), newData]);
+    };
 
-		// select node in inspector
-		// TODO make inspector listen to node-created instead?
-		// $(this.graph).trigger('node-clicked', [newNode, newData]);
-	};
+    graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
 
-	graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
+        var selectedNode = this.graph.selectedNode,
+            nodeData;
 
-		var selectedNode = this.graph.selectedNode;
+        nodeData = data || (selectedNode && selectedNode.data);
 
-		if (data) {
-			this.destroyNode(data);
-		} else if (selectedNode) {
-			this.destroyNode(selectedNode.data);
-		}
-	};
+        if (nodeData) {
+            this.destroyNode(nodeData);
+        }
+    };
 
 }(window, jQuery, d3));

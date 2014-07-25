@@ -22,6 +22,7 @@
 	graphics.handleNodeSelected = function (event, node) {
 
 		d3.select(node).classed('selected', true);
+		// node.classed('selected', true);
 	};
 
 	graphics.handleNodeUnselected = function (event, node) {
