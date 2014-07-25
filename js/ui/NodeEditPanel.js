@@ -123,9 +123,11 @@
         // create the html form elements
         propertiesList.empty();
 
+        console.log(data._fields);
+
         for (i = data._fields.length; i > 0; i--) {
 
-            fieldName = data._fields[i];
+            fieldName = data._fields[i - 1];
 
             // the title property is rendered differently
             if (fieldName === titleField) {
@@ -138,7 +140,7 @@
                 rows: 1
             });
 
-            propertiesList.prepend(fieldHTML);
+            propertiesList.append(fieldHTML);
         }
     };
 

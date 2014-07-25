@@ -36,23 +36,6 @@
             .on(NodeEvent.UPDATE, updateNode);
     };
 
-    graph.NodeCD.prototype.handleNodeCreate = function (event) {
-
-        var newNode;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        var input = $('#new-node-name').val();
-        if (input == '') {
-            return;
-        }
-
-        $('#new-node-name').val('');
-
-        newNode = this.createNode({name: input});
-    };
-
     /**
      * Create a node from a given set of key value pairs
      */
@@ -74,28 +57,6 @@
 
         return data;
     };
-
-    // graph.NodeCD.prototype.handleNodeDelete = function (event, node, data) {
-
-    //  event.preventDefault();
- //        event.stopPropagation();
-
-    //  this.deleteNode(data);
-    // };
-
-    // graph.NodeCD.prototype.handleNodeDeleteButton = function (event) {
-
-    //  event.preventDefault();
- //        event.stopPropagation();
-
-    //  if (!this.graph.selectedNode) {
-    //      return;
-    //  }
-
-    //  var data = this.graph.selectedNode.data;
-
-    //  this.deleteNode(data);
-    // };
 
     graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
 
@@ -136,6 +97,48 @@
 
         $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
     };
+
+    /**
+     * Update the data and return the filtered updated data
+     */
+    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+
+        var titleField = this.graph.getNodeTitleKey(),
+            fields = $('#node-fields').children(),
+            key,
+            value,
+            result = {};
+
+        // clear the fields metadata, we'll refill this
+        data._fields = [titleField];
+
+        // set the title field separately
+        data[titleField] = $('#node-title').val();
+        result[titleField] = data[titleField];
+
+        for (var i = 0; i < fields.length; i++) {
+            key = $('.node-key', fields[i]).val();
+            value = $('.node-value', fields[i]).val();
+
+            // skip if the key is empty
+            if (key == "" || value == "") {
+                continue;
+            }
+
+            data._fields.push(key);
+            data[key] = value;
+            result[key] = value;
+        }
+
+        // TODO maybe we should try to remove the unused fields from the node data,
+        // but this is not strictly necessary, the fields metadata works as a filter
+
+        return result;
+    };
+
+    /**
+     * Event Listeners
+     */
 
     /**
      * Read the node into the edit form
@@ -186,45 +189,38 @@
         }
     };
 
-    /**
-     * Update the data and return the filtered updated data
-     */
-    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+    graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
 
-        var titleField = this.graph.getNodeTitleKey(),
-            fields = $('#node-fields').children(),
-            key,
-            value,
-            result = {};
+        var self = this,
+            newData = this.createNode({}, data.x, data.y),
+            newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
-        // clear the fields metadata, we'll refill this
-        data._fields = [titleField];
+        console.log("yo");
+        console.log(newNode.node());
 
-        // set the title field separately
-        data[titleField] = $('#node-title').val();
-        result[titleField] = data[titleField];
+        $(this.kernel).trigger('create-edge', [data, newData]);
+        $(this.kernel).trigger(NodeEvent.SELECT, [newNode.node(), newData]);
+    };
 
-        for (var i = 0; i < fields.length; i++) {
-            key = $('.node-key', fields[i]).val();
-            value = $('.node-value', fields[i]).val();
+    graph.NodeCD.prototype.handleNodeCreate = function (event) {
 
-            // skip if the key is empty
-            if (key == "" || value == "") {
-                continue;
-            }
+        event.preventDefault();
+        event.stopPropagation();
 
-            data._fields.push(key);
-            data[key] = value;
-            result[key] = value;
+        var input = $('#new-node-name').val();
+        if (input == '') {
+            return;
         }
 
-        // TODO maybe we should try to remove the unused fields from the node data,
-        // but this is not strictly necessary, the fields metadata works as a filter
+        $('#new-node-name').val('');
 
-        return result;
+        this.createNode({name: input});
     };
 
     graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
+
+        event.preventDefault();
+        event.stopPropagation();
 
         if (!this.graph.selectedNode) {
             return;
@@ -233,10 +229,7 @@
         var data,
             fieldName,
             titleField = this.graph.getNodeTitleKey(),
-            nodeData = this.graph.selectedNode.data;
-
-        event.preventDefault();
-        event.stopPropagation();
+            nodeData = this.graph.selectedNode.data;      
 
         console.log("handling node update");
 
@@ -254,33 +247,6 @@
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
-    };
-
-    graph.NodeCD.prototype.handlePropertyDeleted = function (event) {
-
-        var nodeData = this.selectedNode.data,
-            data;
-
-        event.preventDefault();
-
-        // $(event.target).closest('li').remove();
-
-        data = this.updateNodeDataWithFields(nodeData);
-
-        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
-    };
-
-    graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
-
-        var self = this,
-            newData = this.createNode({}, data.x, data.y),
-            newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
-
-        console.log("yo");
-        console.log(newNode.node());
-
-		$(this.kernel).trigger('create-edge', [data, newData]);
-		$(this.kernel).trigger(NodeEvent.SELECT, [newNode.node(), newData]);
     };
 
     graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
