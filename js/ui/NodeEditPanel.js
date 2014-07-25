@@ -76,11 +76,26 @@
         $('input', $(fieldHTML).appendTo(propertiesList)).focus();
     };
 
+    NodeEditPanel.prototype.destroyProperty = function (propertyField) {
+
+
+        var fieldHTML,
+            propertiesList = $('#node-fields', this.view);
+
+        fieldHTML = window.createFromPrototype(propertiesList, {
+            field: '',
+            value: '',
+            rows: 1
+        });
+
+        $('input', $(fieldHTML).appendTo(propertiesList)).focus();
+    };
+
     NodeEditPanel.prototype.updateData = function (field) {
         var property,
             value;
 
-        property = $(field).prev().val();
+        property = $('input', $(field).closest('.node-field')).val();
         value = $(field).val();
 
         this.nodeData[property] = value;
@@ -162,9 +177,6 @@
     };
 
     NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
-
-        event.preventDefault();
-        event.stopPropagation();
 
         console.log('stuff');
 

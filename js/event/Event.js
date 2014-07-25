@@ -2,7 +2,7 @@
 
     'use strict';
 
-    var event = use('app.event'),
+    var event = window.setNamespace('app.event'),
         Event;
 
     Event = {
@@ -21,4 +21,4 @@
 
     event.Event = Event;
 
-}(window.use));
+}(window));
