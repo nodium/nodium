@@ -32,9 +32,8 @@
             deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this);
 
         $(container).on('menu-collapse', collapseHandler);
-        $(this.kernel).on(NodeEvent.SELECT, nodeSelectedHandler);
-        $(this.kernel).on(NodeEvent.UNSELECT, nodeUnselectedHandler);
-        $(this.kernel).on(NodeEvent.CREAETED, nodeCreatedHandler);
+        $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
+        $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
         $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
         $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
@@ -188,12 +187,6 @@
     NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
 
         this.createProperty();
-    };
-
-    NodeEditPanel.prototype.handleNodeCreated = function (event, node, data) {
-
-        this.setData(data);
-        this.view.trigger('panel-show', [this]);
     };
 
     NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
