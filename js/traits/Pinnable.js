@@ -22,7 +22,7 @@
 
 		data.fixed = !data.fixed;
 
-		$(this).trigger('node-pinned', [node, data]);
+		$(this.kernel).trigger('node-pinned', [node, data]);
 	};
 
 }(window, jQuery, d3));

@@ -22,7 +22,7 @@
 
 		// non-customizable event
 		var createEdge = window.curry(this.handleCreateEdge, this);
-		$(this.graph).on('create-edge', createEdge);
+		$(this.kernel).on('create-edge', createEdge);
 	};
 
 	/**
@@ -95,9 +95,9 @@
 
 			edges.push(edge);
 
-			$(this.graph).trigger('edge-created', [edge, source, target]);
+			$(this.kernel).trigger('edge-created', [edge, source, target]);
 		} else {
-			$(this.graph).trigger('edge-deleted', [toDelete]);
+			$(this.kernel).trigger('edge-deleted', [toDelete]);
 		}
 
 		// redraw the complete graph

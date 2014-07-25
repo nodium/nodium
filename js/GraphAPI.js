@@ -1,5 +1,6 @@
 (function (window, $, undefined) {
-	var graph = window.setNamespace('app.graph');
+	var graph 	  = window.setNamespace('app.graph'),
+		NodeEvent = window.use('app.event.NodeEvent');
 
 	graph.API = function (options) {
 
@@ -27,16 +28,18 @@
 	};
 
 	graph.API.prototype.initialize = function () {
+		console.log("yo");
+		console.log(this.kernel);
 		var createNode = window.curry(this.handleNodeCreated, this);
-		$(this.kernel).on('node-created', createNode);
+		$(this.kernel).on(NodeEvent.CREATED, createNode);
 		var deleteNode = window.curry(this.handleNodeDeleted, this);
-		$(this.kernel).on('node-deleted', deleteNode);
+		$(this.kernel).on(NodeEvent.DESTROYED, deleteNode);
 		var createEdge = window.curry(this.handleEdgeCreated, this);
 		$(this.kernel).on('edge-created', createEdge);
 		var deleteEdge = window.curry(this.handleEdgeDeleted, this);
 		$(this.kernel).on('edge-deleted', deleteEdge);
 		var updateNode = window.curry(this.handleNodeUpdated, this);
-		$(this.kernel).on('node-updated', updateNode);
+		$(this.kernel).on(NodeEvent.UPDATED, updateNode);
 	};
 
 	graph.API.prototype.get = function (callback, addNodeMetadata) {

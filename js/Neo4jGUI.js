@@ -1,7 +1,8 @@
 (function (window, $, d3, undefined) {
 	var app        = window.setNamespace('app'),
 		graph      = window.setNamespace('app.graph'),
-		animations = window.setNamespace('app.graph.animations');
+		animations = window.setNamespace('app.graph.animations'),
+		NodeEvent  = window.use('app.event.NodeEvent');
 
 	/**
 	 * A generic neo4j user interface
@@ -15,7 +16,7 @@
 
 		this.selector = selector;
 
-		this.api = new graph.API(this);
+		this.api = new graph.API();
 
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
@@ -24,10 +25,10 @@
 		.register(new graph.Zoomable())
 		.register(new graph.NodeCD(), [
 			['node-clicked', 'handleSelectNode'],
-			['node-selected', 'app.graph.graphics.handleNodeSelected'],
-			['node-unselected', 'app.graph.graphics.handleNodeUnselected'],
-			['node-deleted', 'handleUnselectNode'],
-			['drag-down', 'handleNodeDelete'],
+			[NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
+			[NodeEvent.UNSELECTED, 'app.graph.graphics.handleNodeUnselected'],
+			[NodeEvent.DESTROYED, 'handleUnselectNode'],
+			['drag-down', 'handleNodeDestroy'],
 			['drag-up', 'handleCreateChildNode'],
 		])
 		.register(new graph.EdgeCD(), [
@@ -44,6 +45,7 @@
 		.register(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']
 		])
+		.register(this.api)
 		// .trait(new graph.Stylable(), {
 		// 	'node-pinned': 'handleNodeStyled',
 		// });
