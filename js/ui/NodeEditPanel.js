@@ -48,6 +48,7 @@
 		this.isVisible = true;
 		this.view.addClass('active');
 
+		// delay setting focus to titleField to prevent breaking the layout
 		window.setTimeout(function () {
 			titleField.focus()
 		}, 200);
