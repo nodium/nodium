@@ -19,17 +19,16 @@
 		graphics.scaleNode(scale, node, this.graph);
 	};
 
-	graphics.handleNodeSelected = function (event, node) {
+	graphics.handleNodeSelected = function (event, node, data) {
 
-		d3.select(node).classed('selected', true);
-		// node.classed('selected', true);
+		d3.select($('.node').get(data.index)).classed('selected', true);
 	};
 
-	graphics.handleNodeUnselected = function (event, node) {
+	graphics.handleNodeUnselected = function (event, node, data) {
 
 		console.log("handling node unselected");
 
-		d3.select(node).classed('selected', false);
+		d3.select($('.node').get(data.index)).classed('selected', false);
 	};
 
 })(window, jQuery, d3);

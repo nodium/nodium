@@ -192,14 +192,16 @@
     graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
 
         var self = this,
-            newData = this.createNode({}, data.x, data.y),
-            newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
+            newData = this.createNode({}, data.x, data.y);
+            // newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
-        console.log("yo");
-        console.log(newNode.node());
+        // passing newNode to trigger select doesn't work, because the nodes
+        // are redrawn in the create edge trigger
 
-        $(this.kernel).trigger('create-edge', [data, newData]);
-        $(this.kernel).trigger(NodeEvent.SELECT, [newNode.node(), newData]);
+        $(this.kernel)
+            .trigger('create-edge', [data, newData])
+            .trigger(NodeEvent.SELECT, [null, newData]);
+        
     };
 
     graph.NodeCD.prototype.handleNodeCreate = function (event) {
