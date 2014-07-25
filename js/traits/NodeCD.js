@@ -95,7 +95,7 @@
 		this.graph.drawNodes();
 		this.graph.force.start();
 
-		$(this.kernel).trigger(NodeEvent.CREATED, [data]);
+		$(this.kernel).trigger(NodeEvent.CREATED, [null, data]);
 
 		return data;
 	};
@@ -309,6 +309,7 @@
 			newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
 		$(this.kernel).trigger('create-edge', [data, newData]);
+		$(this.kernel).trigger(NodeEvent.SELECT, [newNode, newData]);
 
 		// select node in inspector
 		// TODO make inspector listen to node-created instead?
