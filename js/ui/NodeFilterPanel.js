@@ -26,6 +26,7 @@
             filterUnsetHandler = window.curry(this.handleFilterUnset, this),
             filterChangeHandler = window.curry(this.handleFilterChange, this),
             nodeFilteredHandler = window.curry(this.handleNodeFiltered, this),
+            listItemClickHandler = window.curry(this.handleListItemClicked, this),
             queryChangeHandler = window.curry(this.handleQueryChange, this);
 
         $(container).on('menu-collapse', collapseHandler);
@@ -36,6 +37,8 @@
                 Event.INPUT,
                 Event.PASTE,
             ].join(' '), queryChangeHandler);
+
+        $(this.view).on(Event.CLICK, 'li', listItemClickHandler);
 
         return this;
     };
@@ -106,6 +109,13 @@
         this.nodesData = null;
     };
 
+    NodeFilterPanel.prototype.getNodeData = function (target) {
+
+        var index = $('#node-filter-result li', this.view).index($(target));
+
+        return this.nodesData[index];
+    };
+
 
     /**
      * Event handlers
@@ -116,6 +126,15 @@
         if (this.isVisible) {
             this.hide();
         }
+    };
+
+    NodeFilterPanel.prototype.handleListItemClicked = function (event) {
+
+        var nodeData = this.getNodeData(event.currentTarget);
+
+        $(this.kernel)
+            .trigger(NodeEvent.FILTER_UNSET)
+            .trigger(NodeEvent.SELECT, [undefined, nodeData]);
     };
 
     NodeFilterPanel.prototype.handleNodeFiltered = function (event, nodes, data) {

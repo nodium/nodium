@@ -150,10 +150,6 @@ aside {
 
 #inspector ul {
 
-	li:last-child {
-		border-bottom: 1px solid #b3b3b3;
-	}
-
 	&::before {
 		width:100%;
 		padding: 6px 0 6px 38px;
@@ -166,6 +162,20 @@ aside {
 		font-variant: small-caps;
 		color: #b3b3b3;
 		border-bottom: 1px solid #b3b3b3;
+	}
+}
+
+#inspector li {
+
+	color: #b3b3b3;
+	cursor: pointer;
+
+	&:last-child {
+		border-bottom: 1px solid #b3b3b3;
+	}
+
+	&:hover {
+		color: $color-light;
 	}
 }
 

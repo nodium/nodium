@@ -43,6 +43,11 @@ body {
 }
 
 /* line 33, sass/_dom-overrides.scss */
+button {
+  cursor: pointer;
+}
+
+/* line 37, sass/_dom-overrides.scss */
 button, input, textarea, select, label {
   width: 100%;
   padding: 8px;
@@ -51,25 +56,25 @@ button, input, textarea, select, label {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-weight: 300;
 }
-/* line 42, sass/_dom-overrides.scss */
+/* line 46, sass/_dom-overrides.scss */
 button:focus, input:focus, textarea:focus, select:focus, label:focus {
   outline: none;
 }
 
-/* line 47, sass/_dom-overrides.scss */
+/* line 51, sass/_dom-overrides.scss */
 textarea, input, select {
   background: #c2b9c2;
   color: white;
 }
 
-/* line 54, sass/_dom-overrides.scss */
+/* line 58, sass/_dom-overrides.scss */
 aside textarea,
 aside input,
 aside select {
   color: #331833;
 }
 
-/* line 60, sass/_dom-overrides.scss */
+/* line 64, sass/_dom-overrides.scss */
 aside button,
 aside input[type=button],
 aside input[type=submit] {
@@ -77,28 +82,28 @@ aside input[type=submit] {
   margin: 8px;
 }
 
-/* line 66, sass/_dom-overrides.scss */
+/* line 70, sass/_dom-overrides.scss */
 ::-webkit-input-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 72, sass/_dom-overrides.scss */
+/* line 76, sass/_dom-overrides.scss */
 ::-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 78, sass/_dom-overrides.scss */
+/* line 82, sass/_dom-overrides.scss */
 :-moz-placeholder {
   color: inherit;
   font-variant: small-caps;
   text-transform: lowercase;
 }
 
-/* line 84, sass/_dom-overrides.scss */
+/* line 88, sass/_dom-overrides.scss */
 :-ms-input-placeholder {
   color: inherit;
   font-variant: small-caps;
@@ -260,10 +265,6 @@ aside {
 }
 
 /* line 153, sass/_sidebar.scss */
-#inspector ul li:last-child {
-  border-bottom: 1px solid #b3b3b3;
-}
-/* line 157, sass/_sidebar.scss */
 #inspector ul::before {
   width: 100%;
   padding: 6px 0 6px 38px;
@@ -277,23 +278,37 @@ aside {
   border-bottom: 1px solid #b3b3b3;
 }
 
-/* line 172, sass/_sidebar.scss */
+/* line 168, sass/_sidebar.scss */
+#inspector li {
+  color: #b3b3b3;
+  cursor: pointer;
+}
+/* line 173, sass/_sidebar.scss */
+#inspector li:last-child {
+  border-bottom: 1px solid #b3b3b3;
+}
+/* line 177, sass/_sidebar.scss */
+#inspector li:hover {
+  color: white;
+}
+
+/* line 182, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
 }
 
-/* line 176, sass/_sidebar.scss */
+/* line 186, sass/_sidebar.scss */
 #node-filter-result::before {
   content: 'Result';
 }
 
-/* line 180, sass/_sidebar.scss */
+/* line 190, sass/_sidebar.scss */
 #node-filter-result {
   overflow-y: auto;
   height: calc(100vh - 35px - 16px);
 }
 
-/* line 186, sass/_sidebar.scss */
+/* line 196, sass/_sidebar.scss */
 .list-item {
   width: 100%;
   height: 38px;
