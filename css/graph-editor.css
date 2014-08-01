@@ -188,15 +188,16 @@ aside {
   width: 38px;
   padding: 9px 0;
   margin: 0;
+  display: block;
   background: transparent;
   color: white;
 }
-/* line 91, sass/_sidebar.scss */
+/* line 92, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 97, sass/_sidebar.scss */
+/* line 98, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -206,20 +207,20 @@ aside {
   vertical-align: top;
 }
 
-/* line 105, sass/_sidebar.scss */
+/* line 106, sass/_sidebar.scss */
 .node-field > div {
   position: relative;
   height: auto;
 }
 
-/* line 110, sass/_sidebar.scss */
+/* line 111, sass/_sidebar.scss */
 .node-field input {
   left: 0;
   right: 0;
   padding-left: 38px;
 }
 
-/* line 116, sass/_sidebar.scss */
+/* line 117, sass/_sidebar.scss */
 .node-field button {
   position: absolute;
   top: 0;
@@ -228,7 +229,7 @@ aside {
   color: #b3b3b3;
 }
 
-/* line 125, sass/_sidebar.scss */
+/* line 126, sass/_sidebar.scss */
 .node-field button,
 #new-property {
   text-align: center;
@@ -239,30 +240,30 @@ aside {
   background: transparent;
 }
 
-/* line 134, sass/_sidebar.scss */
+/* line 135, sass/_sidebar.scss */
 #new-property {
   color: white;
   height: 35px;
 }
 
-/* line 139, sass/_sidebar.scss */
+/* line 140, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 145, sass/_sidebar.scss */
+/* line 146, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
   color: white;
 }
 
-/* line 151, sass/_sidebar.scss */
+/* line 152, sass/_sidebar.scss */
 #node-fields li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 155, sass/_sidebar.scss */
+/* line 156, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
   width: 100%;
@@ -275,6 +276,31 @@ aside {
   font-variant: small-caps;
   color: #b3b3b3;
   border-bottom: 1px solid #b3b3b3;
+}
+
+/* line 172, sass/_sidebar.scss */
+.list-item {
+  width: 100%;
+  height: 38px;
+  color: white;
+  padding: 1px 10px 0 38px;
+  display: -webkit-box;
+  /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
+  display: -moz-box;
+  /* OLD: Firefox (buggy) */
+  display: -ms-flexbox;
+  /* MID: IE 10 */
+  display: -webkit-flex;
+  /* NEW, Chrome 21+ */
+  display: flex;
+  /* NEW: Opera 12.1, Firefox 22+ */
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  /* OLDâ€¦ */
+  -ms-flex-align: center;
+  /* You know the drill nowâ€¦ */
+  -webkit-align-items: center;
+  align-items: center;
 }
 
 /*
@@ -502,6 +528,11 @@ text {
 /* line 43, sass/_nodes.scss */
 .node.selected .top-circle {
   stroke-width: 5px;
+}
+
+/* line 47, sass/_nodes.scss */
+.node.filtered {
+  opacity: 0.5;
 }
 
 /* line 151, sass/graph-editor.scss */

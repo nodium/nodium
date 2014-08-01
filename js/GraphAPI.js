@@ -1,6 +1,10 @@
 (function (window, $, undefined) {
 	var graph 	  = window.setNamespace('app.graph'),
-		NodeEvent = window.use('app.event.NodeEvent');
+		NodeEvent = window.use('app.event.NodeEvent'),
+		_defaults = {
+			host: 'localhost',
+			port: 7474
+		};
 
 	graph.API = function (options) {
 
@@ -8,11 +12,6 @@
 		if ((this instanceof graph.API) === false) {
 			return new graph.API(arguments);
 		}
-
-		var _defaults = {
-			host: 'localhost',
-			port: '7474'
-		};
 
 		this.options = $.extend({}, _defaults, options);
 	};

@@ -15,6 +15,7 @@
 		}
 
 		this.selector = selector;
+		this.mode = '';
 
 		this.api = new graph.API();
 
@@ -45,6 +46,10 @@
 		.register(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']
 		])
+		.register(new graph.Filterable(), [
+			[NodeEvent.FILTER, 'handleNodeFilter'],
+			[NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
+		])
 		.register(this.api)
 		// .register(new graph.Stylable(), {
 		// 	'node-pinned': 'handleNodeStyled',
@@ -53,6 +58,12 @@
 		// UI handlers that initiate an action event
 		var keyDownHandler = window.curry(this.handleKeyDown, this);
         $(window).on('keydown', keyDownHandler);
+
+        var modeChangeHandler = window.curry(this.handleModeChange, this),
+        	escapeKeyHandler = window.curry(this.handleEscapeKey, this);
+        $(this)
+        	.on('mode-change', modeChangeHandler)
+        	.on(KeyboardEvent.ESCAPE, escapeKeyHandler);
 
 		this.initialize();
 	};
@@ -68,11 +79,41 @@
 		console.log("handling key down");
 
 		if (event.keyCode === 27) {
-            $(this).trigger(NodeEvent.UNSELECT);
-        } else if (event.keyCode === 90 && event.ctrlKey) {
-        	console.log("CTRLz");
+			$(this).trigger(KeyboardEvent.ESCAPE);
+        } else if (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) {
+        	console.log("ctrl+z");
+        } else if (event.keyCode === 78 && (event.ctrlKey || event.metaKey)) {
+
+        	event.preventDefault();
+        	event.stopPropagation();
+
+        	console.log('ctrl+n');
+        	$(this).trigger(NodeEvent.CREATE);
         }
 	};
+
+	graph.Neo4jGUI.prototype.handleModeChange = function (event, mode) {
+		this.mode = mode;
+	};
+
+	graph.Neo4jGUI.prototype.handleEscapeKey = function (event) {
+
+		var eventType;
+
+		switch (this.mode) {
+			case 'select':
+				eventType = NodeEvent.UNSELECT;
+				break;
+			case 'filter':
+				eventType = NodeEvent.FILTER_UNSET;
+				break;
+			default: // do nothing
+				return;
+		}
+		console.log(eventType);
+		$(this).trigger(eventType);
+		this.mode = '';
+	}
 
 	/**
 	 * Return the faked data

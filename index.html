@@ -19,6 +19,16 @@
 					<button id="delete-button" type="submit"><span class="icon-trash"></span>Delete node</button>
 				</form>
 			</div>
+			<div id="filter-node" class="panel">
+				<form id="node-filter-form" action="post">
+					<div>
+						<label for="node-query" class="icon-filter"></label>
+						<input type="text" id="node-query" />
+					</div>
+						<ul id="node-filter-result" class="node-list" data-prototype='<li class="list-item">{name}</li>'>
+					</ul>
+				</form>
+			</div>
 			<nav class="panel-navigation" data-prototype="<button class=&quot;{icon}&quot; type=&quot;button&quot;></button>">
 			</nav>
 		</aside>
@@ -46,20 +56,24 @@
 	<!--<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>-->
 	<!--<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
 	<!--<script src="//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>-->
+	<script src="js/lodash-2.4.1-modern.min.js"></script>
 	<script src="js/jquery-2.1.1.min.js"></script>
 	<script src="js/d3.min.js"></script>
 	<script src="js/mousetrap.min.js"></script>
 	<script src="js/mousetrap-global-min.js"></script>
 	<script src="js/Util.js"></script>
 	<script src="js/event/Event.js"></script>
+	<script src="js/event/KeyboardEvent.js"></script>
 	<script src="js/event/NodeEvent.js"></script>
 	<script src="js/ui/NodeEditPanel.js"></script>
+	<script src="js/ui/NodeFilterPanel.js"></script>
 	<script src="js/ui/PanelContainer.js"></script>
 	<script src="js/Graph.js"></script>
 	<script src="js/Graphics.js"></script>
 	<script src="js/GraphAPI.js"></script>
 	<script src="js/Neo4jGUI.js"></script>
 	<script src="js/traits/Zoomable.js"></script>
+	<script src="js/traits/Filterable.js"></script>
 	<script src="js/traits/EdgeCD.js"></script>
 	<script src="js/traits/NodeCD.js"></script>
 	<script src="js/traits/Holdable.js"></script>
@@ -76,7 +90,12 @@
 
 			menu
 				.init()
-				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, g));
+				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, g))
+				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, g));
+
+			// window.setTimeout(function () {
+			// 	$(g).trigger('node-filter', ['php']);
+			// }, 2000);
 		});
 	</script>
 </html>

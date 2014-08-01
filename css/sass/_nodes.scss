@@ -43,3 +43,7 @@ text {
 .node.selected .top-circle {
 	stroke-width: 5px;
 }
+
+.node.filtered {
+	opacity: 0.5
+}

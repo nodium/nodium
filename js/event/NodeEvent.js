@@ -12,7 +12,10 @@
 		UPDATED: 'node-updated',
 		DESTROYED: 'node-destroyed',
 		SELECTED: 'node-selected',
-		UNSELECTED: 'node-unselected'
+		UNSELECTED: 'node-unselected',
+		FILTER: 'node-filter',
+		FILTERED: 'node-filtered',
+		FILTER_UNSET: 'node-filter-unset',
 	};
 
 	event.NodeEvent = NodeEvent;

@@ -63,6 +63,7 @@
         window.setTimeout(function () {
             titleField.focus();
         }, 200);
+        $(this.kernel).trigger('mode-change', 'select');
     };
 
     NodeEditPanel.prototype.createProperty = function () {
@@ -182,7 +183,7 @@
         event.preventDefault();
         event.stopPropagation();
 
-        $(this.kernel).trigger(NodeEvent.DESTROY);
+        $(this.kernel).trigger(NodeEvent.DESTROY, [null, this.nodeData]);
         this.view.trigger('panel-hide', [this]);
     };
 
