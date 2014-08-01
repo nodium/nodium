@@ -148,13 +148,13 @@ aside {
 	color: $color-light;
 }
 
-#node-fields {
+#inspector ul {
+
 	li:last-child {
 		border-bottom: 1px solid #b3b3b3;
 	}
 
 	&::before {
-		content: 'Properties';
 		width:100%;
 		padding: 6px 0 6px 38px;
 		display: block;
@@ -167,6 +167,20 @@ aside {
 		color: #b3b3b3;
 		border-bottom: 1px solid #b3b3b3;
 	}
+}
+
+#node-fields::before {
+	content: 'Properties';
+}
+
+#node-filter-result::before {
+	content: 'Result';
+}
+
+#node-filter-result {
+	overflow-y: auto;
+
+	height: calc(100vh - 35px - 16px);
 }
 
 .list-item {

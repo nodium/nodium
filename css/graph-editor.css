@@ -259,13 +259,12 @@ aside {
   color: white;
 }
 
-/* line 152, sass/_sidebar.scss */
-#node-fields li:last-child {
+/* line 153, sass/_sidebar.scss */
+#inspector ul li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 156, sass/_sidebar.scss */
-#node-fields::before {
-  content: 'Properties';
+/* line 157, sass/_sidebar.scss */
+#inspector ul::before {
   width: 100%;
   padding: 6px 0 6px 38px;
   display: block;
@@ -279,6 +278,22 @@ aside {
 }
 
 /* line 172, sass/_sidebar.scss */
+#node-fields::before {
+  content: 'Properties';
+}
+
+/* line 176, sass/_sidebar.scss */
+#node-filter-result::before {
+  content: 'Result';
+}
+
+/* line 180, sass/_sidebar.scss */
+#node-filter-result {
+  overflow-y: auto;
+  height: calc(100vh - 35px - 16px);
+}
+
+/* line 186, sass/_sidebar.scss */
 .list-item {
   width: 100%;
   height: 38px;

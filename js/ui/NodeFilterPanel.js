@@ -1,4 +1,4 @@
-(function (window, $, undefined) {
+(function (window, $, _, undefined) {
     'use strict';
 
     var ui = window.setNamespace('app.ui'),
@@ -72,26 +72,26 @@
             nodeName,
             titleField = this.kernel.getNodeTitleKey(),
             value,
-            i;
+            i,
+            nodesData;
 
-        this.nodesData = data;
-        console.log('setData');
+        nodesData = _.sortBy(data, titleField);        
 
         // create the html form elements
         nodesList.empty();
 
-        for (i = data.length; i > 0; i--) {
+        for (i = nodesData.length; i > 0; i--) {
 
-            nodeName = data[i - 1][titleField];
-
-            console.log(nodeName);
+            nodeName = nodesData[i - 1][titleField];
 
             listItemHTML = window.createFromPrototype(nodesList, {
                 name: nodeName,
             });
 
-            nodesList.append(listItemHTML);
+            nodesList.prepend(listItemHTML);
         }
+
+        this.nodesData = nodesData;
     };
 
     NodeFilterPanel.prototype.unsetData = function (data) {
@@ -136,4 +136,4 @@
 
     ui.NodeFilterPanel = NodeFilterPanel;
 
-}(window, window.jQuery));
+}(window, window.jQuery, window._));
