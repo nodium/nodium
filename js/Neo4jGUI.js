@@ -14,8 +14,11 @@
 			return new graph.Neo4jGUI(arguments);
 		}
 
+		var self = this;
+
 		this.selector = selector;
 		this.mode = '';
+		this.kernel = this;
 
 		this.api = new graph.API();
 
@@ -70,6 +73,18 @@
         $(this)
         	.on('mode-change', modeChangeHandler)
         	.on(KeyboardEvent.ESCAPE, escapeKeyHandler);
+
+
+       	// mouse events
+       	d3.select(this.selector).select('.graph-content')
+       	.on('mousedown', function () {
+			var position = d3.mouse(this);
+			$(self.kernel).trigger('mouse-down', [undefined, undefined, { x: position[0], y: position[1] }]);
+		})
+		.on('mouseup', function () {
+			var position = d3.mouse(this);
+			$(self.kernel).trigger('mouse-up', [undefined, undefined, { x: position[0], y: position[1] }]);
+		});
 
 		this.initialize();
 	};

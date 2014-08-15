@@ -91,13 +91,13 @@
 			var g 		= new graph.Neo4jGUI('#graph'),
 				menu 	= new ui.PanelContainer('#inspector', {});
 
-			$('#graph').on('mousedown', function (event) {
-				console.log(event)
-				$(g).trigger('mouse-down', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
-			});
-			$('#graph').on('mouseup', function (event) {
-				$(g).trigger('mouse-up', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
-			});
+			// $('#graph').on('mousedown', function (event) {
+			// 	console.log(event);
+			// 	$(g).trigger('mouse-down', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
+			// });
+			// $('#graph').on('mouseup', function (event) {
+			// 	$(g).trigger('mouse-up', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
+			// });
 
 			menu
 				.init()

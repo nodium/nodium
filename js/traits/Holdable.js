@@ -46,6 +46,7 @@
 			// we're only really holding the node if we're not dragging
 			if (!graph.dragging) {
 				console.log("holding");
+				console.log(position);
 				graph.holding = true;
 
 				if (node) {

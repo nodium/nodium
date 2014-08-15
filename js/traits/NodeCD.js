@@ -150,10 +150,6 @@
             data: data
         };
 
-        console.log("yo2");
-        console.log(node);
-        console.log(data);
-
         $(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
     };
 

@@ -556,6 +556,8 @@
 
 	graph.Graph.prototype.handleMouseDown = function (graph, data) {
 
+		console.log("mousedown");
+
 		$(graph).trigger('mouse-down', [this, data]);
 	};	
 
