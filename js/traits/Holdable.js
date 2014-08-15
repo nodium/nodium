@@ -113,6 +113,8 @@
 				.toggle()
 				.text("");
 		}
+
+		this.graph.dragging = false;
 	};
 
 }(window, jQuery, d3));
