@@ -87,6 +87,12 @@
 
 		clearTimeout(this.holdTimeoutId);
 
+		this.graph.dragging = false;
+		
+		if (!node) {
+			return;
+		}
+
 		// dispatch menu action if node was held
 		// use a fixed distance that has to be dragged
 		if (this.graph.holding && this.graph.dragDistance > 100) {
@@ -112,8 +118,6 @@
 			$('#hold-action-notification').toggle();
 			$('#hold-action-notification').text("");
 		}
-
-		this.graph.dragging = false;
 	};
 
 }(window, jQuery, d3));

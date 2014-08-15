@@ -180,7 +180,9 @@
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
         } else if (selectedNode) {
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
-        }
+        } /*else {
+            $(this.kernel).trigger(NodeEvent.UNSELECTED);
+        }*/
 
         if (selectedNode) {
             console.log(selectedNode);
