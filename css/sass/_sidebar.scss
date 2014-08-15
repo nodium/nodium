@@ -169,6 +169,7 @@ aside {
 
 	color: #b3b3b3;
 	cursor: pointer;
+	transition: color 0.08s linear;
 
 	&:last-child {
 		border-bottom: 1px solid #b3b3b3;

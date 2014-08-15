@@ -124,8 +124,6 @@
         // create the html form elements
         propertiesList.empty();
 
-        console.log(data._fields);
-
         for (i = data._fields.length; i > 0; i--) {
 
             fieldName = data._fields[i - 1];

@@ -99,7 +99,6 @@
 
     NodeFilterPanel.prototype.unsetData = function (data) {
 
-        console.log('unsetData');
         var nodesList = $('#node-filter-result', this.view);
 
         $('#node-query', this.view).val('');
