@@ -26,22 +26,17 @@
         
     };
 
-    graph.Filterable.prototype.drawNodeOverlay = function () {
+    graph.Filterable.prototype.drawNodeOverlay = function (nodeEnter) {
 
         var self = this;
 
-        if (d3.selectAll('.overlay')[0].length) {
-            return;
-        }
+        nodeEnter.append('svg:circle')
+            .attr('class', 'overlay')
+            .attr('r', function (data) {
+                var radius = self.graph.getNodeRadius() * 2;
 
-        d3.selectAll('.node')
-            .append('svg:circle')
-                .attr('class', 'overlay')
-                .attr('r', function (data) {
-                    var radius = self.graph.getNodeRadius() * 2;
-
-                    return radius;
-                })
+                return radius;
+            })
         ;
     };
 
@@ -78,9 +73,9 @@
         d3.selectAll('.filtered').classed('filtered', false);
     };
 
-    graph.Filterable.prototype.handleNodeDrawn = function (event) {
+    graph.Filterable.prototype.handleNodeDrawn = function (event, nodeEnter) {
 
-        this.drawNodeOverlay();
+        this.drawNodeOverlay(nodeEnter);
     };
 
     graph.Filterable.prototype.handleNodeFilter = function (event, query) {
