@@ -68,8 +68,6 @@
 		console.log('coloring nodes');
 		console.log(this.options);
 
-		// console.log(nodeEnter); throw {};
-
 		var nodes = nodeEnter; // || this.graph.node;
 
 		graphics.colorNodes(nodes, window.curry(this.colorNodeByLabel, this));

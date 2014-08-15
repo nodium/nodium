@@ -33,9 +33,6 @@
 
 	graphics.colorNodes = function (nodes, color) {
 
-		console.log("graphics node color");
-		console.log(nodes);
-
 		nodes.selectAll('.top-circle').style('fill', color);
 	};
 
