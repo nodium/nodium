@@ -31,6 +31,7 @@
 			[NodeEvent.DESTROYED, 'handleNodeUnselect'],
 			['drag-down', 'handleNodeDestroy'],
 			['drag-up', 'handleCreateChildNode'],
+			['holding-canvas', 'handleCanvasHold']
 		])
 		.register(new graph.EdgeCD(), [
 			['drag-end', 'handleLinking']
@@ -56,8 +57,8 @@
 		// });
 
 		// UI handlers that initiate an action event
-		var keyDownHandler = window.curry(this.handleKeyDown, this);
-        $(window).on('keydown', keyDownHandler);
+		// var keyDownHandler = window.curry(this.handleKeyDown, this);
+  //       $(window).on('keydown', keyDownHandler);
 
         var modeChangeHandler = window.curry(this.handleModeChange, this),
         	escapeKeyHandler = window.curry(this.handleEscapeKey, this);
@@ -76,10 +77,13 @@
 
 	graph.Neo4jGUI.prototype.handleKeyDown = function (event) {
 
-		console.log("handling key down");
+		console.log('handleKeyDown');
+		console.log(event);
 
 		if (event.keyCode === 27) {
 			$(this).trigger(KeyboardEvent.ESCAPE);
+		} else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
+			console.log('ctrl+f');
         } else if (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) {
         	console.log("ctrl+z");
         } else if (event.keyCode === 78 && (event.ctrlKey || event.metaKey)) {
@@ -110,7 +114,7 @@
 			default: // do nothing
 				return;
 		}
-		console.log(eventType);
+
 		$(this).trigger(eventType);
 		this.mode = '';
 	}

@@ -36,7 +36,7 @@
 		$('#hold-action-notification').toggle();
 	};
 
-	graph.Holdable.prototype.handleHoldStart = function (event, node, data) {
+	graph.Holdable.prototype.handleHoldStart = function (event, node, data, position) {
 
 		var self = this;
 		var graph = this.graph;
@@ -48,8 +48,12 @@
 				console.log("holding");
 				graph.holding = true;
 
-				$('#hold-action-notification').toggle();
-				$(self.kernel).trigger('holding-node', [node, data]);
+				if (node) {
+					$('#hold-action-notification').toggle();
+					$(self.kernel).trigger('holding-node', [node, data]);
+				} else {
+					$(self.kernel).trigger('holding-canvas', [position]);
+				}
 			}
 		}, 500);
 	};

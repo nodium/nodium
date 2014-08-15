@@ -82,6 +82,7 @@
 
 			if (func) {
 				console.log("attaching " + value + " to " + key);
+				console.log(this);
 				$(this).on(key, window.partial(func, trait, args));
 			} else {
 				console.log("couldn't attach " + value + " to " + key);

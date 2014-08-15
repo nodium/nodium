@@ -13,7 +13,9 @@
 						<label for="node-title" class="icon-pencil"></label>
 						<input type="text" id="node-title" />
 					</div>
-						<ul id="node-fields" data-prototype='<li class="node-field"><div><input type="text" class="node-key" value="{field}" /><button type="button" class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></div><textarea class="node-value" rows="{rows}">{value}</textarea></li>'>
+					<!--<ul id="node-labels" data-prototype='<li class="node-label"><div><input type="text" class="node-key" value="{label}" /><button type="button" class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></li>'>
+					</ul>-->
+					<ul id="node-fields" data-prototype='<li class="node-field"><div><input type="text" class="node-key" value="{field}" /><button type="button" class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></div><textarea class="node-value" rows="{rows}">{value}</textarea></li>'>
 					</ul>
 					<button id="new-property" type="button"><span class="icon-plus"></span></button>
 					<button id="delete-button" type="submit"><span class="icon-trash"></span>Delete node</button>
@@ -87,6 +89,14 @@
 
 			var g 		= new graph.Neo4jGUI('#graph'),
 				menu 	= new ui.PanelContainer('#inspector', {});
+
+			$('#graph').on('mousedown', function (event) {
+				console.log(event)
+				$(g).trigger('mouse-down', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
+			});
+			$('#graph').on('mouseup', function (event) {
+				$(g).trigger('mouse-up', [undefined, undefined, { x: event.offsetX, y: event.offsetY }]);
+			});
 
 			menu
 				.init()

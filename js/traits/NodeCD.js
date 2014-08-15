@@ -21,19 +21,10 @@
      */
     graph.NodeCD.prototype.initialize = function () {
 
-        var selectNode,
-            unselectNode,
-            updateNode;
-
-        // action events
-        selectNode   = window.curry(this.handleNodeSelect, this);
-        unselectNode = window.curry(this.handleNodeUnselect, this);
-        updateNode   = window.curry(this.handleNodeUpdate, this);
-
         $(this.kernel)
-            .on(NodeEvent.SELECT, selectNode)
-            .on(NodeEvent.UNSELECT, unselectNode)
-            .on(NodeEvent.UPDATE, updateNode);
+            .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
+            .on(NodeEvent.UNSELECT, this.handleNodeUnselect.bind(this))
+            .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this));
     };
 
     /**
@@ -164,6 +155,15 @@
         console.log(data);
 
         $(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
+    };
+
+    graph.NodeCD.prototype.handleCanvasHold = function (event, position) {
+
+        var nodeData;
+
+        nodeData = this.createNode({}, position.x, position.y);
+
+        $(this.kernel).trigger(NodeEvent.SELECT, [null, nodeData]);
     };
 
     /**
