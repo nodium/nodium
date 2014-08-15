@@ -42,7 +42,8 @@
 			['drag', 'handleHoldDrag'],
 			['drag-end', 'handleHoldEnd'],
 			['drag-end', 'app.graph.graphics.handleNodeScale', 1],
-			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3]
+			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
+			['mouse-up', 'handleHoldEnd']
 		])
 		.register(new graph.Pinnable(), [
 			['drag-right', 'handleNodePinned']
