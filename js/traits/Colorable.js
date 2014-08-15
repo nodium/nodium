@@ -14,9 +14,14 @@
 			return new graph.Colorable(arguments);
 		}
 
+		this.colorMap = {};
+		this.colorCount = 0;
+		this.colors = d3.scale.category10();
+
 		var _defaults = {
+			'numColors': 10,
 			'method': 'label',
-			'defaultColor': '#AA1111'
+			'defaultColor': '#d2d2d2'
 		};
 
 		this.options = $.extend({}, _defaults, options);
@@ -29,9 +34,26 @@
 	/**
 	 * Color all the nodes
 	 */
-	graph.Colorable.prototype.colorNodesByLabel = function () {
-		console.log(this.options.defaultColor);
-		return this.options.defaultColor;
+	graph.Colorable.prototype.colorNodeByLabel = function (data) {
+
+		var color = this.options.defaultColor,
+			colorIndex,
+			label;
+		
+		if (data._labels && data._labels.length > 0) {
+			label = data._labels[0];
+			
+			if (!this.colorMap.hasOwnProperty(label)) {
+				this.colorMap[label] = this.colorCount;
+				this.colorCount++;
+			}
+
+			colorIndex = this.colorMap[label];
+
+			color = this.colors(colorIndex % this.options.numColors);
+		}
+
+		return color;
 	};
 
 	graph.Colorable.prototype.colorNodesRandomly = function () {
@@ -47,7 +69,7 @@
 		console.log(this.options);
 
 		if (!node) {
-			graphics.colorNodes(window.curry(this.colorNodesByLabel, this));
+			graphics.colorNodes(window.curry(this.colorNodeByLabel, this));
 		}
 	};
 

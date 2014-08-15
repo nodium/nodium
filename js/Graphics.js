@@ -32,8 +32,9 @@
 	};
 
 	graphics.colorNodes = function (color) {
+
 		console.log("graphics node color");
-		console.log(color);
+		
 		d3.selectAll('.node circle')
 			.style('fill', color);
 	};
