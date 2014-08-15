@@ -35,7 +35,7 @@
 
 		console.log("graphics node color");
 		
-		d3.selectAll('.node circle')
+		d3.selectAll('.node .top-circle')
 			.style('fill', color);
 	};
 

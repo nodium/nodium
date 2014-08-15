@@ -30,11 +30,15 @@
 
         var self = this;
 
+        if (d3.selectAll('.overlay')[0].length) {
+            return;
+        }
+
         d3.selectAll('.node')
             .append('svg:circle')
                 .attr('class', 'overlay')
                 .attr('r', function (data) {
-                    var radius = self.getNodeRadius * 2;
+                    var radius = self.graph.getNodeRadius() * 2;
 
                     return radius;
                 })

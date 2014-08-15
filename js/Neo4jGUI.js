@@ -48,7 +48,7 @@
 			['drag-right', 'handleNodePinned']
 		])
 		.register(new graph.Filterable(), [
-			NodeEvent.DRAWN, 'handleNodeDrawn'],
+			[NodeEvent.DRAWN, 'handleNodeDrawn'],
 			[NodeEvent.FILTER, 'handleNodeFilter'],
 			[NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
 		])
