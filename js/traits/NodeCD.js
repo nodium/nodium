@@ -178,7 +178,7 @@
 
         if (data) {
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
-        } else {
+        } else if (selectedNode) {
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
         }
 
