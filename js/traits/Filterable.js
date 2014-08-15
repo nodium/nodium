@@ -26,6 +26,20 @@
         
     };
 
+    graph.Filterable.prototype.drawNodeOverlay = function (nodeEnter) {
+
+        var self = this;
+
+        nodeEnter.append('svg:circle')
+            .attr('class', 'overlay')
+            .attr('r', function (data) {
+                var radius = self.graph.getNodeRadius() * 2;
+
+                return radius;
+            })
+        ;
+    };
+
     graph.Filterable.prototype.filter = function (needle) {
 
         var filteredData = [];
@@ -57,6 +71,11 @@
     graph.Filterable.prototype.resetFilter = function () {
 
         d3.selectAll('.filtered').classed('filtered', false);
+    };
+
+    graph.Filterable.prototype.handleNodeDrawn = function (event, nodeEnter) {
+
+        this.drawNodeOverlay(nodeEnter);
     };
 
     graph.Filterable.prototype.handleNodeFilter = function (event, query) {

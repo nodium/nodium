@@ -540,30 +540,33 @@ text {
 }
 
 /* line 29, sass/_nodes.scss */
+.overlay {
+  fill: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.08s linear;
+}
+
+/* line 36, sass/_nodes.scss */
 .accepted .top-circle {
   fill: #00b67c;
   opacity: 1;
 }
 
-/* line 34, sass/_nodes.scss */
+/* line 41, sass/_nodes.scss */
 .denied .top-circle {
   fill: #e2abb9;
   opacity: 1;
 }
 
-/* line 39, sass/_nodes.scss */
-.filtered .top-circle {
-  fill: #f1f1f1;
+/* line 46, sass/_nodes.scss */
+.filtered .overlay {
+  opacity: 0.5;
 }
 
-/* line 43, sass/_nodes.scss */
+/* line 50, sass/_nodes.scss */
 .node.selected .top-circle {
   stroke-width: 5px;
-}
-
-/* line 47, sass/_nodes.scss */
-.node.filtered {
-  opacity: 0.5;
 }
 
 /* line 151, sass/graph-editor.scss */
