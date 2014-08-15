@@ -1,7 +1,8 @@
 (function (window, $, d3, undefined) {
 
 	var app = window.setNamespace('app'),
-		graph = window.setNamespace('app.graph');
+		graph = window.setNamespace('app.graph'),
+		NodeEvent  = window.use('app.event.NodeEvent');
 
 	graph.Graph = function (selector) {
 
@@ -338,6 +339,8 @@
 		this.drawNodeTexts(nodeEnter);
 
 		this.node = node;
+
+		$(this).trigger(NodeEvent.DRAWN);
 
 		return this;
 	};

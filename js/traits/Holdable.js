@@ -16,7 +16,7 @@
 
 		var _defaults = {
 			'duration': 1000
-		}
+		};
 
 		this.options = $.extend({}, _defaults, options);
 	};

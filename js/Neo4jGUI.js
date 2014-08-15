@@ -50,6 +50,9 @@
 			[NodeEvent.FILTER, 'handleNodeFilter'],
 			[NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
 		])
+		.register(new graph.Colorable(), [
+			[NodeEvent.DRAWN, 'handleColorNodes']
+		])
 		.register(this.api)
 		// .register(new graph.Stylable(), {
 		// 	'node-pinned': 'handleNodeStyled',

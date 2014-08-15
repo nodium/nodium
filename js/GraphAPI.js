@@ -45,7 +45,7 @@
 
 		// OPTIONAL MATCH n-[r]-m
 		var nodeQuery = {
-		  "query" : "START n=node(*) RETURN n",
+		  "query" : "START n=node(*) RETURN n, labels(n)",
 		  "params" : {}
 		};
 		var edgeQuery = {
@@ -55,34 +55,37 @@
 		var url = this.url('/db/data/cypher');
 
 		$.post(url, nodeQuery)
-		 .done(function (nodeData) {
+		 .done(function (nodeResult) {
 
 		$.post(url, edgeQuery)
-		 .done(function (edgeData) {
+		 .done(function (edgeResult) {
 
 		 	// console.log(data);
 		 	// parse the neo4j data
 		 	var graph,
 		 		nodes = [],
 		 		edges = [],
-		 		node, nodeId,
+		 		node, nodeId, nodeData, nodeLabels,
 		 		edge,
 		 		nodeMap = {},
 		 		nodeCount = 0;
 
-		 	if (!nodeData.data) {
+		 	if (!nodeResult.data) {
 		 		return;
 		 	}
 
 		 	// build the nodes array and the index map
-		 	for (var i = 0; i < nodeData.data.length; i++) {
-		 		node = nodeData.data[i][0];
+		 	for (var i = 0; i < nodeResult.data.length; i++) {
+		 		nodeData = nodeResult.data[i];
+		 		node = nodeData[0];
+		 		nodeLabels = nodeData[1];
 
 		 		if (!node || nodeMap[node.self] !== undefined) {
 		 			continue;
 		 		}
 
 		 		addNodeMetadata(node.data);
+		 		node.data._labels = nodeLabels;
 
 		 		nodeMap[node.self] = nodeCount;
 		 		nodeCount++;
@@ -94,8 +97,8 @@
 		 	// convert the edges to an array of d3 edges,
 		 	// which have node indices as source and target
 		 	console.log()
-		 	for (var i = 0; i < edgeData.data.length; i++) {
-		 		edge = edgeData.data[i][0];
+		 	for (var i = 0; i < edgeResult.data.length; i++) {
+		 		edge = edgeResult.data[i][0];
 
 		 		if (!edge) {
 		 			continue;
@@ -223,6 +226,26 @@
 
 		$.ajax({
 			url: id + '/properties',
+			type: 'PUT',
+			data: data
+		})
+		.done(function (result) {
+		 	console.log(result);
+		});
+	};
+
+	/**
+	 * Removes all labels from the node and replaces them with the ones in data
+	 * @param data string or array<string>
+	 */
+	graph.API.prototype.handleNodeLabelUpdated = function (event, data, id) {
+
+		console.log("handling node label update");
+		console.log(id);
+		console.log(data);
+
+		$.ajax({
+			url: id + '/labels',
 			type: 'PUT',
 			data: data
 		})

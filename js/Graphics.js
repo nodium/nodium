@@ -31,4 +31,11 @@
 		d3.select($('.node').get(data.index)).classed('selected', false);
 	};
 
+	graphics.colorNodes = function (color) {
+		console.log("graphics node color");
+		console.log(color);
+		d3.selectAll('.node circle')
+			.style('fill', color);
+	};
+
 })(window, jQuery, d3);

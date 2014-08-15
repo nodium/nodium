@@ -5,6 +5,7 @@
 	NodeEvent = {
 		CREATE: 'node-create',
 		UPDATE: 'node-update',
+		UPDATELABEL: 'node-update-label',
 		DESTROY: 'node-delete',
 		SELECT: 'node-select',
 		UNSELECT: 'node-unselect',
@@ -16,6 +17,7 @@
 		FILTER: 'node-filter',
 		FILTERED: 'node-filtered',
 		FILTER_UNSET: 'node-filter-unset',
+		DRAWN: 'node-drawn'
 	};
 
 	event.NodeEvent = NodeEvent;
