@@ -63,14 +63,16 @@
 	/**
 	 * trigger the (re)coloring of nodes
 	 */
-	graph.Colorable.prototype.handleColorNodes = function (event, node, data) {
+	graph.Colorable.prototype.handleColorNodes = function (event, nodeEnter) {
 
 		console.log('coloring nodes');
 		console.log(this.options);
 
-		if (!node) {
-			graphics.colorNodes(window.curry(this.colorNodeByLabel, this));
-		}
+		// console.log(nodeEnter); throw {};
+
+		var nodes = nodeEnter; // || this.graph.node;
+
+		graphics.colorNodes(nodes, window.curry(this.colorNodeByLabel, this));
 	};
 
 }(window, jQuery, d3));
