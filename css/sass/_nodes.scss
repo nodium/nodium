@@ -26,6 +26,13 @@ text {
 	transition: stroke-width 0.03s linear;
 }
 
+.overlay {
+	color: rgb(255, 255, 255);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.03s linear;
+}
+
 .accepted .top-circle {
 	fill: rgb(0, 182, 124);
 	opacity: 1;
@@ -36,8 +43,8 @@ text {
 	opacity: 1;
 }
 
-.filtered .top-circle {
-	fill: rgb(241, 241, 241);
+.filtered .overlay {
+	opacity: 1;
 }
 
 .node.selected .top-circle {
