@@ -31,12 +31,9 @@
 		d3.select($('.node').get(data.index)).classed('selected', false);
 	};
 
-	graphics.colorNodes = function (color) {
+	graphics.colorNodes = function (nodes, color) {
 
-		console.log("graphics node color");
-		
-		d3.selectAll('.node .top-circle')
-			.style('fill', color);
+		nodes.selectAll('.top-circle').style('fill', color);
 	};
 
 })(window, jQuery, d3);

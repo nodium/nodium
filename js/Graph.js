@@ -341,8 +341,6 @@
 
 		this.node = node;
 
-		$(this).trigger(NodeEvent.DRAWN);
-
 		return this;
 	};
 
@@ -376,6 +374,8 @@
 				return radius;
 			})
 			.attr('class', 'top-circle');
+
+		$(this).trigger(NodeEvent.DRAWN, [nodeEnter]);
 	};
 
 	graph.Graph.prototype.drawNodeExit = function (nodeExit) {
