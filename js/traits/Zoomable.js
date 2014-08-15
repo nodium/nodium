@@ -24,6 +24,8 @@
 
 	graph.Zoomable.prototype.handleZoom = function () {
 
+		this.graph.dragging = true;
+
 		var prototype = 'translate(__translate__) scale(__scale__)',
 			transform = prototype
 				.replace(/__translate__/g, d3.event.translate)

@@ -41,6 +41,7 @@
 		}),[['mouse-down', 'handleHoldStart'],
 			['drag', 'handleHoldDrag'],
 			['drag-end', 'handleHoldEnd'],
+			['mouse-up', 'handleHoldEnd'],
 			['drag-end', 'app.graph.graphics.handleNodeScale', 1],
 			['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
 			['mouse-up', 'handleHoldEnd']
