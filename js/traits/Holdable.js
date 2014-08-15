@@ -112,6 +112,8 @@
 			$('#hold-action-notification').toggle();
 			$('#hold-action-notification').text("");
 		}
+
+		this.graph.dragging = false;
 	};
 
 }(window, jQuery, d3));
