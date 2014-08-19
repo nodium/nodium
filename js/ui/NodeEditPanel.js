@@ -18,6 +18,12 @@
         this.name = 'Node Editor';
         this.icon = 'icon-pencil';
         this.kernel = kernel;
+
+        // this is a temporary solution
+        // mapping of node fields to ui field id
+        this.exceptions = {
+            'node-title': 'name'
+        };
     };
 
     NodeEditPanel.prototype.init = function (container) {
@@ -29,15 +35,20 @@
             focusOutHandler = window.curry(this.handleFocusOut, this),
             formSubmitHandler = window.curry(this.handleFormSubmit, this),
             newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this),
-            deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this);
+            deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this),
+            newLabelButtonClickHandler = window.curry(this.handleNewLabelButtonClick, this),
+            deleteLabelButtonClickHandler = window.curry(this.handleDeleteLabelButtonClick, this);
 
         $(container).on('menu-collapse', collapseHandler);
         $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
         $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
         $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
         $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
+        $('#node-form', this.view).on(Event.FOCUS_OUT, 'input', focusOutHandler);
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
+        $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);
+        $('#node-form', this.view).on(Event.CLICK, '.delete-label', deleteLabelButtonClickHandler);
 
         return this;
     };
@@ -80,6 +91,37 @@
         $('input', $(fieldHTML).appendTo(propertiesList)).focus();
     };
 
+    NodeEditPanel.prototype.createListElement = function (selector, data) {
+
+        var fieldHTML,
+            elementList = $(selector, this.view);
+
+        fieldHTML = window.createFromPrototype(elementList, data);
+
+        $('input', $(fieldHTML).appendTo(elementList)).focus();
+    };
+
+    NodeEditPanel.prototype.createListElements = function (selector, data) {
+
+        var elementList = $(selector, this.view),
+            elementHTML,
+            label,
+            i;
+
+        // create the html form elements
+        elementList.empty();
+
+        for (i = data.length; i > 0; i--) {
+
+            // make object creation generic
+            elementHTML = window.createFromPrototype(elementList, {
+                label: data[i - 1]
+            });
+
+            elementList.append(elementHTML);
+        }
+    };
+
     NodeEditPanel.prototype.destroyProperty = function (deleteButton) {
 
 
@@ -93,16 +135,54 @@
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
     };
 
+    NodeEditPanel.prototype.destroyListElement = function (deleteButton, event) {
+
+
+        var element = $(deleteButton).closest('li');
+        //     property = $('input', field).val();
+
+        // delete this.nodeData[property];
+
+        element.remove();
+
+        $(this.kernel).trigger(event, [null, this.nodeData]);
+    };
+
     NodeEditPanel.prototype.updateProperty = function (field) {
         var property,
-            value;
+            value,
+            nodeField;
 
-        property = $('input', $(field).closest('.node-field')).val();
-        value = $(field).val();
+        // catch the special property fields
+        if (this.exceptions.hasOwnProperty(field.id)) {
+            property = this.exceptions[field.id];
+            value = $(field).val();
+        } else {
+            nodeField = $(field).closest('.node-field');
+            property = $('input', nodeField).val();
+            value = $('textarea', nodeField).val();
+        }
 
-        this.nodeData[property] = value;
+        // TODO currently this doesn't take into account when the property name
+        // was updated. This is still handled in nodeCD.handleNodeUpdate (which
+        // doesn't yet use the this.nodeData that's being passed to it)
 
-        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
+        console.log("ui update property: " + property + ": " + value);
+
+        // only update when the value was changed
+        if (this.nodeData[property] != value && value != '') {
+            this.nodeData[property] = value;
+
+            $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
+        }
+    };
+
+    NodeEditPanel.prototype.updateLabel = function (field) {
+
+        var label = $(field).val();
+
+        // move updating full labels array to here instead of nodecd?
+        $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData]);
     };
 
     NodeEditPanel.prototype.setData = function (data) {
@@ -110,7 +190,7 @@
         var propertiesList = $('#node-fields', this.view),
             fieldHTML,
             fieldName,
-            titleField = this.kernel.getNodeTitleKey(),
+            titleField = this.kernel.getNodeTitleKey(), // this will not work soon
             value,
             i;
 
@@ -141,16 +221,20 @@
 
             propertiesList.append(fieldHTML);
         }
+
+        this.createListElements('#node-labels', data._labels);
     };
 
     NodeEditPanel.prototype.unsetData = function (data) {
 
         var propertiesList = $('#node-fields', this.view);
+        var labelsList = $('#node-labels', this.view);
 
         $('#node-title', this.view).val('');
 
         // create the html form elements
         propertiesList.empty();
+        labelsList.empty();
         this.nodeData = null;
     };
 
@@ -171,9 +255,21 @@
         this.destroyProperty(event.currentTarget);
     };
 
+    NodeEditPanel.prototype.handleDeleteLabelButtonClick = function (event) {
+
+        this.destroyListElement(event.currentTarget, NodeEvent.UPDATELABEL);
+    };
+
     NodeEditPanel.prototype.handleFocusOut = function (event) {
 
-        this.updateProperty(event.currentTarget);
+        // check if we're updating property or label
+        console.log(event.currentTarget);
+        if ($(event.currentTarget).hasClass('node-label-value')) {
+            console.log("updating label");
+            this.updateLabel(event.currentTarget);
+        } else {
+            this.updateProperty(event.currentTarget);
+        }
     };
 
     NodeEditPanel.prototype.handleFormSubmit = function (event) {
@@ -187,8 +283,21 @@
 
     NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
 
-        this.createProperty();
+        // this.createProperty();
+
+        this.createListElement('#node-fields', {
+            field: '',
+            value: '',
+            rows: 1
+        });
     };
+
+    NodeEditPanel.prototype.handleNewLabelButtonClick = function (event) {
+
+        this.createListElement('#node-labels', {
+            label: ''
+        });
+    }
 
     NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
 

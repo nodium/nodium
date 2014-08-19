@@ -24,7 +24,8 @@
         $(this.kernel)
             .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
             .on(NodeEvent.UNSELECT, this.handleNodeUnselect.bind(this))
-            .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this));
+            .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
+            .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this));
     };
 
     /**
@@ -34,6 +35,7 @@
 
         // then add node metadata
         this.graph.addNodeMetadata(data);
+        data._labels = [];
 
         data.x = x || 0;
         data.y = y || 0;
@@ -125,6 +127,30 @@
         // but this is not strictly necessary, the fields metadata works as a filter
 
         return result;
+    };
+
+    graph.NodeCD.prototype.updateNodeDataWithLabels = function (data) {
+
+        var labels = $('#node-labels').children(),
+            label;
+
+        // clear the labels metadata, we'll refill this
+        data._labels = [];
+
+        console.log(labels);
+
+        for (var i = 0; i < labels.length; i++) {
+            label = $('.node-label-value', labels[i]).val();
+
+            // skip if the key is empty
+            if (label == '') {
+                continue;
+            }
+
+            data._labels.push(label);
+        }
+
+        return data;
     };
 
     /**
@@ -222,14 +248,10 @@
         event.preventDefault();
         event.stopPropagation();
 
-        if (!this.graph.selectedNode) {
-            return;
-        }
-
         var data,
             fieldName,
             titleField = this.graph.getNodeTitleKey(),
-            nodeData = this.graph.selectedNode.data;      
+            nodeData;      
 
         console.log("handling node update");
 
@@ -237,16 +259,53 @@
             return;
         }
 
+        if (!node) {
+            // node = $('.nodes').get(data.index);
+            node = this.graph.selectedNode.node;
+        }
+
+        console.log(this.graph.selectedNode);
+
+        nodeData = this.graph.selectedNode.data;
         data = this.updateNodeDataWithFields(nodeData);
 
-        this.graph.redrawNodes();
-        this.graph.force.start();
+        console.log(node);
+        this.graph.setNodeText(node, nodeData);
 
         if (!data[titleField] || data[titleField] == "") {
             return;
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
+    };
+
+    graph.NodeCD.prototype.handleNodeLabelUpdate = function (event, node, data) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        var newData;
+
+        console.log("handling node label update");
+
+
+        // TODO plzplz dis stuff is ugly
+        if (!this.graph.selectedNode) {
+            return;
+        }
+
+        if (!data) {
+            data = this.graph.selectedNode.data;
+        }
+        newData = this.updateNodeDataWithLabels(data);
+
+        if (!node) {
+            // node = $('.nodes').get(data.index);
+            node = this.graph.selectedNode.node;
+        }
+
+        // $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [newData._labels, data.id]);
+        $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
     };
 
     graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {

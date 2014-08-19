@@ -57,7 +57,8 @@
 			[NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
 		])
 		.register(new graph.Colorable(), [
-			[NodeEvent.DRAWN, 'handleColorNodes']
+			[NodeEvent.DRAWN, 'handleColorNodes'],
+			[NodeEvent.UPDATEDLABEL, 'handleColorNode']
 		])
 		.register(this.api)
 		// .register(new graph.Stylable(), {

@@ -11,6 +11,7 @@
 		UNSELECT: 'node-unselect',
 		CREATED: 'node-created',
 		UPDATED: 'node-updated',
+		UPDATEDLABEL: 'node-updated-label',
 		DESTROYED: 'node-destroyed',
 		SELECTED: 'node-selected',
 		UNSELECTED: 'node-unselected',

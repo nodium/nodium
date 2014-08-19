@@ -91,6 +91,7 @@
 		this.graph.dragging = false;
 		
 		if (!node) {
+			console.log("hold end exit");
 			return;
 		}
 

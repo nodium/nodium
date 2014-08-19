@@ -70,10 +70,6 @@
         args = apc.apply([], args);
 
         scope = scope || window;
-
-        console.log("partial");
-        console.log(scope);
-        console.log(args);
       
         return function () {
             return fn.apply(scope, args.concat(aps.call(arguments)));
@@ -135,13 +131,9 @@
      */
     window.getFunction = function (functionPath) {
 
-        console.log(functionPath);
-
         var components = functionPath.split('.'),
             parent = window,
             child;
-
-        console.log(components);
 
         while (child = components.shift()) {
             console.log(child);
@@ -151,8 +143,6 @@
 
             parent = parent[child];
         }
-
-        console.log(parent);
 
         if (typeof(parent) === 'function') {
             return parent;

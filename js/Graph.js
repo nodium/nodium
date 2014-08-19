@@ -79,14 +79,11 @@
 				func = window.getFunction(value);
 			}
 
-			console.log(window.partial(func, trait, args));
-
 			if (func) {
-				console.log("attaching " + value + " to " + key);
-				console.log(this);
+				// console.log("attaching " + value + " to " + key);
 				$(this).on(key, window.partial(func, trait, args));
 			} else {
-				console.log("couldn't attach " + value + " to " + key);
+				// console.log("couldn't attach " + value + " to " + key);
 			}
 		}
 	}
@@ -326,13 +323,40 @@
 		this.drawNodes();
 	};
 
+	/**
+	 * Remove and redraw one node
+	 */
+	graph.Graph.prototype.redrawNode = function (node, data) {
+
+		console.log("redraw");
+        console.log(node);
+        console.log(data);
+
+		if (!node && !data) {
+			console.log("can't redraw node");
+			return;
+		}
+
+		if (!node && data !== undefined) {
+			console.log(data.index);
+            node = $('.node').get(data.index);
+        }
+
+		d3.select(node).remove();
+		this.drawNodes();
+	};
+
 	graph.Graph.prototype.drawNodes = function () {
+
+		console.log(this.getVisibleNodes());
 
 		// in case you only want to draw a subset
 		var nodes = this.getVisibleNodes(),
 			node = d3.select(this.selector + ' .nodes').selectAll('.node')
 				.data(nodes),
 			nodeEnter = node.enter().append('g');
+
+		console.log(nodeEnter);
 
 		this.drawNodeExit(node.exit());
 		this.attachNodeEvents(nodeEnter);
@@ -462,7 +486,7 @@
 
 		textParts = self.splitNodeText(text);
 
-		element.attr('dy', self.getNodeTextDY(data,textParts.length));
+		element.attr('dy', self.getNodeTextDY(data, textParts.length));
 
 		// we have max. 2 text parts
 		for (var i = 0; i < textParts.length; i++) {
@@ -473,6 +497,27 @@
 		}
 	};
 
+	graph.Graph.prototype.setNodeText = function (node, data) {
+
+		var text = $('text', node).get(0);
+		this.drawNodeText.apply(text, [this, data]);
+
+		/*
+		var nameParts = this.splitNodeText(name),
+			t1 = d3.select(node).select("text:first-of-type"),
+			t2 = d3.select(node).select("text:last-of-type");
+
+		t1.text(null);
+		t2.text(null);
+		
+		if (nameParts[0]) {
+			t1.text(nameParts[0]);
+		}
+		if (nameParts[1]) {
+			t2.text(nameParts[1]);
+		}
+		*/
+	};
 
 	/*
 	 * Drawing the links
@@ -637,12 +682,20 @@
 		graph.xChange = 0;
 		graph.yChange = 0;
 
+		// fix only this node temporarily
+		data._fixed = data.fixed;
+		data.fixed = true;
+
+		console.log("_fixed");
+		console.log(data._fixed);
+
 		// also log the start location of the node
 		graph.draggedNode = {
 			data: data,
 			node: this
 		};
 
+		// console.log("stopping graph force");
 		graph.force.stop();
 	};
 
@@ -650,6 +703,9 @@
 
 		// use d3 event?
 		$(graph).trigger('drag-end', [this, data]);
+
+		data.fixed = data._fixed;
+		data._fixed = null;
 
 		// clean up
 		graph.draggedNode.node.style['pointerEvents'] = 'auto';
