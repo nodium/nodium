@@ -175,8 +175,8 @@
 		// 	}
 		// };
 		query = {
-		 	// "query" : "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r",
-		 	"query" : "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r",
+		 	"query" : "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r",
+		 	// "query" : "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r",
 		 	"params" : {}
 		};
 

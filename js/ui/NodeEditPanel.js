@@ -24,6 +24,12 @@
         this.exceptions = {
             'node-title': 'name'
         };
+
+        // this.bloodhound = new Bloodhound({
+        //     name: 'labels',
+        //     local: this.kernel
+        // });
+        // this.bloodhound.initialize();
     };
 
     NodeEditPanel.prototype.init = function (container) {
@@ -179,7 +185,7 @@
 
     NodeEditPanel.prototype.updateLabel = function (field) {
 
-        var label = $(field).val();
+        // var label = $(field).val();
 
         // move updating full labels array to here instead of nodecd?
         $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData]);
@@ -223,6 +229,7 @@
         }
 
         this.createListElements('#node-labels', data._labels);
+        $('.node-label-values').typeahead()
     };
 
     NodeEditPanel.prototype.unsetData = function (data) {
@@ -290,6 +297,8 @@
             value: '',
             rows: 1
         });
+
+
     };
 
     NodeEditPanel.prototype.handleNewLabelButtonClick = function (event) {

@@ -18,7 +18,8 @@
 		FILTER: 'node-filter',
 		FILTERED: 'node-filtered',
 		FILTER_UNSET: 'node-filter-unset',
-		DRAWN: 'node-drawn'
+		DRAWN: 'node-drawn',
+		LOADED: 'graph-loaded'
 	};
 
 	event.NodeEvent = NodeEvent;

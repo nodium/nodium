@@ -170,6 +170,8 @@
 		this.force.on('tick', tickHandler);
 
 		this.handleWindowResize();
+
+		$(this).trigger(NodeEvent.LOADED, [this.nodes, this.edges]);
 	};
 
 	graph.Graph.prototype.createForce = function () {
@@ -198,7 +200,7 @@
 	 */
 	graph.Graph.prototype.initialize = function () {
 
-		this.initializeTraits();
+		this.initializeModules();
 		this.initializeType();
 
 		// put in resizable trait?
@@ -213,7 +215,7 @@
 
 	graph.Graph.prototype.initializeType = function () {};
 
-	graph.Graph.prototype.initializeTraits = function () {
+	graph.Graph.prototype.initializeModules = function () {
 
 		var trait,
 			events;
@@ -593,8 +595,10 @@
 
 		// don't click after a drag event
 		if (d3.event.defaultPrevented) {
+			console.log("yoes");
 			return;
 		}
+		console.log("????");
 
 		$(graph).trigger('node-clicked', [this, data]);
 	};
@@ -652,10 +656,12 @@
 
 		$(graph).trigger(d3.event, [this, data]);
 
-		if (!d3.event.sourceEvent.defaultPrevented) {
+		graph.dragging = graph.dragging || graph.dragDistance > 10;
+
+		if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
 
 			// because drag start is not actually dragging yet (we haven't moved)
-			graph.dragging = true;
+			console.log("screwing yo");
 			this.style['pointerEvents'] = 'none';
 			
 			// node drag functionality
@@ -685,9 +691,6 @@
 		// fix only this node temporarily
 		data._fixed = data.fixed;
 		data.fixed = true;
-
-		console.log("_fixed");
-		console.log(data._fixed);
 
 		// also log the start location of the node
 		graph.draggedNode = {

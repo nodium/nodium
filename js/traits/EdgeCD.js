@@ -62,11 +62,10 @@
 
 		type = type === undefined ? "POINTS_TO" : type;
 
-		console.log("updating link");
-
 		if (source.index == target.index) {
 			return;
 		}
+		console.log("updating link");
 
 		// check if there's a edge already between source and target
 		for (i = edges.length-1; i >= 0; i--) {
@@ -107,7 +106,7 @@
 		// this.graph.redrawNodes();
 		this.graph.force.start();
 
-		console.log(d3.selectAll('.node, .link'));
+		// console.log(d3.selectAll('.node, .link'));
 		// d3.selectAll('.node, .link').sort(function (a, b) { // select the parent and sort the path's
 		// 	if (a._fields && !b._fields) {
 		// 		return 1;

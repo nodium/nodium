@@ -1,4 +1,4 @@
-(function (window, $, d3, undefined) {
+(function (window, $, d3, _, undefined) {
     var graph = window.setNamespace('app.graph'),
         app   = window.setNamespace('app'),
         NodeEvent = window.use('app.event.NodeEvent');
@@ -14,6 +14,8 @@
         if ((this instanceof graph.NodeCD) === false) {
             return new graph.NodeCD(arguments);
         }
+
+        this.labels = [];
     };
 
     /**
@@ -25,7 +27,8 @@
             .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
             .on(NodeEvent.UNSELECT, this.handleNodeUnselect.bind(this))
             .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
-            .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this));
+            .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this))
+            .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
     };
 
     /**
@@ -305,6 +308,7 @@
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
+        // $(this.kernel).trigger('labels', this.)
     };
 
     graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
@@ -319,4 +323,27 @@
         }
     };
 
-}(window, jQuery, d3));
+    graph.NodeCD.prototype.handleGraphLoaded = function (event, nodes, edges) {
+
+        var i,
+            node,
+            label;
+
+        var labels = [];
+
+        // inventarize the labels
+        for (i = 0; i < nodes.length; i++) {
+            node = nodes[i];
+
+            if (node._labels) {
+                console.log(node._labels);
+                labels = _.union(labels, node._labels);
+            }
+        }
+
+        this.labels = labels;
+
+        console.log(labels);
+    };
+
+}(window, jQuery, d3, _));

@@ -41,9 +41,13 @@
 		var self = this;
 		var graph = this.graph;
 
+		console.log("hold start");
+
 		this.holdTimeoutId = setTimeout(function () {
 
 			// we're only really holding the node if we're not dragging
+			console.log("ehehehe");
+			console.log(graph.dragging);
 			if (!graph.dragging) {
 				console.log("holding");
 				console.log(position);
