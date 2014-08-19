@@ -30,9 +30,11 @@
 	 */
 	graph.EdgeCD.prototype.handleLinking = function () {
 
-		if (!this.graph.dragging) {
-			return;
-		}
+		console.log("handling linking");
+
+		// if (!this.graph.dragging) {
+		// 	return;
+		// }
 
 		// TODO this can probably be done better (without using graph properties)
 		if (this.graph.draggedNode && this.graph.hoveredNode) {
@@ -100,11 +102,21 @@
 			$(this.kernel).trigger('edge-deleted', [toDelete]);
 		}
 
-		// redraw the complete graph
 		// TODO move this to some edge-deleted/created handlers somewhere else
 		this.graph.drawLinks();
-		this.graph.redrawNodes();
+		// this.graph.redrawNodes();
 		this.graph.force.start();
+
+		console.log(d3.selectAll('.node, .link'));
+		// d3.selectAll('.node, .link').sort(function (a, b) { // select the parent and sort the path's
+		// 	if (a._fields && !b._fields) {
+		// 		return 1;
+		// 	} else if (!a._fields && b._fields) {
+		// 		return -1;
+		// 	} else {
+		// 		return 0;
+		// 	}
+		// });
 	};
 
 }(window, jQuery, d3));

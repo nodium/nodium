@@ -304,7 +304,6 @@
             node = this.graph.selectedNode.node;
         }
 
-        // $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [newData._labels, data.id]);
         $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
     };
 
