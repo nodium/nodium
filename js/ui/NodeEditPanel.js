@@ -159,6 +159,10 @@
             value,
             nodeField;
 
+        if (!this.nodeData) {
+            return;
+        }
+
         // catch the special property fields
         if (this.exceptions.hasOwnProperty(field.id)) {
             property = this.exceptions[field.id];
