@@ -200,7 +200,8 @@
             value,
             i;
 
-        this.nodeData = data;
+        this.nodeData = data || {};
+        console.log(this.nodeData);
 
         // set the title field
         value = data[titleField] || '';

@@ -24,7 +24,8 @@
 
 	graph.Zoomable.prototype.handleZoom = function () {
 
-		this.graph.dragging = this.graph.dragging || this.graph.dragDistance > 10;
+		// this.graph.dragging = this.graph.dragging || this.graph.dragDistance > 10;
+		this.graph.dragging = true;
 
 		var prototype = 'translate(__translate__) scale(__scale__)',
 			transform = prototype

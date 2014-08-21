@@ -66,14 +66,12 @@
 		// });
 
 		// UI handlers that initiate an action event
-		// var keyDownHandler = window.curry(this.handleKeyDown, this);
-  //       $(window).on('keydown', keyDownHandler);
+		var keyDownHandler = window.curry(this.handleKeyDown, this);
+        $(window).on('keydown', keyDownHandler);
 
-        var modeChangeHandler = window.curry(this.handleModeChange, this),
-        	escapeKeyHandler = window.curry(this.handleEscapeKey, this);
         $(this)
-        	.on('mode-change', modeChangeHandler)
-        	.on(KeyboardEvent.ESCAPE, escapeKeyHandler);
+        	.on('mode-change', this.handleModeChange.bind(this))
+        	.on(KeyboardEvent.ESCAPE, this.handleEscapeKey.bind(this));
 
 
        	// mouse events
@@ -102,6 +100,7 @@
 		console.log(event);
 
 		if (event.keyCode === 27) {
+			console.log("escapering");
 			$(this).trigger(KeyboardEvent.ESCAPE);
 		} else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
 			console.log('ctrl+f');
@@ -124,6 +123,8 @@
 	graph.Neo4jGUI.prototype.handleEscapeKey = function (event) {
 
 		var eventType;
+
+		console.log(this.mode);
 
 		switch (this.mode) {
 			case 'select':

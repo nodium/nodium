@@ -110,7 +110,9 @@
 
         // set the title field separately
         data[titleField] = $('#node-title').val();
-        result[titleField] = data[titleField];
+        if (data[titleField]) {
+            result[titleField] = data[titleField];
+        }
 
         for (var i = 0; i < fields.length; i++) {
             key = $('.node-key', fields[i]).val();
@@ -202,8 +204,13 @@
         console.log('handling unselecting node');
 
         if (data) {
+            console.log("data was set");
+            console.log(data);
+            console.log(node);
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
         } else if (selectedNode) {
+            console.log("selected node set")
+            console.log(selectedNode);
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
         } /*else {
             $(this.kernel).trigger(NodeEvent.UNSELECTED);
@@ -275,9 +282,9 @@
         console.log(node);
         this.graph.setNodeText(node, nodeData);
 
-        if (!data[titleField] || data[titleField] == "") {
-            return;
-        }
+        // if (!data[titleField] || data[titleField] == "") {
+        //     return;
+        // }
 
         $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
     };
