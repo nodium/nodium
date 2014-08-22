@@ -682,16 +682,11 @@ graph.Graph = app.createClass({
 
         $(graph).trigger(d3.event, [this, data]);
 
-        // graph.dragging = graph.dragging || graph.dragDistance > 10;
-        console.log(graph.dragging);
-
         // if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
         if (!d3.event.sourceEvent.defaultPrevented) {
 
         	graph.dragging = true;
 
-            // because drag start is not actually dragging yet (we haven't moved)
-            console.log("screwing yo");
             this.style['pointerEvents'] = 'none';
             
             // node drag functionality

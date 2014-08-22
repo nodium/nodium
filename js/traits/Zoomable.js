@@ -30,8 +30,6 @@
 
 	graph.Zoomable.prototype.handleZoom = function () {
 
-		this.graph.dragging = true;
-
 		var prototype = 'translate(__translate__) scale(__scale__)',
 			transform = prototype
 				.replace(/__translate__/g, d3.event.translate)
@@ -42,14 +40,10 @@
 
 	graph.Zoomable.prototype.handleZoomStart = function () {
 
-		console.log('zoom start');
-
 		this.graph.dragging = true;
 	};
 
 	graph.Zoomable.prototype.handleZoomEnd = function () {
-
-		console.log('zoom end');
 
 		this.graph.dragging = false;
 	};
