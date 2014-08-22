@@ -33,7 +33,9 @@
 
 	graphics.colorNodes = function (nodes, color) {
 
-		nodes.selectAll('.top-circle').style('fill', color);
+		nodes.selectAll('.top-circle').transition()
+			.duration(500)
+			.style('fill', color);
 	};
 
 })(window, jQuery, d3);

@@ -60,17 +60,25 @@
 
 	};
 
+	graph.Colorable.prototype.handleColorNode = function (event, node) {
+
+		console.log("coloring node");
+		console.log(d3.select(node));
+		graphics.colorNodes(d3.select(node), this.colorNodeByLabel.bind(this));
+	};
+
 	/**
 	 * trigger the (re)coloring of nodes
 	 */
 	graph.Colorable.prototype.handleColorNodes = function (event, nodeEnter) {
 
 		console.log('coloring nodes');
-		console.log(this.options);
 
 		var nodes = nodeEnter; // || this.graph.node;
 
-		graphics.colorNodes(nodes, window.curry(this.colorNodeByLabel, this));
+		console.log(nodes);
+
+		graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this));
 	};
 
 }(window, jQuery, d3));

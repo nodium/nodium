@@ -14,8 +14,11 @@
 			return new graph.Neo4jGUI(arguments);
 		}
 
+		var self = this;
+
 		this.selector = selector;
 		this.mode = '';
+		this.kernel = this;
 
 		this.api = new graph.API();
 
@@ -55,7 +58,8 @@
 			[NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
 		])
 		.register(new graph.Colorable(), [
-			[NodeEvent.DRAWN, 'handleColorNodes']
+			[NodeEvent.DRAWN, 'handleColorNodes'],
+			[NodeEvent.UPDATEDLABEL, 'handleColorNode']
 		])
 		.register(this.api)
 		// .register(new graph.Stylable(), {
@@ -63,14 +67,24 @@
 		// });
 
 		// UI handlers that initiate an action event
-		// var keyDownHandler = window.curry(this.handleKeyDown, this);
-  //       $(window).on('keydown', keyDownHandler);
+		var keyDownHandler = window.curry(this.handleKeyDown, this);
+        $(window).on('keydown', keyDownHandler);
 
-        var modeChangeHandler = window.curry(this.handleModeChange, this),
-        	escapeKeyHandler = window.curry(this.handleEscapeKey, this);
         $(this)
-        	.on('mode-change', modeChangeHandler)
-        	.on(KeyboardEvent.ESCAPE, escapeKeyHandler);
+        	.on('mode-change', this.handleModeChange.bind(this))
+        	.on(KeyboardEvent.ESCAPE, this.handleEscapeKey.bind(this));
+
+
+       	// mouse events
+       	d3.select(this.selector).select('.graph-content')
+       	.on('mousedown', function () {
+			var position = d3.mouse(this);
+			$(self.kernel).trigger('mouse-down', [undefined, undefined, { x: position[0], y: position[1] }]);
+		})
+		.on('mouseup', function () {
+			var position = d3.mouse(this);
+			$(self.kernel).trigger('mouse-up', [undefined, undefined, { x: position[0], y: position[1] }]);
+		});
 
 		this.initialize();
 	};
@@ -87,6 +101,7 @@
 		console.log(event);
 
 		if (event.keyCode === 27) {
+			console.log("escapering");
 			$(this).trigger(KeyboardEvent.ESCAPE);
 		} else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
 			console.log('ctrl+f');
@@ -109,6 +124,8 @@
 	graph.Neo4jGUI.prototype.handleEscapeKey = function (event) {
 
 		var eventType;
+
+		console.log(this.mode);
 
 		switch (this.mode) {
 			case 'select':

@@ -37,8 +37,8 @@
 		$(this.kernel).on('edge-created', createEdge);
 		var deleteEdge = window.curry(this.handleEdgeDeleted, this);
 		$(this.kernel).on('edge-deleted', deleteEdge);
-		var updateNode = window.curry(this.handleNodeUpdated, this);
-		$(this.kernel).on(NodeEvent.UPDATED, updateNode);
+		$(this.kernel).on(NodeEvent.UPDATED, this.handleNodeUpdated.bind(this));
+		$(this.kernel).on(NodeEvent.UPDATEDLABEL, this.handleNodeLabelUpdated.bind(this));
 	};
 
 	graph.API.prototype.get = function (callback, addNodeMetadata) {
@@ -176,6 +176,7 @@
 		// };
 		query = {
 		 	"query" : "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r",
+		 	// "query" : "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r",
 		 	"params" : {}
 		};
 
@@ -239,16 +240,17 @@
 	 * Removes all labels from the node and replaces them with the ones in data
 	 * @param data string or array<string>
 	 */
-	graph.API.prototype.handleNodeLabelUpdated = function (event, data, id) {
+	graph.API.prototype.handleNodeLabelUpdated = function (event, node, data) {
 
 		console.log("handling node label update");
-		console.log(id);
+		console.log(data.id);
 		console.log(data);
 
 		$.ajax({
-			url: id + '/labels',
+			url: data.id + '/labels',
 			type: 'PUT',
-			data: data
+			contentType: 'application/json',
+			data: JSON.stringify(data._labels)
 		})
 		.done(function (result) {
 		 	console.log(result);

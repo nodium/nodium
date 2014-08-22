@@ -41,11 +41,16 @@
 		var self = this;
 		var graph = this.graph;
 
+		console.log("hold start");
+
 		this.holdTimeoutId = setTimeout(function () {
 
 			// we're only really holding the node if we're not dragging
+			console.log("ehehehe");
+			console.log(graph.dragging);
 			if (!graph.dragging) {
 				console.log("holding");
+				console.log(position);
 				graph.holding = true;
 
 				if (node) {
@@ -87,6 +92,13 @@
 
 		clearTimeout(this.holdTimeoutId);
 
+		this.graph.dragging = false;
+		
+		if (!node) {
+			console.log("hold end exit");
+			return;
+		}
+
 		// dispatch menu action if node was held
 		// use a fixed distance that has to be dragged
 		if (this.graph.holding && this.graph.dragDistance > 100) {
@@ -113,8 +125,6 @@
 				.toggle()
 				.text("");
 		}
-
-		this.graph.dragging = false;
 	};
 
 }(window, jQuery, d3));
