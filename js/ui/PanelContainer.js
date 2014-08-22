@@ -13,10 +13,6 @@ ui.PanelContainer = app.createClass({
     construct: function (selector, options) {
 
         this.options = $.extend({}, _defaults, options);
-
-        console.log(selector);
-        console.log(arguments);
-
         this.view = $(selector);
     },
 
@@ -97,8 +93,6 @@ ui.PanelContainer = app.createClass({
 
         var menu = $('.panel-navigation', this.view),
             menuItem;
-
-        console.log(menu);
 
         menuItem = window.createFromPrototype(menu, {
             icon: icon

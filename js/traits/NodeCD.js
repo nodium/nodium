@@ -1,27 +1,27 @@
 (function (window, $, d3, _, undefined) {
-    var graph = window.setNamespace('app.graph'),
-        app   = window.setNamespace('app'),
-        NodeEvent = window.use('app.event.NodeEvent');
 
-    /**
-     * NodeEditor trait
-     *
-     * Adds functionality to create new nodes
-     */
-    graph.NodeCD = function () {
+'use strict';
 
-        // enforce use of new on constructor
-        if ((this instanceof graph.NodeCD) === false) {
-            return new graph.NodeCD(arguments);
-        }
+var graph       = window.setNamespace('app.graph'),
+    app         = window.use('app'),
+    NodeEvent   = window.use('app.event.NodeEvent');
+
+/**
+ * NodeEditor trait
+ *
+ * Adds functionality to create new nodes
+ */
+graph.NodeCD = app.createClass({
+
+    init: function () {
 
         this.labels = [];
-    };
+    },
 
     /**
      * Initializes variables and attaches events used for creating edges
      */
-    graph.NodeCD.prototype.initialize = function () {
+    initialize: function () {
 
         $(this.kernel)
             .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
@@ -29,12 +29,12 @@
             .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
             .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this))
             .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
-    };
+    },
 
     /**
      * Create a node from a given set of key value pairs
      */
-    graph.NodeCD.prototype.createNode = function (data, x, y) {
+    createNode: function (data, x, y) {
 
         // then add node metadata
         this.graph.addNodeMetadata(data);
@@ -52,9 +52,9 @@
         $(this.kernel).trigger(NodeEvent.CREATED, [data]);
 
         return data;
-    };
+    },
 
-    graph.NodeCD.prototype.deleteEdgesForNode = function (nodeIndex) {
+    deleteEdgesForNode: function (nodeIndex) {
 
         var edges = this.graph.edges,
             edge;
@@ -66,12 +66,12 @@
                 edges.splice(i, 1);
             }
         }
-    };
+    },
 
     /**
      * Handles the delete-node event
      */
-    graph.NodeCD.prototype.destroyNode = function (data) {
+    destroyNode: function (data) {
 
         var graph = this.graph;
         this.deleteEdgesForNode(data.index);
@@ -92,12 +92,12 @@
         graph.force.start();
 
         $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
-    };
+    },
 
     /**
      * Update the data and return the filtered updated data
      */
-    graph.NodeCD.prototype.updateNodeDataWithFields = function (data) {
+    updateNodeDataWithFields: function (data) {
 
         var titleField = this.graph.getNodeTitleKey(),
             fields = $('#node-fields').children(),
@@ -132,9 +132,9 @@
         // but this is not strictly necessary, the fields metadata works as a filter
 
         return result;
-    };
+    },
 
-    graph.NodeCD.prototype.updateNodeDataWithLabels = function (data) {
+    updateNodeDataWithLabels: function (data) {
 
         var labels = $('#node-labels').children(),
             label;
@@ -156,7 +156,7 @@
         }
 
         return data;
-    };
+    },
 
     /**
      * Event Listeners
@@ -165,7 +165,7 @@
     /**
      * Read the node into the edit form
      */
-    graph.NodeCD.prototype.handleNodeSelect = function (event, node, data) {
+    handleNodeSelect: function (event, node, data) {
 
         console.log('node select');
 
@@ -182,21 +182,21 @@
         };
 
         $(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
-    };
+    },
 
-    graph.NodeCD.prototype.handleCanvasHold = function (event, position) {
+    handleCanvasHold: function (event, position) {
 
         var nodeData;
 
         nodeData = this.createNode({}, position.x, position.y);
 
         $(this.kernel).trigger(NodeEvent.SELECT, [null, nodeData]);
-    };
+    },
 
     /**
      *
      */
-    graph.NodeCD.prototype.handleNodeUnselect = function (event, node, data) {
+    handleNodeUnselect: function (event, node, data) {
 
         // if node and data are null, unselect all nodes
         var selectedNode = this.graph.selectedNode;
@@ -221,9 +221,9 @@
 
             this.graph.selectedNode = null;
         }
-    };
+    },
 
-    graph.NodeCD.prototype.handleCreateChildNode = function (event, node, data) {
+    handleCreateChildNode: function (event, node, data) {
 
         var self = this,
             newData = this.createNode({}, data.x, data.y);
@@ -236,9 +236,9 @@
             .trigger('create-edge', [data, newData])
             .trigger(NodeEvent.SELECT, [null, newData]);
         
-    };
+    },
 
-    graph.NodeCD.prototype.handleNodeCreate = function (event) {
+    handleNodeCreate: function (event) {
 
         event.preventDefault();
         event.stopPropagation();
@@ -251,9 +251,9 @@
         $('#new-node-name').val('');
 
         this.createNode({name: input});
-    };
+    },
 
-    graph.NodeCD.prototype.handleNodeUpdate = function (event, node, data) {
+    handleNodeUpdate: function (event, node, data) {
 
         event.preventDefault();
         event.stopPropagation();
@@ -282,9 +282,9 @@
         this.graph.setNodeText(node, nodeData);
 
         $(this.kernel).trigger(NodeEvent.UPDATED, [node, nodeData]);
-    };
+    },
 
-    graph.NodeCD.prototype.handleNodeLabelUpdate = function (event, node, data) {
+    handleNodeLabelUpdate: function (event, node, data) {
 
         event.preventDefault();
         event.stopPropagation();
@@ -309,9 +309,9 @@
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
-    };
+    },
 
-    graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
+    handleNodeDestroy: function (event, node, data) {
 
         var selectedNode = this.graph.selectedNode,
             nodeData;
@@ -321,9 +321,9 @@
         if (nodeData) {
             this.destroyNode(nodeData);
         }
-    };
+    },
 
-    graph.NodeCD.prototype.handleGraphLoaded = function (event, nodes, edges) {
+    handleGraphLoaded: function (event, nodes, edges) {
 
         var i,
             node,
@@ -341,6 +341,7 @@
         }
 
         this.labels = labels;
-    };
+    }
+});
 
 }(window, jQuery, d3, _));

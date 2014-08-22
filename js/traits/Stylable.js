@@ -2,97 +2,96 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
-	app   = window.setNamespace('app'),
-	NodeEvent = window.use('app.event.NodeEvent');
+var graph       = window.setNamespace('app.graph'),
+    app         = window.use('app'),
+    NodeEvent   = window.use('app.event.NodeEvent');
 
 /**
  * Stylable trait
  *
  * Adds functionality to store node style in the database
  */
-graph.Stylable = function (options) {
+graph.Stylable = app.createClass({
 
-	if ((this instanceof graph.Stylable) === false) {
-		return new graph.Stylable(arguments);
-	}
+    init: function (options) {
 
-	var _defaults = {
-		key: '__nodestyle',
-		styles: {}
-	};
+        var _defaults = {
+            key: '__nodestyle',
+            styles: {}
+        };
 
-	this.options = $.extend({}, _defaults, options);
-};
+        this.options = $.extend({}, _defaults, options);
+    },
 
-/**
- * the string to be stored
- */
-graph.Stylable.prototype.objectToString = function (obj) {
-	return JSON.stringify(obj);
-};
+    /**
+     * the string to be stored
+     */
+    objectToString: function (obj) {
+        return JSON.stringify(obj);
+    },
 
-/**
- * Generate a style string from this node
- * so we only need to store waste one field in the database
- */
-graph.Stylable.prototype.getStyleString = function (node, data) {
+    /**
+     * Generate a style string from this node
+     * so we only need to store waste one field in the database
+     */
+    getStyleString: function (node, data) {
 
-	// completely (re)build the object for now
-	var styles = this.options.styles,
-		style,
-		properties,
-		i,
-		property,
-		value,
-		obj = {},
-		objString,
-		parameters;
+        // completely (re)build the object for now
+        var styles = this.options.styles,
+            style,
+            properties,
+            i,
+            property,
+            value,
+            obj = {},
+            objString,
+            parameters;
 
-	for (style in styles) {
-		parameters = {};
-		properties = styles[style];
+        for (style in styles) {
+            parameters = {};
+            properties = styles[style];
 
-		for (i = 0; i < properties.length; i++) {
+            for (i = 0; i < properties.length; i++) {
 
-			property = properties[i];
+                property = properties[i];
 
-			// get the value of the property
-			// value = data[style[i]];
-			value = window.getObjectValueByString(data, property);
+                // get the value of the property
+                // value = data[style[i]];
+                value = window.getObjectValueByString(data, property);
 
-			console.log("stylestring");
-			console.log(data);
-			console.log(property);
-			console.log(value);
+                console.log("stylestring");
+                console.log(data);
+                console.log(property);
+                console.log(value);
 
-			parameters[property] = value;
-		}
+                parameters[property] = value;
+            }
 
-		obj[style] = parameters;
-	}
+            obj[style] = parameters;
+        }
 
-	objString = this.objectToString(obj);
-	console.log(objString);
+        objString = this.objectToString(obj);
+        console.log(objString);
 
-	return objString;
-};
+        return objString;
+    },
 
-/**
- * Parse a style string into an object with node style properties
- */
-graph.Stylable.prototype.parseStyleString = function (styleString) {
+    /**
+     * Parse a style string into an object with node style properties
+     */
+    parseStyleString: function (styleString) {
 
-};
+    },
 
-graph.Stylable.prototype.handleNodeStyled = function (event, node, data) {
+    handleNodeStyled: function (event, node, data) {
 
-	console.log("handling node style");
+        console.log("handling node style");
 
-	var styleString = this.getStyleString(node, data);
-	data._style = styleString;
+        var styleString = this.getStyleString(node, data);
+        data._style = styleString;
 
-	$(this.kernel).trigger(NodeEvent.UPDATED, [node, data, this.options.key, styleString]);
-};
+        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data, this.options.key, styleString]);
+    }
+});
 
 }(window, jQuery, d3));

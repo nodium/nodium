@@ -1,51 +1,49 @@
 (function (window, $, d3, undefined) {
-	var graph = window.setNamespace('app.graph'),
-		app   = window.setNamespace('app');
 
-	/**
-	 * Zoomable trait
-	 *
-	 * Adds standard d3 zooming and panning functionality to the graph
-	 */
-	graph.Zoomable = function () {
+'use strict';
 
-		// enforce use of new on constructor
-		if ((this instanceof graph.Zoomable) === false) {
-			return new graph.Zoomable(arguments);
-		}
-	};
+var graph = window.setNamespace('app.graph'),
+    app   = window.use('app');
 
-	graph.Zoomable.prototype.initialize = function () {
+/**
+ * Zoomable trait
+ *
+ * Adds standard d3 zooming and panning functionality to the graph
+ */
+graph.Zoomable = app.createClass({
 
-		var zoomHandler = window.curry(this.handleZoom, this);
-		var zoomStartHandler = window.curry(this.handleZoomStart, this);
-		var zoomEndHandler = window.curry(this.handleZoomEnd, this);
-		d3.select(this.graph.selector + ' .graph-viewport')
-		  .call(d3.behavior.zoom()
-		  	.on('zoom', zoomHandler)
-		  	.on('zoomstart', zoomStartHandler)
-		  	.on('zoomend', zoomEndHandler)
-		  );
-	};
+    initialize: function () {
 
-	graph.Zoomable.prototype.handleZoom = function () {
+        var zoomHandler = window.curry(this.handleZoom, this);
+        var zoomStartHandler = window.curry(this.handleZoomStart, this);
+        var zoomEndHandler = window.curry(this.handleZoomEnd, this);
+        d3.select(this.graph.selector + ' .graph-viewport')
+          .call(d3.behavior.zoom()
+            .on('zoom', zoomHandler)
+            .on('zoomstart', zoomStartHandler)
+            .on('zoomend', zoomEndHandler)
+          );
+    },
 
-		var prototype = 'translate(__translate__) scale(__scale__)',
-			transform = prototype
-				.replace(/__translate__/g, d3.event.translate)
-				.replace(/__scale__/g, d3.event.scale);
+    handleZoom: function () {
 
-		d3.select(this.graph.selector).select('.graph-content').attr('transform', transform);
-	};
+        var prototype = 'translate(__translate__) scale(__scale__)',
+            transform = prototype
+                .replace(/__translate__/g, d3.event.translate)
+                .replace(/__scale__/g, d3.event.scale);
 
-	graph.Zoomable.prototype.handleZoomStart = function () {
+        d3.select(this.graph.selector).select('.graph-content').attr('transform', transform);
+    },
 
-		this.graph.dragging = true;
-	};
+    handleZoomStart: function () {
 
-	graph.Zoomable.prototype.handleZoomEnd = function () {
+        this.graph.dragging = true;
+    },
 
-		this.graph.dragging = false;
-	};
+    handleZoomEnd: function () {
+
+        this.graph.dragging = false;
+    }
+});
 
 }(window, jQuery, d3));
