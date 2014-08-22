@@ -1,17 +1,16 @@
 (function (window, $, undefined) {
-    'use strict';
 
-    var ui = window.setNamespace('app.ui'),
-        NodeEvent = window.use('app.event.NodeEvent'),
-        Event = window.use('app.event.Event'),
-        NodeEditPanel,
-        _defaults;
+'use strict';
 
-    NodeEditPanel = function (selector, options, kernel) {
+var ui          = window.setNamespace('app.ui'),
+    app         = window.use('app'),
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    Event       = window.use('app.event.Event'),
+    _defaults;
 
-        if (false === (this instanceof NodeEditPanel)) {
-            return new NodeEditPanel(arguments);
-        }
+ui.NodeEditPanel = app.createClass({
+
+    construct: function (selector, options, kernel) {
 
         this.options = $.extend({}, _defaults, options);
         this.view = $(selector);
@@ -30,9 +29,9 @@
         //     local: this.kernel
         // });
         // this.bloodhound.initialize();
-    };
+    },
 
-    NodeEditPanel.prototype.init = function (container) {
+    init: function (container) {
 
         var collapseHandler = window.curry(this.handleCollapse, this),
             nodeCreatedHandler = window.curry(this.handleNodeCreated, this),
@@ -57,19 +56,19 @@
         $('#node-form', this.view).on(Event.CLICK, '.delete-label', deleteLabelButtonClickHandler);
 
         return this;
-    };
+    },
 
-    NodeEditPanel.prototype.destroy = function () {
+    destroy: function () {
         this.view.remove();
-    };
+    },
 
-    NodeEditPanel.prototype.hide = function () {
+    hide: function () {
 
         this.isVisible = false;
         this.view.removeClass('active');
-    };
+    },
 
-    NodeEditPanel.prototype.show = function () {
+    show: function () {
 
         var titleField = $('#node-title', this.view);
 
@@ -81,9 +80,9 @@
             titleField.focus();
         }, 200);
         $(this.kernel).trigger('mode-change', 'select');
-    };
+    },
 
-    NodeEditPanel.prototype.createProperty = function () {
+    createProperty: function () {
 
         var fieldHTML,
             propertiesList = $('#node-fields', this.view);
@@ -95,9 +94,9 @@
         });
 
         $('input', $(fieldHTML).appendTo(propertiesList)).focus();
-    };
+    },
 
-    NodeEditPanel.prototype.createListElement = function (selector, data) {
+    createListElement: function (selector, data) {
 
         var fieldHTML,
             elementList = $(selector, this.view);
@@ -105,9 +104,9 @@
         fieldHTML = window.createFromPrototype(elementList, data);
 
         $('input', $(fieldHTML).appendTo(elementList)).focus();
-    };
+    },
 
-    NodeEditPanel.prototype.createListElements = function (selector, data) {
+    createListElements: function (selector, data) {
 
         var elementList = $(selector, this.view),
             elementHTML,
@@ -126,9 +125,9 @@
 
             elementList.append(elementHTML);
         }
-    };
+    },
 
-    NodeEditPanel.prototype.destroyProperty = function (deleteButton) {
+    destroyProperty: function (deleteButton) {
 
 
         var field = $(deleteButton).closest('.node-field'),
@@ -139,9 +138,9 @@
         field.remove();
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
-    };
+    },
 
-    NodeEditPanel.prototype.destroyListElement = function (deleteButton, event) {
+    destroyListElement: function (deleteButton, event) {
 
 
         var element = $(deleteButton).closest('li');
@@ -152,9 +151,9 @@
         element.remove();
 
         $(this.kernel).trigger(event, [null, this.nodeData]);
-    };
+    },
 
-    NodeEditPanel.prototype.updateProperty = function (field) {
+    updateProperty: function (field) {
         var property,
             value,
             nodeField;
@@ -185,17 +184,17 @@
 
             $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
         }
-    };
+    },
 
-    NodeEditPanel.prototype.updateLabel = function (field) {
+    updateLabel: function (field) {
 
         // var label = $(field).val();
 
         // move updating full labels array to here instead of nodecd?
         $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData]);
-    };
+    },
 
-    NodeEditPanel.prototype.setData = function (data) {
+    setData: function (data) {
 
         var propertiesList = $('#node-fields', this.view),
             fieldHTML,
@@ -235,9 +234,9 @@
 
         this.createListElements('#node-labels', data._labels);
         $('.node-label-values').typeahead()
-    };
+    },
 
-    NodeEditPanel.prototype.unsetData = function (data) {
+    unsetData: function (data) {
 
         var propertiesList = $('#node-fields', this.view);
         var labelsList = $('#node-labels', this.view);
@@ -248,31 +247,31 @@
         propertiesList.empty();
         labelsList.empty();
         this.nodeData = null;
-    };
+    },
 
 
     /**
      * Event handlers
      */
 
-    NodeEditPanel.prototype.handleCollapse = function (event) {
+    handleCollapse: function (event) {
 
         if (this.isVisible) {
             this.hide();
         }
-    };
+    },
 
-    NodeEditPanel.prototype.handleDeletePropertyButtonClick = function (event) {
+    handleDeletePropertyButtonClick: function (event) {
 
         this.destroyProperty(event.currentTarget);
-    };
+    },
 
-    NodeEditPanel.prototype.handleDeleteLabelButtonClick = function (event) {
+    handleDeleteLabelButtonClick: function (event) {
 
         this.destroyListElement(event.currentTarget, NodeEvent.UPDATELABEL);
-    };
+    },
 
-    NodeEditPanel.prototype.handleFocusOut = function (event) {
+    handleFocusOut: function (event) {
 
         // check if we're updating property or label
         console.log(event.currentTarget);
@@ -282,18 +281,18 @@
         } else {
             this.updateProperty(event.currentTarget);
         }
-    };
+    },
 
-    NodeEditPanel.prototype.handleFormSubmit = function (event) {
+    handleFormSubmit: function (event) {
 
         event.preventDefault();
         event.stopPropagation();
 
         $(this.kernel).trigger(NodeEvent.DESTROY, [null, this.nodeData]);
         this.view.trigger('panel-hide', [this]);
-    };
+    },
 
-    NodeEditPanel.prototype.handleNewPropertyButtonClick = function (event) {
+    handleNewPropertyButtonClick: function (event) {
 
         // this.createProperty();
 
@@ -304,27 +303,26 @@
         });
 
 
-    };
+    },
 
-    NodeEditPanel.prototype.handleNewLabelButtonClick = function (event) {
+    handleNewLabelButtonClick: function (event) {
 
         this.createListElement('#node-labels', {
             label: ''
         });
-    }
+    },
 
-    NodeEditPanel.prototype.handleNodeSelected = function (event, node, data) {
+    handleNodeSelected: function (event, node, data) {
 
         this.setData(data);
         this.view.trigger('panel-show', [this]);
-    };
+    },
 
-    NodeEditPanel.prototype.handleNodeUnselected = function (event, node, data) {
+    handleNodeUnselected: function (event, node, data) {
 
         this.unsetData();
         this.view.trigger('panel-hide', [this]);
-    };
-
-    ui.NodeEditPanel = NodeEditPanel;
+    }
+});
 
 }(window, window.jQuery));

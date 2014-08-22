@@ -1,13 +1,15 @@
 (function (window, $, _, undefined) {
-    'use strict';
+'use strict';
 
-    var ui = window.setNamespace('app.ui'),
-        NodeEvent = window.use('app.event.NodeEvent'),
-        Event = window.use('app.event.Event'),
-        NodeFilterPanel,
-        _defaults;
+var ui          = window.setNamespace('app.ui'),
+    app         = window.use('app'),
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    Event       = window.use('app.event.Event'),
+    _defaults;
 
-    NodeFilterPanel = function (selector, options, kernel) {
+ui.NodeFilterPanel = app.createClass({
+
+    construct: function (selector, options, kernel) {
 
         if (false === (this instanceof NodeFilterPanel)) {
             return new NodeFilterPanel(arguments);
@@ -18,9 +20,9 @@
         this.name = 'Node Filter';
         this.icon = 'icon-filter';
         this.kernel = kernel;
-    };
+    },
 
-    NodeFilterPanel.prototype.init = function (container) {
+    init: function (container) {
 
         var collapseHandler = window.curry(this.handleCollapse, this),
             filterUnsetHandler = window.curry(this.handleFilterUnset, this),
@@ -41,19 +43,19 @@
         $(this.view).on(Event.CLICK, 'li', listItemClickHandler);
 
         return this;
-    };
+    },
 
-    NodeFilterPanel.prototype.destroy = function () {
+    destroy: function () {
         this.view.remove();
-    };
+    },
 
-    NodeFilterPanel.prototype.hide = function () {
+    hide: function () {
 
         this.isVisible = false;
         this.view.removeClass('active');
-    };
+    },
 
-    NodeFilterPanel.prototype.show = function () {
+    show: function () {
 
         var filterField = $('#node-query', this.view);
 
@@ -66,9 +68,9 @@
         }, 200);
 
         $(this.kernel).trigger('mode-change', 'filter');
-    };
+    },
 
-    NodeFilterPanel.prototype.setData = function (data) {
+    setData: function (data) {
 
         var nodesList = $('#node-filter-result', this.view),
             listItemHTML,
@@ -95,9 +97,9 @@
         }
 
         this.nodesData = nodesData;
-    };
+    },
 
-    NodeFilterPanel.prototype.unsetData = function (data) {
+    unsetData: function (data) {
 
         var nodesList = $('#node-filter-result', this.view);
 
@@ -106,52 +108,51 @@
         // create the html form elements
         nodesList.empty();
         this.nodesData = null;
-    };
+    },
 
-    NodeFilterPanel.prototype.getNodeData = function (target) {
+    getNodeData: function (target) {
 
         var index = $('#node-filter-result li', this.view).index($(target));
 
         return this.nodesData[index];
-    };
+    },
 
 
     /**
      * Event handlers
      */
 
-    NodeFilterPanel.prototype.handleCollapse = function (event) {
+    handleCollapse: function (event) {
 
         if (this.isVisible) {
             this.hide();
         }
-    };
+    },
 
-    NodeFilterPanel.prototype.handleListItemClicked = function (event) {
+    handleListItemClicked: function (event) {
 
         var nodeData = this.getNodeData(event.currentTarget);
 
         $(this.kernel)
             .trigger(NodeEvent.FILTER_UNSET)
             .trigger(NodeEvent.SELECT, [undefined, nodeData]);
-    };
+    },
 
-    NodeFilterPanel.prototype.handleNodeFiltered = function (event, nodes, data) {
+    handleNodeFiltered: function (event, nodes, data) {
         this.setData(data);
-    };
+    },
 
-    NodeFilterPanel.prototype.handleFilterUnset = function (event) {
+    handleFilterUnset: function (event) {
 
         this.unsetData();
         this.view.trigger('panel-hide', [this]);
-    };
+    },
 
-    NodeFilterPanel.prototype.handleQueryChange = function (event) {
+    handleQueryChange: function (event) {
 
         this.query = $(event.target).val();
         $(this.kernel).trigger(NodeEvent.FILTER, [this.query]);
-    };
-
-    ui.NodeFilterPanel = NodeFilterPanel;
+    }
+});
 
 }(window, window.jQuery, window._));

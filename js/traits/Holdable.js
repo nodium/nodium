@@ -121,8 +121,9 @@
 		if (this.graph.holding) {
 
 			this.graph.holding = false;
-			$('#hold-action-notification').toggle();
-			$('#hold-action-notification').text("");
+			$('#hold-action-notification')
+				.toggle()
+				.text("");
 		}
 	};
 

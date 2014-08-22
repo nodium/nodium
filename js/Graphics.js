@@ -1,41 +1,43 @@
 (function (window, $, d3, undefined) {
 
-	graph 	  = window.setNamespace('app.graph');
-	graphics  = window.setNamespace('app.graph.graphics');
+'use strict';
 
-	/*
-	 * Functions here are probably executed in scope of the trait
-	 */
+var graph     = window.setNamespace('app.graph'),
+    graphics  = window.setNamespace('app.graph.graphics');
 
-	graphics.scaleNode = function (scale, node, graph) {
+/*
+ * Functions here are probably executed in scope of the trait
+ */
 
-		d3.select(node).select('circle').transition()
-		    .duration(400)
-		    .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
-	};
+graphics.scaleNode = function (scale, node, graph) {
 
-	graphics.handleNodeScale = function (scale, event, node) {
+    d3.select(node).select('circle').transition()
+        .duration(400)
+        .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
+};
 
-		graphics.scaleNode(scale, node, this.graph);
-	};
+graphics.handleNodeScale = function (scale, event, node) {
 
-	graphics.handleNodeSelected = function (event, node, data) {
+    graphics.scaleNode(scale, node, this.graph);
+};
 
-		d3.select($('.node').get(data.index)).classed('selected', true);
-	};
+graphics.handleNodeSelected = function (event, node, data) {
 
-	graphics.handleNodeUnselected = function (event, node, data) {
+    d3.select($('.node').get(data.index)).classed('selected', true);
+};
 
-		console.log("handling node unselected");
+graphics.handleNodeUnselected = function (event, node, data) {
 
-		d3.select($('.node').get(data.index)).classed('selected', false);
-	};
+    console.log("handling node unselected");
 
-	graphics.colorNodes = function (nodes, color) {
+    d3.select($('.node').get(data.index)).classed('selected', false);
+};
 
-		nodes.selectAll('.top-circle').transition()
-			.duration(500)
-			.style('fill', color);
-	};
+graphics.colorNodes = function (nodes, color) {
+
+    nodes.selectAll('.top-circle').transition()
+        .duration(500)
+        .style('fill', color);
+};
 
 })(window, jQuery, d3);
