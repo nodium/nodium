@@ -31,10 +31,11 @@
 	graph.EdgeCD.prototype.handleLinking = function () {
 
 		console.log("handling linking");
+		console.log(this.graph.dragging);
 
-		// if (!this.graph.dragging) {
-		// 	return;
-		// }
+		if (!this.graph.dragging) {
+			return;
+		}
 
 		// TODO this can probably be done better (without using graph properties)
 		if (this.graph.draggedNode && this.graph.hoveredNode) {

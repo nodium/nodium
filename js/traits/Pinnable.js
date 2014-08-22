@@ -20,9 +20,8 @@
 	 */
 	graph.Pinnable.prototype.handleNodePinned = function (event, node, data) {
 
-		// data.fixed = !data.fixed;
-
-		// screw this
+		console.log("handling pinning");
+		console.log(data.fixed);
 		data.fixed = !data.fixed;
 
 		$(this.kernel).trigger('node-pinned', [node, data]);

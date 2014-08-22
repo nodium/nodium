@@ -45,9 +45,10 @@ graph.API = app.createClass({
     get: function (callback, addNodeMetadata) {
 
         // OPTIONAL MATCH n-[r]-m
+        var special = this.options.special;
         var nodeQuery = {
-          // "query" : "START n=node(*) RETURN n, labels(n)",
-          query: 'START n=node(*) RETURN n',
+          "query" : "START n=node(*) RETURN n, labels(n)",
+          // query: 'START n=node(*) RETURN n',
           "params" : {}
         };
         var edgeQuery = {
@@ -66,12 +67,12 @@ graph.API = app.createClass({
 		 		nodes = [],
 		 		edges = [],
 		 		node, nodeId, nodeData, nodeLabels,
+		 		obj,
 		 		edge,
 		 		nodeMap = {},
 		 		nodeCount = 0,
-		 		properties = {},
-		 		specialProperties = {},
-		 		special = this.options.special;
+		 		properties,
+		 		specialProperties;
 
 		 	if (!nodeResult.data) {
 		 		return;
@@ -79,6 +80,8 @@ graph.API = app.createClass({
 
 		 	// build the nodes array and the index map
 		 	for (var i = 0; i < nodeResult.data.length; i++) {
+		 		properties = {};
+		 		specialProperties = {};
 		 		nodeData = nodeResult.data[i];
 		 		node = nodeData[0];
 		 		nodeLabels = nodeData[1];
@@ -89,7 +92,7 @@ graph.API = app.createClass({
 
 		 		// split data properties from special app properties
 		 		for (var j in node.data) {
-		 			if (this.options.special.hasOwnProperty(j)) {
+		 			if (special.hasOwnProperty(j)) {
 		 				specialProperties[special[j]] = node.data[j];
 		 			} else {
 		 				properties[j] = node.data[j];
@@ -99,15 +102,16 @@ graph.API = app.createClass({
 		 		addNodeMetadata(properties);
 
 		 		properties._labels = nodeLabels;
+		 		properties.id = node.self;
 
 		 		nodeMap[node.self] = nodeCount;
 		 		nodeCount++;
 
-		 		node.data.id = node.self;
-
 		 		// throw everything back in one object for now
 		 		// TODO keep data split from other node stuff
-		 		nodes.push($.extend({}, properties, specialProperties));
+		 		obj = $.extend({}, properties, specialProperties);
+		 		console.log(obj);
+		 		nodes.push(obj);
 		 	}
 
 		 	// convert the edges to an array of d3 edges,
@@ -126,8 +130,6 @@ graph.API = app.createClass({
 		 			target: nodeMap[edge.end]
 		 		});
 		 	}
-
-		 	// console.log(nodes);
 
 		 	graph = {
 		 		nodes: nodes,
@@ -241,10 +243,23 @@ graph.API = app.createClass({
         console.log(data.id);
         console.log(data);
 
+        // prepare the data to be sent
+        var properties,
+        	specialProperties,
+        	obj;
+
+        properties = this.graph.getCleanNodeData(data);
+        specialProperties = this.graph.getSpecialNodeData(data, this.options.special);
+
+        obj = $.extend({}, properties, specialProperties);
+
+        console.log("SENDING");
+        console.log(obj);
+
         $.ajax({
-            url: id + '/properties',
+            url: data.id + '/properties',
             type: 'PUT',
-            data: data
+            data: obj
         })
         .done(function (result) {
             console.log(result);
@@ -272,6 +287,5 @@ graph.API = app.createClass({
         });
     }
 });
->>>>>>> cfc4630103c991ae281d3a23f08c796ebbf5059b
 
 }(window, jQuery));

@@ -91,8 +91,6 @@
 		console.log('hold end');
 
 		clearTimeout(this.holdTimeoutId);
-
-		this.graph.dragging = false;
 		
 		if (!node) {
 			console.log("hold end exit");
@@ -118,6 +116,7 @@
 			}
 		}
 
+		this.graph.dragging = false;
 		if (this.graph.holding) {
 
 			this.graph.holding = false;

@@ -3,7 +3,8 @@
 'use strict';
 
 var graph = window.setNamespace('app.graph'),
-	app   = window.setNamespace('app');
+	app   = window.setNamespace('app'),
+	NodeEvent = window.use('app.event.NodeEvent');
 
 /**
  * Stylable trait
@@ -91,7 +92,7 @@ graph.Stylable.prototype.handleNodeStyled = function (event, node, data) {
 	var styleString = this.getStyleString(node, data);
 	data._style = styleString;
 
-	$(this.kernel).trigger(NodeEvent.STYLED, [node, data, this.options.key, styleString]);
+	$(this.kernel).trigger(NodeEvent.UPDATED, [node, data, this.options.key, styleString]);
 };
 
 }(window, jQuery, d3));

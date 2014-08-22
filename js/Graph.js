@@ -128,6 +128,7 @@ graph.Graph = app.createClass({
 
         var fields = data._fields,
             cleaned = {},
+            key,
             value;
 
         if (!fields) {
@@ -143,6 +144,30 @@ graph.Graph = app.createClass({
             }
 
             cleaned[key] = value;
+        }
+
+        return cleaned;
+    },
+
+    /**
+     * Returns an object with the database field linked to the data value
+     */
+    getSpecialNodeData: function (data, obj) {
+
+        var cleaned = {},
+            dataField,
+            dbField,
+            value;
+
+        for (dbField in obj) {
+            dataField = obj[dbField];
+            value = data[dataField];
+
+            if (!value) {
+                continue;
+            }
+
+            cleaned[dbField] = value;
         }
 
         return cleaned;
@@ -596,10 +621,8 @@ graph.Graph = app.createClass({
 
         // don't click after a drag event
         if (d3.event.defaultPrevented) {
-            console.log("yoes");
             return;
         }
-        console.log("????");
 
         $(graph).trigger('node-clicked', [this, data]);
     },
@@ -612,6 +635,8 @@ graph.Graph = app.createClass({
     },  
 
     handleMouseUp: function (graph, data) {
+
+    	console.log("mouse up");
 
         $(graph).trigger('mouse-up');
     },  
@@ -657,9 +682,13 @@ graph.Graph = app.createClass({
 
         $(graph).trigger(d3.event, [this, data]);
 
-        graph.dragging = graph.dragging || graph.dragDistance > 10;
+        // graph.dragging = graph.dragging || graph.dragDistance > 10;
+        console.log(graph.dragging);
 
-        if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
+        // if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
+        if (!d3.event.sourceEvent.defaultPrevented) {
+
+        	graph.dragging = true;
 
             // because drag start is not actually dragging yet (we haven't moved)
             console.log("screwing yo");
@@ -689,10 +718,6 @@ graph.Graph = app.createClass({
         graph.xChange = 0;
         graph.yChange = 0;
 
-        // fix only this node temporarily
-        data._fixed = data.fixed;
-        data.fixed = true;
-
         // also log the start location of the node
         graph.draggedNode = {
             data: data,
@@ -707,9 +732,6 @@ graph.Graph = app.createClass({
 
         // use d3 event?
         $(graph).trigger('drag-end', [this, data]);
-
-        data.fixed = data._fixed;
-        data._fixed = null;
 
         // clean up
         graph.draggedNode.node.style['pointerEvents'] = 'auto';

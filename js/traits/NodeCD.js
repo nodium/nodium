@@ -270,7 +270,6 @@
         }
 
         if (!node) {
-            // node = $('.nodes').get(data.index);
             node = this.graph.selectedNode.node;
         }
 
@@ -282,11 +281,7 @@
         console.log(node);
         this.graph.setNodeText(node, nodeData);
 
-        // if (!data[titleField] || data[titleField] == "") {
-        //     return;
-        // }
-
-        $(this.kernel).trigger(NodeEvent.UPDATED, [data, nodeData.id]);
+        $(this.kernel).trigger(NodeEvent.UPDATED, [node, nodeData]);
     };
 
     graph.NodeCD.prototype.handleNodeLabelUpdate = function (event, node, data) {
@@ -310,12 +305,10 @@
         newData = this.updateNodeDataWithLabels(data);
 
         if (!node) {
-            // node = $('.nodes').get(data.index);
             node = this.graph.selectedNode.node;
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
-        // $(this.kernel).trigger('labels', this.)
     };
 
     graph.NodeCD.prototype.handleNodeDestroy = function (event, node, data) {
@@ -343,14 +336,11 @@
             node = nodes[i];
 
             if (node._labels) {
-                console.log(node._labels);
                 labels = _.union(labels, node._labels);
             }
         }
 
         this.labels = labels;
-
-        console.log(labels);
     };
 
 }(window, jQuery, d3, _));

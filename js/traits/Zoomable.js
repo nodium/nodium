@@ -18,13 +18,18 @@
 	graph.Zoomable.prototype.initialize = function () {
 
 		var zoomHandler = window.curry(this.handleZoom, this);
+		var zoomStartHandler = window.curry(this.handleZoomStart, this);
+		var zoomEndHandler = window.curry(this.handleZoomEnd, this);
 		d3.select(this.graph.selector + ' .graph-viewport')
-		  .call(d3.behavior.zoom().on("zoom", zoomHandler));
+		  .call(d3.behavior.zoom()
+		  	.on('zoom', zoomHandler)
+		  	.on('zoomstart', zoomStartHandler)
+		  	.on('zoomend', zoomEndHandler)
+		  );
 	};
 
 	graph.Zoomable.prototype.handleZoom = function () {
 
-		// this.graph.dragging = this.graph.dragging || this.graph.dragDistance > 10;
 		this.graph.dragging = true;
 
 		var prototype = 'translate(__translate__) scale(__scale__)',
@@ -33,6 +38,20 @@
 				.replace(/__scale__/g, d3.event.scale);
 
 		d3.select(this.graph.selector).select('.graph-content').attr('transform', transform);
+	};
+
+	graph.Zoomable.prototype.handleZoomStart = function () {
+
+		console.log('zoom start');
+
+		this.graph.dragging = true;
+	};
+
+	graph.Zoomable.prototype.handleZoomEnd = function () {
+
+		console.log('zoom end');
+
+		this.graph.dragging = false;
 	};
 
 }(window, jQuery, d3));
