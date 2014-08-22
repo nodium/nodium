@@ -1,485 +1,488 @@
 (function (window, $, d3, Mousetrap, undefined) {
-	var graph = window.setNamespace('app.graph');
-	var graphAPI = graph.api;
-
-	graph.GraphEditor = function () {
-		//enforce use of new on constructor
-		if ((this instanceof graph.GraphEditor) === false) {
-			return new graph.GraphEditor(arguments);
-		}
 
-		var dataHandler,
-			// filterHandler,
-			// filterClearHandler,
-			modeChangeHandler,
-			skillClickHandler;
+'use strict';
 
-		this.selectedNode = null;
-		this.editMode = graph.EditModes.MOVE;
-
-		$(window).on('resize', this.handleWindowResize);
+var graph    = window.setNamespace('app.graph');
+    app      = window.use('app'),
+    graphAPI = graph.api;
 
-		modeChangeHandler = window.curry(this.handleModeChange, this);
-		$('#edit-mode > label').watch('class', modeChangeHandler);
-		// $('#edit-mode').on('change', 'input[type=radio]', modeChangeHandler);
-
-		nodeHandler = window.curry(this.handleNodeUpdate, this);
-		$('#node-submit').on('click', nodeHandler);
-
-		nodeHandler = window.curry(this.handleNodeUpdate, this);
-		$('#node-title').on('keydown', nodeHandler);
-
-		filterHandler = window.curry(this.handleFilterInput, this);
-		$('#filter-input').on('input', filterHandler);
-
-		filterClearHandler = window.curry(this.handleFilterClear, this);
-		$('#filter-clear').on('click', filterClearHandler);
-
-		nodeChangeHandler = window.curry(this.handleNodeChange, this);
-		$('#node-form').on('submit', nodeChangeHandler);
-
-		skillClickHandler = window.curry(this.handleSkillClick, this);
-		$('#node-list').on('click', 'li', skillClickHandler);
-
-		$('#navigation').on('click', 'label', this.handleNavigationClick);
-
-		Mousetrap.bind(graph.KeyBinding.MOVE, this.handleKeyDown);
-		Mousetrap.bind(graph.KeyBinding.OK, this.handleKeyDown);
-		Mousetrap.bind(graph.KeyBinding.DENY, this.handleKeyDown);
-		Mousetrap.bind(graph.KeyBinding.LINK, this.handleKeyDown);
-		Mousetrap.bind(graph.KeyBinding.UNLINK, this.handleKeyDown);
-		Mousetrap.bindGlobal(graph.KeyBinding.UNSELECT, this.handleUnselectClicked);
-
-		dataHandler = window.curry(this.handleData, this);
-		graphAPI.get(dataHandler);
-
-		this.handleWindowResize();
-	};
-
-	graph.GraphEditor.prototype.filterNodes = function (query) {
-		this.graph.filter(query);
-		this.graphInspector.filter(query);
-	};
-
-	/**
-	 * Node CRUD actions
-	 */
-
-	graph.GraphEditor.prototype.createNode = function (name, type) {
-
-		var node,
-			nodes = this.graph.nodes,
-			dragStartHandler = window.curry(this.graph.handleNodeDragStart, this.graph),
-			dragHandler = window.curry(this.graph.handleNodeDrag, this.graph);
-
-		if (this.editMode !== graph.EditModes.ADD) {
-			return;
-		}
+graph.GraphEditor = app.createClass({
 
-		node = {
-			'name': name,
-			'type': type,
-			'status': "pending"
-		};
-		nodes.push(node);
+    construct: function () {
 
-		graphAPI.createNode(node, function (data) {
-			node.id = data.node.id;
-		});
+        var dataHandler,
+            // filterHandler,
+            // filterClearHandler,
+            modeChangeHandler,
+            skillClickHandler;
 
-		this.graph.drawNodes({
-			'dragstart': dragStartHandler,
-			'drag': dragHandler,
-			'click': this.graph.handleMouseClick,
-			'mouseover': this.graph.handleMouseOver,
-			'mouseout': this.graph.handleMouseOut
-		});
-		
-		this.graph.force.start();
-	}
+        this.selectedNode = null;
+        this.editMode = graph.EditModes.MOVE;
 
-	graph.GraphEditor.prototype.deleteNode = function (node) {
+        $(window).on('resize', this.handleWindowResize);
 
-		graphAPI.deleteNode({'id': node.id});
-	}
+        modeChangeHandler = window.curry(this.handleModeChange, this);
+        $('#edit-mode > label').watch('class', modeChangeHandler);
+        // $('#edit-mode').on('change', 'input[type=radio]', modeChangeHandler);
 
-	graph.GraphEditor.prototype.updateNode = function (node) {
+        nodeHandler = window.curry(this.handleNodeUpdate, this);
+        $('#node-submit').on('click', nodeHandler);
 
-		graphAPI.updateNode(node);
-	};
+        nodeHandler = window.curry(this.handleNodeUpdate, this);
+        $('#node-title').on('keydown', nodeHandler);
 
-	/**
-	 * Link CRUD actions
-	 */
+        filterHandler = window.curry(this.handleFilterInput, this);
+        $('#filter-input').on('input', filterHandler);
 
-	graph.GraphEditor.prototype.createLink = function (sourceNodeData, targetNodeData) {
-		var edgeType = 'Shoots',
-			edge,
-			json,
-			edges = this.graph.edges;
+        filterClearHandler = window.curry(this.handleFilterClear, this);
+        $('#filter-clear').on('click', filterClearHandler);
 
-		if (this.editMode === graph.EditModes.SYNONYM) {
-			edgeType = 'Synonym';
-		} 
-		// else if (sourceNodeData.type == 'category' ||
-		// 		targetNodeData.type == 'category') {
+        nodeChangeHandler = window.curry(this.handleNodeChange, this);
+        $('#node-form').on('submit', nodeChangeHandler);
 
-		// 	edgeType = 'CATEGORY';
-		// }
+        skillClickHandler = window.curry(this.handleSkillClick, this);
+        $('#node-list').on('click', 'li', skillClickHandler);
 
-		edge = {
-			id: edges.length,
-			source: sourceNodeData.index,
-			target: targetNodeData.index,
-		};
+        $('#navigation').on('click', 'label', this.handleNavigationClick);
 
-		edges.push(edge);
+        Mousetrap.bind(graph.KeyBinding.MOVE, this.handleKeyDown);
+        Mousetrap.bind(graph.KeyBinding.OK, this.handleKeyDown);
+        Mousetrap.bind(graph.KeyBinding.DENY, this.handleKeyDown);
+        Mousetrap.bind(graph.KeyBinding.LINK, this.handleKeyDown);
+        Mousetrap.bind(graph.KeyBinding.UNLINK, this.handleKeyDown);
+        Mousetrap.bindGlobal(graph.KeyBinding.UNSELECT, this.handleUnselectClicked);
 
-		data = {
-			from: sourceNodeData.id,
-			to: targetNodeData.id,
-			type: edgeType
-		};
+        dataHandler = window.curry(this.handleData, this);
+        graphAPI.get(dataHandler);
 
-		graphAPI.createEdge(data, function (data, status, jqXHR) {
-			edge.id = data.edge.id;
-		});
+        this.handleWindowResize();
+    },
 
-		this.graph
-			.drawLinks()
-		 	.force.start();
-	};
+    filterNodes: function (query) {
+        this.graph.filter(query);
+        this.graphInspector.filter(query);
+    },
 
-	graph.GraphEditor.prototype.destroyLink = function (sourceNodeData, targetNodeData) {
-		var edge,
-			i,
-			json,
-			graph = this.graph,
-			edges = graph.edges
-			targets = [sourceNodeData.id, targetNodeData.id],
-			targetEdges = [];
+    /**
+     * Node CRUD actions
+     */
 
-		for (i = 0; i < edges.length; i++) {
+    createNode: function (name, type) {
 
-			if (targets.indexOf(edges[i].source.id) !== -1 &&
-				targets.indexOf(edges[i].target.id) !== -1) {
+        var node,
+            nodes = this.graph.nodes,
+            dragStartHandler = window.curry(this.graph.handleNodeDragStart, this.graph),
+            dragHandler = window.curry(this.graph.handleNodeDrag, this.graph);
 
-				targetEdges.push(edges[i]);
+        if (this.editMode !== graph.EditModes.ADD) {
+            return;
+        }
 
-				edges.splice(i, 1);
+        node = {
+            'name': name,
+            'type': type,
+            'status': "pending"
+        };
+        nodes.push(node);
 
-				i--;
-			}
-		}
+        graphAPI.createNode(node, function (data) {
+            node.id = data.node.id;
+        });
 
-		if (targetEdges.length > 0) {
+        this.graph.drawNodes({
+            'dragstart': dragStartHandler,
+            'drag': dragHandler,
+            'click': this.graph.handleMouseClick,
+            'mouseover': this.graph.handleMouseOver,
+            'mouseout': this.graph.handleMouseOut
+        });
+        
+        this.graph.force.start();
+    },
 
-			graphAPI.deleteEdges(targetEdges);
+    deleteNode: function (node) {
 
-			graph.drawLinks();
-			graph.force.start();
-		}
-	};
+        graphAPI.deleteNode({'id': node.id});
+    },
 
-	graph.GraphEditor.prototype.editAction = function (node, data) {
+    updateNode: function (node) {
 
-		// load the node form in the side bar
-		this.graphInspector.setView('node');
+        graphAPI.updateNode(node);
+    },
 
-		this.graphInspector.loadNode(data);
-	};
+    /**
+     * Link CRUD actions
+     */
 
-	/**
-	 * Allow / Deny
-	 */
+    createLink: function (sourceNodeData, targetNodeData) {
+        var edgeType = 'Shoots',
+            edge,
+            json,
+            edges = this.graph.edges;
 
-	graph.GraphEditor.prototype.allowAction = function (node, data) {
+        if (this.editMode === graph.EditModes.SYNONYM) {
+            edgeType = 'Synonym';
+        } 
+        // else if (sourceNodeData.type == 'category' ||
+        //      targetNodeData.type == 'category') {
 
-		data.status = "accepted";
+        //  edgeType = 'CATEGORY';
+        // }
 
-		this.graph.setAccepted(node);
-		this.updateNode(data);
-	};
+        edge = {
+            id: edges.length,
+            source: sourceNodeData.index,
+            target: targetNodeData.index,
+        };
 
-	graph.GraphEditor.prototype.denyAction = function (node, data) {
+        edges.push(edge);
 
-		data.status = "denied";
+        data = {
+            from: sourceNodeData.id,
+            to: targetNodeData.id,
+            type: edgeType
+        };
 
-		this.graph.setDenied(node);
-		this.updateNode(data);
-	};
+        graphAPI.createEdge(data, function (data, status, jqXHR) {
+            edge.id = data.edge.id;
+        });
 
-	/**
-	 * Link / Unlink
-	 */
+        this.graph
+            .drawLinks()
+            .force.start();
+    },
 
-	graph.GraphEditor.prototype.linkAction = function (node, data) {
+    destroyLink: function (sourceNodeData, targetNodeData) {
+        var edge,
+            i,
+            json,
+            graph = this.graph,
+            edges = graph.edges
+            targets = [sourceNodeData.id, targetNodeData.id],
+            targetEdges = [];
 
-		var selectedNode = this.selectedNode;
+        for (i = 0; i < edges.length; i++) {
 
-		if (selectedNode === null || selectedNode === undefined) {
-			selectedNode = {
-				data: data,
-				domObject: node
-			};
+            if (targets.indexOf(edges[i].source.id) !== -1 &&
+                targets.indexOf(edges[i].target.id) !== -1) {
 
-			this.graph.setSelected(node, true);
+                targetEdges.push(edges[i]);
 
-		} else {
+                edges.splice(i, 1);
 
-			this.createLink(selectedNode.data, data);
+                i--;
+            }
+        }
 
-			this.graph.setSelected(selectedNode.domObject, false);
-			selectedNode = null;
-		}
+        if (targetEdges.length > 0) {
 
-		this.selectedNode = selectedNode;
-	};
+            graphAPI.deleteEdges(targetEdges);
 
-	graph.GraphEditor.prototype.unlinkAction = function (node, data) {
+            graph.drawLinks();
+            graph.force.start();
+        }
+    },
 
-		var selectedNode = this.selectedNode;
+    editAction: function (node, data) {
 
-		if (selectedNode === null || selectedNode === undefined) {
-			selectedNode = {
-				data: data,
-				domObject: node
-			};
+        // load the node form in the side bar
+        this.graphInspector.setView('node');
 
-			this.graph.setSelected(node, true);
+        this.graphInspector.loadNode(data);
+    },
 
-		} else {
+    /**
+     * Allow / Deny
+     */
 
-			this.destroyLink(selectedNode.data, data);
+    allowAction: function (node, data) {
 
-			this.graph.setSelected(selectedNode.domObject, false);
-			selectedNode = null;
-		}
+        data.status = "accepted";
 
-		this.selectedNode = selectedNode;
-	};
+        this.graph.setAccepted(node);
+        this.updateNode(data);
+    },
 
-	/**
-	 * Delete
-	 */
+    denyAction: function (node, data) {
 
-	graph.GraphEditor.prototype.deleteAction = function (node, data) {
+        data.status = "denied";
 
-		// view update
-		this.graph.deleteNode(data.id);
+        this.graph.setDenied(node);
+        this.updateNode(data);
+    },
 
-		// database update
-		this.deleteNode(data);
-	};
+    /**
+     * Link / Unlink
+     */
 
-	/**
-	 * Event handlers
-	 */
+    linkAction: function (node, data) {
 
-	graph.GraphEditor.prototype.handleData = function (data) {
-		var	nodes = data.nodes,
-			edges = data.edges,
-			dragStartHandler,
-			dragHandler,
-			tickHandler;
+        var selectedNode = this.selectedNode;
 
-		for(var i = 0; i < edges.length; i++) {
-			edges[i].weight = 1;
-		}
+        if (selectedNode === null || selectedNode === undefined) {
+            selectedNode = {
+                data: data,
+                domObject: node
+            };
 
-		this.graph = new graph.Graph('#graph', nodes, edges);
-		this.graph.force.start();
-		this.graph.drawLinks();
+            this.graph.setSelected(node, true);
 
-		dragStartHandler = window.curry(this.graph.handleNodeDragStart, this.graph);
-		dragHandler = window.curry(this.graph.handleNodeDrag, this.graph);
+        } else {
 
-		this.graph.drawNodes({
-			'dragstart': dragStartHandler,
-			'drag': dragHandler,
-			'click': this.graph.handleMouseClick,
-			'mouseover': this.graph.handleMouseOver,
-			'mouseout': this.graph.handleMouseOut
-		});
+            this.createLink(selectedNode.data, data);
 
-		tickHandler = window.curry(this.graph.handleTick, this.graph);
-		this.graph.force.on('tick', tickHandler);
+            this.graph.setSelected(selectedNode.domObject, false);
+            selectedNode = null;
+        }
 
-		this.graphInspector = new graph.GraphInspector('#inspector', '#node-list', this.graph.nodes);
-		this.graphInspector.setView('filter');
-		this.graphInspector.renderView();
-	};
+        this.selectedNode = selectedNode;
+    },
 
-	graph.GraphEditor.prototype.handleNodeUpdate = function (event) {
+    unlinkAction: function (node, data) {
 
-		var name = $('#node-title').val();
-		var type = $('#node-type-select').val();
+        var selectedNode = this.selectedNode;
 
-		if (event.type === "keydown") {
-			if (event.keyCode != 13) {
-				return;
-			} else {
-				event.preventDefault();
-			}
-		}
+        if (selectedNode === null || selectedNode === undefined) {
+            selectedNode = {
+                data: data,
+                domObject: node
+            };
 
-		$('#node-title').val("");
+            this.graph.setSelected(node, true);
 
-		if (name.length > 0) {
-			this.createNode(name, type);
-		}
-	};
+        } else {
 
-	graph.GraphEditor.prototype.handleNodeChange = function (event) {
+            this.destroyLink(selectedNode.data, data);
 
-		event.preventDefault();
+            this.graph.setSelected(selectedNode.domObject, false);
+            selectedNode = null;
+        }
 
-		var obj = {
-			'id': $('#node-id').val(),
-			'name': $('#node-name').val(),
-			'content': $('#node-content').val()
-		}
+        this.selectedNode = selectedNode;
+    },
 
-		// if (event.type === "keydown") {
-		// 	if (event.keyCode != 13) {
-		// 		return;
-		// 	} else {
-		// 		event.preventDefault();
-		// 	}
-		// }
+    /**
+     * Delete
+     */
 
-		this.updateNode(obj);
-	};
+    deleteAction: function (node, data) {
 
-	graph.GraphEditor.prototype.handleFilterClear = function (event) {
+        // view update
+        this.graph.deleteNode(data.id);
 
-		this.filterNodes();
+        // database update
+        this.deleteNode(data);
+    },
 
-		$(event.currentTarget)
-			.addClass('hidden')
-			.prev().val('');
-	};
+    /**
+     * Event handlers
+     */
 
-	graph.GraphEditor.prototype.handleFilterInput = function (event) {
+    handleData: function (data) {
+        var nodes = data.nodes,
+            edges = data.edges,
+            dragStartHandler,
+            dragHandler,
+            tickHandler;
 
-		var inputBox = $(event.currentTarget),
-			clearButton = inputBox.next(),
-			query = $(event.currentTarget).val();
+        for(var i = 0; i < edges.length; i++) {
+            edges[i].weight = 1;
+        }
 
-		this.graphInspector.setView('filter');
+        this.graph = new graph.Graph('#graph', nodes, edges);
+        this.graph.force.start();
+        this.graph.drawLinks();
 
-		if (inputBox.val().length > 0) {
-			clearButton.removeClass('hidden');
-		}
+        dragStartHandler = window.curry(this.graph.handleNodeDragStart, this.graph);
+        dragHandler = window.curry(this.graph.handleNodeDrag, this.graph);
 
-		this.filterNodes(query);
-	};
+        this.graph.drawNodes({
+            'dragstart': dragStartHandler,
+            'drag': dragHandler,
+            'click': this.graph.handleMouseClick,
+            'mouseover': this.graph.handleMouseOver,
+            'mouseout': this.graph.handleMouseOut
+        });
 
-	graph.GraphEditor.prototype.handleKeyDown = function (event) {
+        tickHandler = window.curry(this.graph.handleTick, this.graph);
+        this.graph.force.on('tick', tickHandler);
 
-		// map keyCode to radioIndex
-		var keyMapping = {
-			113: 0,
-			119: 1,
-			101: 2,
-			114: 3,
-			116: 4
-		},
-			radioIndex = keyMapping[event.keyCode];
+        this.graphInspector = new graph.GraphInspector('#inspector', '#node-list', this.graph.nodes);
+        this.graphInspector.setView('filter');
+        this.graphInspector.renderView();
+    },
 
-		// only set the action if a valid key is pressed
-		if (typeof radioIndex === 'number') {
-			$('input[type=radio]')[radioIndex].click();
-		}
-	};
+    handleNodeUpdate: function (event) {
 
-	graph.GraphEditor.prototype.handleModeChange = function (event) {
+        var name = $('#node-title').val();
+        var type = $('#node-type-select').val();
 
-		var target = event.target;
-		if (target.className !== "active") {
-			return;
-		}
+        if (event.type === "keydown") {
+            if (event.keyCode != 13) {
+                return;
+            } else {
+                event.preventDefault();
+            }
+        }
 
-		this.graph.dragEnabled = false;
-		this.editMode = $(target).children().first().val();
-		
-		if(this.editMode === graph.EditModes.MOVE) {
-			this.graph.dragEnabled = true;
-		}
-	};
+        $('#node-title').val("");
 
-	graph.GraphEditor.prototype.handleNavigationClick = function (event) {
+        if (name.length > 0) {
+            this.createNode(name, type);
+        }
+    },
 
-		$(event.currentTarget)
-			.addClass('active')
-			.siblings().removeClass('active');
-	};
+    handleNodeChange: function (event) {
 
-	graph.GraphEditor.prototype.handleUnselectClicked = function (event) {
+        event.preventDefault();
 
-		$('#filter-clear').click();
-	};
+        var obj = {
+            'id': $('#node-id').val(),
+            'name': $('#node-name').val(),
+            'content': $('#node-content').val()
+        }
 
-	graph.GraphEditor.prototype.handleSkillClick = function (event) {
+        // if (event.type === "keydown") {
+        //  if (event.keyCode != 13) {
+        //      return;
+        //  } else {
+        //      event.preventDefault();
+        //  }
+        // }
 
-		var target = $(event.currentTarget),
-			nodes = d3.select('#nodes').selectAll('g'),
-			selectedNode;
+        this.updateNode(obj);
+    },
 
-		if (! target.hasClass('selected')) {
-			nodes.classed('selected', function (data) {
-				var isSelected = false;
+    handleFilterClear: function (event) {
 
-				if(data.id == target.data('id')) {
-					isSelected = true;
+        this.filterNodes();
 
-					selectedNode = {
-						data: data,
-						domObject: this
-					};
-				}
+        $(event.currentTarget)
+            .addClass('hidden')
+            .prev().val('');
+    },
 
-				return isSelected;
-			});
-		} else {
-			nodes.classed('selected', false);
-		}
+    handleFilterInput: function (event) {
 
-		if(selectedNode != null) {
-			this.selectedNode = selectedNode;
-		}
-	};
+        var inputBox = $(event.currentTarget),
+            clearButton = inputBox.next(),
+            query = $(event.currentTarget).val();
 
-	graph.GraphEditor.prototype.handleWindowResize = function (event) {
-		var graphSelector = '#graph',
-			width = $(window).width(),
-			height = $(window).height();
+        this.graphInspector.setView('filter');
 
-		$(graphSelector)
-			.attr('width', width)
-			.attr('height', height);
-	};
+        if (inputBox.val().length > 0) {
+            clearButton.removeClass('hidden');
+        }
 
-	graph.EditModes = {
-		MOVE:    'move',
-		OK:      'allow',
-		DENY:    'deny',
-		LINK:    'link',
-		UNLINK:  'unlink',
-		EDIT:    'edit',
-		SYNONYM: 'synonym',
-		ADD: 	 'add',
-		DELETE:  'delete',
-		MERGE: 	 'merge'
-	};
+        this.filterNodes(query);
+    },
 
-	graph.KeyBinding = {
-		MOVE: 	  'q',
-		OK: 	  'w',
-		DENY: 	  'e',
-		LINK: 	  'r',
-		UNLINK:   't',
-		UNSELECT: 'esc'
-	}
+    handleKeyDown: function (event) {
+
+        // map keyCode to radioIndex
+        var keyMapping = {
+            113: 0,
+            119: 1,
+            101: 2,
+            114: 3,
+            116: 4
+        },
+            radioIndex = keyMapping[event.keyCode];
+
+        // only set the action if a valid key is pressed
+        if (typeof radioIndex === 'number') {
+            $('input[type=radio]')[radioIndex].click();
+        }
+    },
+
+    handleModeChange: function (event) {
+
+        var target = event.target;
+        if (target.className !== "active") {
+            return;
+        }
+
+        this.graph.dragEnabled = false;
+        this.editMode = $(target).children().first().val();
+        
+        if(this.editMode === graph.EditModes.MOVE) {
+            this.graph.dragEnabled = true;
+        }
+    },
+
+    handleNavigationClick: function (event) {
+
+        $(event.currentTarget)
+            .addClass('active')
+            .siblings().removeClass('active');
+    },
+
+    handleUnselectClicked: function (event) {
+
+        $('#filter-clear').click();
+    },
+
+    handleSkillClick: function (event) {
+
+        var target = $(event.currentTarget),
+            nodes = d3.select('#nodes').selectAll('g'),
+            selectedNode;
+
+        if (! target.hasClass('selected')) {
+            nodes.classed('selected', function (data) {
+                var isSelected = false;
+
+                if(data.id == target.data('id')) {
+                    isSelected = true;
+
+                    selectedNode = {
+                        data: data,
+                        domObject: this
+                    };
+                }
+
+                return isSelected;
+            });
+        } else {
+            nodes.classed('selected', false);
+        }
+
+        if(selectedNode != null) {
+            this.selectedNode = selectedNode;
+        }
+    },
+
+    handleWindowResize: function (event) {
+        var graphSelector = '#graph',
+            width = $(window).width(),
+            height = $(window).height();
+
+        $(graphSelector)
+            .attr('width', width)
+            .attr('height', height);
+    }
+});
+
+graph.EditModes = {
+    MOVE:    'move',
+    OK:      'allow',
+    DENY:    'deny',
+    LINK:    'link',
+    UNLINK:  'unlink',
+    EDIT:    'edit',
+    SYNONYM: 'synonym',
+    ADD:     'add',
+    DELETE:  'delete',
+    MERGE:   'merge'
+};
+
+graph.KeyBinding = {
+    MOVE:     'q',
+    OK:       'w',
+    DENY:     'e',
+    LINK:     'r',
+    UNLINK:   't',
+    UNSELECT: 'esc'
+};
 
 }(window, jQuery, d3, Mousetrap));

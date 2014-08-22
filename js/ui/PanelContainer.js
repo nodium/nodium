@@ -1,25 +1,26 @@
 (function (window, $, undefined) {
 
-    'use strict';
+'use strict';
 
-    var ui = window.setNamespace('app.ui'),
-        PanelContainer,
-        _defaults = {
-            expanded: false
-        };
+var ui      = window.setNamespace('app.ui'),
+    app     = window.use('app'),
+    _defaults = {
+        expanded: false
+    };
 
-    PanelContainer = function (selector, options) {
+ui.PanelContainer = app.createClass({
 
-        if (false === (this instanceof PanelContainer)) {
-            return new PanelContainer(arguments);
-        }
+    construct: function (selector, options) {
 
         this.options = $.extend({}, _defaults, options);
 
-        this.view = $(selector);
-    };
+        console.log(selector);
+        console.log(arguments);
 
-    PanelContainer.prototype.init = function () {
+        this.view = $(selector);
+    },
+
+    init: function () {
         this.panels = {};
         this.isExpanded = this.options.expanded;
 
@@ -36,13 +37,15 @@
         $(this.view).on('panel-hide', '.panel', hideHandler);
 
         return this;
-    };
+    },
 
-    PanelContainer.prototype.destroy = function () {
+    destroy: function () {
 
-    };
+    },
 
-    PanelContainer.prototype.addPanel = function (panel) {
+    addPanel: function (panel) {
+
+        console.log(this);
 
         this.createMenuItem(panel.icon);
         this.panels[panel.icon] = panel;
@@ -50,9 +53,9 @@
         panel.init(this);
 
         return this;
-    };
+    },
 
-    PanelContainer.prototype.removePanel = function (panel) {
+    removePanel: function (panel) {
         var index = this.panels.indexOf(panel);
 
         if (index === -1) {
@@ -66,9 +69,9 @@
         panel.destroy();
 
         return this;
-    };
+    },
 
-    PanelContainer.prototype.expand = function (icon) {
+    expand: function (icon) {
         // $(this).trigger('expand', []);
         this.visiblePanel = icon;
         this.panels[icon].show();
@@ -78,9 +81,9 @@
         }
 
         this.isExpanded = true;
-    };
+    },
 
-    PanelContainer.prototype.collapse = function () {
+    collapse: function () {
 
         if (this.isExpanded) {
             this.view.removeClass('expanded');
@@ -88,37 +91,39 @@
         }
 
         this.isExpanded = false;
-    };
+    },
 
-    PanelContainer.prototype.createMenuItem = function (icon) {
+    createMenuItem: function (icon) {
 
         var menu = $('.panel-navigation', this.view),
             menuItem;
+
+        console.log(menu);
 
         menuItem = window.createFromPrototype(menu, {
             icon: icon
         });
 
         menu.append(menuItem);
-    };
+    },
 
     /**
      * Event Handlers
      */
 
-    PanelContainer.prototype.handleKeyDown = function (event) {
+    handleKeyDown: function (event) {
 
         if (event.keyCode === 27) {
             this.collapse();
         }
-    };
+    },
 
-    PanelContainer.prototype.handleMenuButtonClicked = function (event) {
+    handleMenuButtonClicked: function (event) {
 
         this.expand(event.currentTarget.className);
-    };
+    },
 
-    PanelContainer.prototype.handlePanelShow = function (event, panel) {
+    handlePanelShow: function (event, panel) {
 
         if (!this.isExpanded) {
             this.expand(panel.icon);
@@ -126,9 +131,9 @@
         }
 
         // this.expand(panel.icon);
-    };
+    },
 
-    PanelContainer.prototype.handlePanelHide = function (event, panel) {
+    handlePanelHide: function (event, panel) {
 
         if (this.isExpanded) {
             this.collapse();
@@ -136,8 +141,7 @@
         }
 
         // this.expand(panel.icon);
-    };
-
-    ui.PanelContainer = PanelContainer;
+    }
+});
 
 }(window, window.jQuery));
