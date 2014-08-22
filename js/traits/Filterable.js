@@ -1,32 +1,26 @@
 (function (window, $, d3, undefined) {
 
-    'use strict';
+'use strict';
 
-    var graph = window.setNamespace('app.graph'),
-        app   = window.setNamespace('app');
+var graph = window.setNamespace('app.graph'),
+    app   = window.use('app');
 
-    /**
-     * Filterable trait
-     *
-     * Adds functionality to click and hold a node or the canvas
-     */
-    graph.Filterable = function () {
-
-        // enforce use of new on constructor
-        if ((this instanceof graph.Filterable) === false) {
-            return new graph.Filterable(arguments);
-        }
-    };
+/**
+ * Filterable trait
+ *
+ * Adds functionality to click and hold a node or the canvas
+ */
+graph.Filterable = app.createClass({
 
     /**
      * Initializes variables and attaches events used for creating edges
      */
-    graph.Filterable.prototype.initialize = function () {
+    initialize: function () {
 
         
-    };
+    },
 
-    graph.Filterable.prototype.drawNodeOverlay = function (nodeEnter) {
+    drawNodeOverlay: function (nodeEnter) {
 
         var self = this;
 
@@ -38,9 +32,9 @@
                 return radius;
             })
         ;
-    };
+    },
 
-    graph.Filterable.prototype.filter = function (needle) {
+    filter: function (needle) {
 
         var filteredData = [];
 
@@ -66,27 +60,28 @@
         });
 
         return filteredData;
-    };
+    },
 
-    graph.Filterable.prototype.resetFilter = function () {
+    resetFilter: function () {
 
         d3.selectAll('.filtered').classed('filtered', false);
-    };
+    },
 
-    graph.Filterable.prototype.handleNodeDrawn = function (event, nodeEnter) {
+    handleNodeDrawn: function (event, nodeEnter) {
 
         this.drawNodeOverlay(nodeEnter);
-    };
+    },
 
-    graph.Filterable.prototype.handleNodeFilter = function (event, query) {
+    handleNodeFilter: function (event, query) {
 
         var data = this.filter(query);
         $(this.kernel).trigger('node-filtered', [undefined, data]);
-    };
+    },
 
-    graph.Filterable.prototype.handleNodeFilterUnset = function (event) {
+    handleNodeFilterUnset: function (event) {
 
         this.resetFilter();
-    };
+    }
+});
 
 }(window, jQuery, d3));
