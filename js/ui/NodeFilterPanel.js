@@ -11,10 +11,6 @@ ui.NodeFilterPanel = app.createClass({
 
     construct: function (selector, options, kernel) {
 
-        if (false === (this instanceof NodeFilterPanel)) {
-            return new NodeFilterPanel(arguments);
-        }
-
         this.options = $.extend({}, _defaults, options);
         this.view = $(selector);
         this.name = 'Node Filter';

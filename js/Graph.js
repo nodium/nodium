@@ -154,6 +154,8 @@ graph.Graph = app.createClass({
      */
     handleGraphData: function (graph) {
 
+        var tickHandler;
+
         this.nodes = graph.nodes || [];
         this.edges = graph.edges || [];
 
@@ -281,7 +283,7 @@ graph.Graph = app.createClass({
      */
     getEventsObject: function () {
 
-        eventsObject = {
+        var eventsObject = {
             'dragstart': window.currySelf(this.handleNodeDragStart, this),
             'drag': window.currySelf(this.handleNodeDrag, this),
             'dragend': window.currySelf(this.handleNodeDragEnd, this),
@@ -541,11 +543,10 @@ graph.Graph = app.createClass({
     drawLinks: function () {
 
         // in case you only want to draw a subset
-        links = this.getVisibleLinks();
-
-        var link = d3.select(this.selector + ' .links').selectAll('.link')
-            .data(links),
-            linkEnter = link.enter().append('polyline');
+        var links = this.getVisibleLinks(),
+            link = d3.select(this.selector + ' .links').selectAll('.link')
+                .data(links),
+                linkEnter = link.enter().append('polyline');
             
         this.drawLinkExit(link.exit());
         this.drawLinkEnter(linkEnter);
@@ -740,7 +741,7 @@ graph.Graph = app.createClass({
                 
         node.attr('transform', function (data) {
 
-            var translation = 'translate(__x__, __y__)';
+            var translation = 'translate(__x__, __y__)',
                 w = 10000,
                 h = 10000,
                 r = self.getNodeRadius(data) * 2,
