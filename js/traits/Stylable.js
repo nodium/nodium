@@ -25,11 +25,23 @@ graph.Stylable = function (options) {
 	this.options = $.extend({}, _defaults, options);
 };
 
+graph.Stylable.prototype.initialize = function () {
+
+	$(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
+};
+
 /**
  * the string to be stored
  */
 graph.Stylable.prototype.objectToString = function (obj) {
 	return JSON.stringify(obj);
+};
+
+/**
+ * parse the string
+ */
+graph.Stylable.prototype.objectFromString = function (styleString) {
+	return JSON.parse(styleString);
 };
 
 /**
@@ -58,7 +70,6 @@ graph.Stylable.prototype.getStyleString = function (node, data) {
 			property = properties[i];
 
 			// get the value of the property
-			// value = data[style[i]];
 			value = window.getObjectValueByString(data, property);
 
 			console.log("stylestring");
@@ -81,8 +92,55 @@ graph.Stylable.prototype.getStyleString = function (node, data) {
 /**
  * Parse a style string into an object with node style properties
  */
-graph.Stylable.prototype.parseStyleString = function (styleString) {
+graph.Stylable.prototype.parseStyleString = function (data) {
 
+	var styles = this.options.styles,
+		style,
+		obj,
+		properties,
+		property,
+		value;
+
+	if (!data.hasOwnProperty('_style')) {
+		return;
+	}
+
+	obj = this.objectFromString(data._style);
+
+	for (style in obj) {
+		// check if this style was configured to be used
+		if (!styles.hasOwnProperty(style)) {
+			continue;
+		}
+
+		properties = obj[style];
+		console.log(properties);
+
+		for (property in properties) {
+			data[property] = properties[property];
+		}
+	}
+
+	console.log(data);
+};
+
+/**
+ * Translate the style strings inside nodes to node data and style
+ */
+graph.Stylable.prototype.handleGraphLoaded = function (event, nodes, edges) {
+
+	console.log("styling graph");
+
+	var i,
+		node;
+
+	for (i = 0; i < nodes.length; i++) {
+		node = nodes[i];
+
+		this.parseStyleString(node);
+	}
+
+	this.graph.handleTick();
 };
 
 graph.Stylable.prototype.handleNodeStyled = function (event, node, data) {

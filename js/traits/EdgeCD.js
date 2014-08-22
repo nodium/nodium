@@ -31,7 +31,6 @@
 	graph.EdgeCD.prototype.handleLinking = function () {
 
 		console.log("handling linking");
-		console.log(this.graph.dragging);
 
 		if (!this.graph.dragging) {
 			return;
