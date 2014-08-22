@@ -129,8 +129,6 @@ graph.Stylable = app.createClass({
 
 			this.parseStyleString(node);
 		}
-
-		this.graph.handleTick();
 	},
 
     handleNodeStyled: function (event, node, data) {
