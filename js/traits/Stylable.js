@@ -13,7 +13,7 @@ var graph       = window.setNamespace('app.graph'),
  */
 graph.Stylable = app.createClass({
 
-    constrruct: function (options) {
+    construct: function (options) {
 
         var _defaults = {
             key: '__nodestyle',
@@ -23,12 +23,24 @@ graph.Stylable = app.createClass({
         this.options = $.extend({}, _defaults, options);
     },
 
+	initialize: function () {
+
+		$(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
+	},
+
     /**
      * the string to be stored
      */
     objectToString: function (obj) {
         return JSON.stringify(obj);
     },
+
+    /**
+	 * parse the style string
+	 */
+    objectFromString: function (styleString) {
+		return JSON.parse(styleString);
+	},
 
     /**
      * Generate a style string from this node
@@ -55,14 +67,8 @@ graph.Stylable = app.createClass({
 
                 property = properties[i];
 
-                // get the value of the property
-                // value = data[style[i]];
-                value = window.getObjectValueByString(data, property);
-
-                console.log("stylestring");
-                console.log(data);
-                console.log(property);
-                console.log(value);
+				// get the value of the property
+				value = window.getObjectValueByString(data, property);
 
                 parameters[property] = value;
             }
@@ -76,12 +82,56 @@ graph.Stylable = app.createClass({
         return objString;
     },
 
-    /**
-     * Parse a style string into an object with node style properties
-     */
-    parseStyleString: function (styleString) {
+	/**
+	 * Parse a style string into an object with node style properties
+	 */
+	parseStyleString: function (data) {
 
-    },
+		var styles = this.options.styles,
+			style,
+			obj,
+			properties,
+			property,
+			value;
+
+		if (!data.hasOwnProperty('_style')) {
+			return;
+		}
+
+		obj = this.objectFromString(data._style);
+
+		for (style in obj) {
+			// check if this style was configured to be used
+			if (!styles.hasOwnProperty(style)) {
+				continue;
+			}
+
+			properties = obj[style];
+
+			for (property in properties) {
+				data[property] = properties[property];
+			}
+		}
+	},
+
+	/**
+	 * Translate the style strings inside nodes to node data and style
+	 */
+	handleGraphLoaded: function (event, nodes, edges) {
+
+		console.log("styling graph");
+
+		var i,
+			node;
+
+		for (i = 0; i < nodes.length; i++) {
+			node = nodes[i];
+
+			this.parseStyleString(node);
+		}
+
+		this.graph.handleTick();
+	},
 
     handleNodeStyled: function (event, node, data) {
 

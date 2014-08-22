@@ -16,9 +16,7 @@ graph.Pinnable = app.createClass({
 	 * This is actually a toggle to either pin or unpin a node
 	 */
 	handleNodePinned: function (event, node, data) {
-
-		console.log("handling pinning");
-		console.log(data.fixed);
+		
 		data.fixed = !data.fixed;
 
 		$(this.kernel).trigger('node-pinned', [node, data]);

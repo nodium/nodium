@@ -82,8 +82,8 @@ graph.Holdable = app.createClass({
             infoText = "Too close";
         }
 
-        $info = $('#hold-action-notification');
-        $info.text(infoText);
+        // $info = $('#hold-action-notification');
+        // $info.text(infoText);
     },
 
     handleHoldEnd: function (event, node, data) {

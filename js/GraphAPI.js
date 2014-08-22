@@ -110,13 +110,11 @@ graph.API = app.createClass({
 		 		// throw everything back in one object for now
 		 		// TODO keep data split from other node stuff
 		 		obj = $.extend({}, properties, specialProperties);
-		 		console.log(obj);
 		 		nodes.push(obj);
 		 	}
 
 		 	// convert the edges to an array of d3 edges,
 		 	// which have node indices as source and target
-		 	console.log()
 		 	for (var i = 0; i < edgeResult.data.length; i++) {
 		 		edge = edgeResult.data[i][0];
 

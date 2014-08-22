@@ -69,10 +69,11 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new graph.Stylable({
 			key: '__nodestyle',
 			styles: {
-				pinnable: ['fixed', 'x', 'y']
+				pinnable: ['fixed', 'x', 'y', 'px', 'py']
 			}
 		}), [
-			['node-pinned', 'handleNodeStyled']
+			['node-pinned', 'handleNodeStyled'],
+			['drag-end', 'handleNodeStyled']
 		]);
 
         // UI handlers that initiate an action event
