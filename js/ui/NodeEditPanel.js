@@ -8,15 +8,15 @@ var ui          = window.setNamespace('app.ui'),
     Event       = window.use('app.event.Event'),
     _defaults;
 
-ui.NodeEditPanel = app.createClass({
+ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
     construct: function (selector, options, kernel) {
 
+        this.initialize(selector, kernel);
+
         this.options = $.extend({}, _defaults, options);
-        this.view = $(selector);
         this.name = 'Node Editor';
         this.icon = 'icon-pencil';
-        this.kernel = kernel;
 
         // this is a temporary solution
         // mapping of node fields to ui field id
@@ -38,7 +38,7 @@ ui.NodeEditPanel = app.createClass({
             nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
             nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
             focusOutHandler = window.curry(this.handleFocusOut, this),
-            formSubmitHandler = window.curry(this.handleFormSubmit, this),
+            formSubmitHandler = window.curry(this.handleSubmit, this),
             newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this),
             deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this),
             newLabelButtonClickHandler = window.curry(this.handleNewLabelButtonClick, this),
@@ -47,9 +47,14 @@ ui.NodeEditPanel = app.createClass({
         $(container).on('menu-collapse', collapseHandler);
         $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
         $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
-        $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
-        $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
-        $('#node-form', this.view).on(Event.FOCUS_OUT, 'input', focusOutHandler);
+
+        this
+            .on('#node-form', Event.SUBMIT)
+            .on('#node-form', Event.FOCUS_OUT, 'textarea')
+            .on('#node-form', Event.FOCUS_OUT, 'input')
+        // $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
+        // $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
+        // $('#node-form', this.view).on(Event.FOCUS_OUT, 'input', focusOutHandler);
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
         $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);
@@ -271,7 +276,7 @@ ui.NodeEditPanel = app.createClass({
         this.destroyListElement(event.currentTarget, NodeEvent.UPDATELABEL);
     },
 
-    handleFocusOut: function (event) {
+    handleFocusout: function (event) {
 
         // check if we're updating property or label
         console.log(event.currentTarget);
@@ -283,7 +288,7 @@ ui.NodeEditPanel = app.createClass({
         }
     },
 
-    handleFormSubmit: function (event) {
+    handleSubmit: function (event) {
 
         event.preventDefault();
         event.stopPropagation();
