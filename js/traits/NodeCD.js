@@ -13,7 +13,7 @@ var graph       = window.setNamespace('app.graph'),
  */
 graph.NodeCD = app.createClass({
 
-    init: function () {
+    construct: function () {
 
         this.labels = [];
     },

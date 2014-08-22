@@ -13,7 +13,7 @@ var graph       = window.setNamespace('app.graph'),
  */
 graph.Stylable = app.createClass({
 
-    init: function (options) {
+    constrruct: function (options) {
 
         var _defaults = {
             key: '__nodestyle',

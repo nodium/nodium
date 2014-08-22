@@ -1,129 +1,130 @@
 (function (window, $, d3, undefined) {
-	var graph = window.setNamespace('app.graph'),
-		app   = window.setNamespace('app');
 
-	/**
-	 * Holdable trait
-	 *
-	 * Adds functionality to click and hold a node or the canvas
-	 */
-	graph.Holdable = function (options) {
+'use strict';
 
-		// enforce use of new on constructor
-		if ((this instanceof graph.Holdable) === false) {
-			return new graph.Holdable(arguments);
-		}
+var graph = window.setNamespace('app.graph'),
+    app   = window.use('app');
 
-		var _defaults = {
-			'duration': 1000
-		};
+/**
+ * Holdable trait
+ *
+ * Adds functionality to click and hold a node or the canvas
+ */
+graph.Holdable = app.createClass({
 
-		this.options = $.extend({}, _defaults, options);
-	};
+    construct: function (options) {
 
-	/**
-	 * Initializes variables and attaches events used for creating edges
-	 */
-	graph.Holdable.prototype.initialize = function () {
+        var _defaults = {
+            'duration': 1000
+        };
 
-		this.graph.holdActions = {};
-		this.graph.holdActions[graph.Drag.LEFT] = "None";
-		this.graph.holdActions[graph.Drag.RIGHT] = "None";
-		this.graph.holdActions[graph.Drag.UP] = "None";
-		this.graph.holdActions[graph.Drag.DOWN] = "None";
+        this.options = $.extend({}, _defaults, options);
+    },
 
-		// add the action notification element
-		$('#hold-action-notification').toggle();
-	};
+    /**
+     * Initializes variables and attaches events used for creating edges
+     */
+    initialize: function () {
 
-	graph.Holdable.prototype.handleHoldStart = function (event, node, data, position) {
+        this.graph.holdActions = {};
+        this.graph.holdActions[graph.Drag.LEFT] = "None";
+        this.graph.holdActions[graph.Drag.RIGHT] = "None";
+        this.graph.holdActions[graph.Drag.UP] = "None";
+        this.graph.holdActions[graph.Drag.DOWN] = "None";
 
-		var self = this;
-		var graph = this.graph;
+        // add the action notification element
+        $('#hold-action-notification').toggle();
+    },
 
-		console.log("hold start");
+    handleHoldStart: function (event, node, data, position) {
 
-		this.holdTimeoutId = setTimeout(function () {
+        var self = this;
+        var graph = this.graph;
 
-			// we're only really holding the node if we're not dragging
-			console.log("ehehehe");
-			console.log(graph.dragging);
-			if (!graph.dragging) {
-				console.log("holding");
-				console.log(position);
-				graph.holding = true;
+        console.log("hold start");
 
-				if (node) {
-					$('#hold-action-notification').toggle();
-					$(self.kernel).trigger('holding-node', [node, data]);
-				} else {
-					$(self.kernel).trigger('holding-canvas', [position]);
-				}
-			}
-		}, 500);
-	};
+        this.holdTimeoutId = window.setTimeout(function () {
 
-	/**
-	 * Show some information about the drag action
-	 */
-	graph.Holdable.prototype.handleHoldDrag = function (event, node, data) {
-		
-		var infoText;
+            // we're only really holding the node if we're not dragging
+            console.log("ehehehe");
+            console.log(graph.dragging);
+            if (!graph.dragging) {
+                console.log("holding");
+                console.log(position);
+                graph.holding = true;
 
-		if (!this.graph.holding) {
-			return;
-		}
+                if (node) {
+                    $('#hold-action-notification').toggle();
+                    $(self.kernel).trigger('holding-node', [node, data]);
+                } else {
+                    $(self.kernel).trigger('holding-canvas', [position]);
+                }
+            }
+        }, 500);
+    },
 
-		event.sourceEvent.preventDefault();
+    /**
+     * Show some information about the drag action
+     */
+    handleHoldDrag: function (event, node, data) {
+        
+        var infoText;
 
-		if (this.graph.dragDistance > 100) {
-			infoText = this.graph.holdActions[this.graph.dragDirection];
-		} else {
-			infoText = "Too close";
-		}
+        if (!this.graph.holding) {
+            return;
+        }
 
-		$info = $('#hold-action-notification');
-		$info.text(infoText);
-	};
+        event.sourceEvent.preventDefault();
 
-	graph.Holdable.prototype.handleHoldEnd = function (event, node, data) {
+        if (this.graph.dragDistance > 100) {
+            infoText = this.graph.holdActions[this.graph.dragDirection];
+        } else {
+            infoText = "Too close";
+        }
 
-		console.log('hold end');
+        $info = $('#hold-action-notification');
+        $info.text(infoText);
+    },
 
-		clearTimeout(this.holdTimeoutId);
-		
-		if (!node) {
-			console.log("hold end exit");
-			return;
-		}
+    handleHoldEnd: function (event, node, data) {
 
-		// dispatch menu action if node was held
-		// use a fixed distance that has to be dragged
-		if (this.graph.holding && this.graph.dragDistance > 100) {
-			switch(this.graph.dragDirection) {
-				case graph.Drag.LEFT:
-					$(this.kernel).trigger('drag-left', [node, data]);
-					break;
-				case graph.Drag.RIGHT:
-					$(this.kernel).trigger('drag-right', [node, data]);
-					break;
-				case graph.Drag.UP:
-					$(this.kernel).trigger('drag-up', [node, data]);
-					break;
-				case graph.Drag.DOWN:
-					$(this.kernel).trigger('drag-down', [node, data]);
-					break;
-			}
-		}
+        console.log('hold end');
 
-		this.graph.dragging = false;
-		if (this.graph.holding) {
+        window.clearTimeout(this.holdTimeoutId);
+        
+        if (!node) {
+            console.log("hold end exit");
+            return;
+        }
 
-			this.graph.holding = false;
-			$('#hold-action-notification')
-				.toggle()
-				.text("");
-		}
-	};
+        // dispatch menu action if node was held
+        // use a fixed distance that has to be dragged
+        if (this.graph.holding && this.graph.dragDistance > 100) {
+            switch(this.graph.dragDirection) {
+                case graph.Drag.LEFT:
+                    $(this.kernel).trigger('drag-left', [node, data]);
+                    break;
+                case graph.Drag.RIGHT:
+                    $(this.kernel).trigger('drag-right', [node, data]);
+                    break;
+                case graph.Drag.UP:
+                    $(this.kernel).trigger('drag-up', [node, data]);
+                    break;
+                case graph.Drag.DOWN:
+                    $(this.kernel).trigger('drag-down', [node, data]);
+                    break;
+            }
+        }
+
+        this.graph.dragging = false;
+        if (this.graph.holding) {
+
+            this.graph.holding = false;
+            $('#hold-action-notification')
+                .toggle()
+                .text("");
+        }
+    },
+});
 
 }(window, jQuery, d3));
