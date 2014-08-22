@@ -20,7 +20,11 @@
 		this.mode = '';
 		this.kernel = this;
 
-		this.api = new graph.API();
+		this.api = new graph.API({
+			special: {
+				__nodestyle: '_style'
+			}
+		});
 
 		// here we put the actual linking of traits to events
 		// so that the traits contain only the logic and are kept generic
@@ -61,9 +65,14 @@
 			[NodeEvent.UPDATEDLABEL, 'handleColorNode']
 		])
 		.register(this.api)
-		// .register(new graph.Stylable(), {
-		// 	'node-pinned': 'handleNodeStyled',
-		// });
+		.register(new graph.Stylable({
+			key: '__nodestyle',
+			styles: {
+				pinnable: ['fixed', 'x', 'y']
+			}
+		}), [
+			['node-pinned', 'handleNodeStyled']
+		]);
 
 		// UI handlers that initiate an action event
 		var keyDownHandler = window.curry(this.handleKeyDown, this);

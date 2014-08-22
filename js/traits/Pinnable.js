@@ -23,7 +23,7 @@
 		// data.fixed = !data.fixed;
 
 		// screw this
-		data._fixed = !data._fixed;
+		data.fixed = !data.fixed;
 
 		$(this.kernel).trigger('node-pinned', [node, data]);
 	};

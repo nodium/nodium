@@ -151,6 +151,21 @@
         }
     }
 
+    window.getObjectValueByString = function(obj, s) {
+        s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+        s = s.replace(/^\./, '');           // strip a leading dot
+        var a = s.split('.');
+        while (a.length) {
+            var n = a.shift();
+            if (n in obj) {
+                obj = obj[n];
+            } else {
+                return;
+            }
+        }
+        return obj;
+    }
+
     /**
      * Dynamically loads a javascript file containing namespace
      * @param string namespace

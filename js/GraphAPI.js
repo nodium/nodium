@@ -13,6 +13,10 @@
 			return new graph.API(arguments);
 		}
 
+		var _defaults = {
+			special: {} // properties that shouldn't be treated as properties
+		};
+
 		this.options = $.extend({}, _defaults, options);
 	};
 
@@ -69,7 +73,10 @@
 		 		node, nodeId, nodeData, nodeLabels,
 		 		edge,
 		 		nodeMap = {},
-		 		nodeCount = 0;
+		 		nodeCount = 0,
+		 		properties = {},
+		 		specialProperties = {},
+		 		special = this.options.special;
 
 		 	if (!nodeResult.data) {
 		 		return;
@@ -85,14 +92,27 @@
 		 			continue;
 		 		}
 
-		 		addNodeMetadata(node.data);
-		 		node.data._labels = nodeLabels;
+		 		// split data properties from special app properties
+		 		for (var j in node.data) {
+		 			if (this.options.special.hasOwnProperty(j)) {
+		 				specialProperties[special[j]] = node.data[j];
+		 			} else {
+		 				properties[j] = node.data[j];
+		 			}
+		 		}
+
+		 		addNodeMetadata(properties);
+
+		 		properties._labels = nodeLabels;
 
 		 		nodeMap[node.self] = nodeCount;
 		 		nodeCount++;
 
 		 		node.data.id = node.self;
-		 		nodes.push(node.data);
+
+		 		// throw everything back in one object for now
+		 		// TODO keep data split from other node stuff
+		 		nodes.push($.extend({}, properties, specialProperties));
 		 	}
 
 		 	// convert the edges to an array of d3 edges,
@@ -220,11 +240,14 @@
 		});
 	};
 
-	graph.API.prototype.handleNodeUpdated = function (event, data, id) {
+	graph.API.prototype.handleNodeUpdated = function (event, node, data) {
 
 		console.log("handling node update");
-		console.log(id);
+		console.log(data.id);
 		console.log(data);
+
+		// prepare the data
+		
 
 		$.ajax({
 			url: id + '/properties',

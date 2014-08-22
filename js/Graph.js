@@ -689,8 +689,8 @@
 		graph.yChange = 0;
 
 		// fix only this node temporarily
-		data._fixed = data.fixed;
-		data.fixed = true;
+		// data._fixed = data.fixed;
+		// data.fixed = true;
 
 		// also log the start location of the node
 		graph.draggedNode = {
@@ -707,8 +707,8 @@
 		// use d3 event?
 		$(graph).trigger('drag-end', [this, data]);
 
-		data.fixed = data._fixed;
-		data._fixed = null;
+		// data.fixed = data._fixed;
+		// data._fixed = null;
 
 		// clean up
 		graph.draggedNode.node.style['pointerEvents'] = 'auto';

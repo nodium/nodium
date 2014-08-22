@@ -19,7 +19,8 @@
 		FILTERED: 'node-filtered',
 		FILTER_UNSET: 'node-filter-unset',
 		DRAWN: 'node-drawn',
-		LOADED: 'graph-loaded'
+		LOADED: 'graph-loaded',
+		STYLED: 'node-styled'
 	};
 
 	event.NodeEvent = NodeEvent;
