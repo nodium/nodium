@@ -31,9 +31,6 @@ graph.Holdable = app.createClass({
         this.graph.holdActions[graph.Drag.RIGHT] = "None";
         this.graph.holdActions[graph.Drag.UP] = "None";
         this.graph.holdActions[graph.Drag.DOWN] = "None";
-
-        // add the action notification element
-        $('#hold-action-notification').toggle();
     },
 
     handleHoldStart: function (event, node, data, position) {
@@ -49,7 +46,6 @@ graph.Holdable = app.createClass({
                 graph.holding = true;
 
                 if (node) {
-                    $('#hold-action-notification').toggle();
                     $(self.kernel).trigger('holding-node', [node, data]);
                 } else {
                     $(self.kernel).trigger('holding-canvas', [position]);
@@ -110,12 +106,7 @@ graph.Holdable = app.createClass({
         }
 
         this.graph.dragging = false;
-        if (this.graph.holding) {
-            this.graph.holding = false;
-            $('#hold-action-notification')
-                .toggle()
-                .text("");
-        }
+        this.graph.holding = false;
     },
 });
 

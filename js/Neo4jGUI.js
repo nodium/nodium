@@ -44,7 +44,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-end', 'handleLinking']
         ])
         .register(new graph.Holdable({
-            'duration': 400
+            'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
             ['drag', 'handleHoldDrag'],
             ['drag-end', 'handleHoldEnd'],
@@ -61,7 +61,11 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.FILTER, 'handleNodeFilter'],
             [NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
         ])
-        .register(new graph.Colorable(), [
+        .register(new graph.Colorable({
+            labels: {
+                test: '#cccc66'
+            }
+        }), [
             [NodeEvent.DRAWN, 'handleColorNodes'],
             [NodeEvent.UPDATEDLABEL, 'handleColorNode']
         ])

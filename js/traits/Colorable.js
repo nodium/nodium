@@ -20,9 +20,10 @@ graph.Colorable = app.createClass({
         this.colors = d3.scale.category10();
 
         var _defaults = {
-            'numColors': 10,
-            'method': 'label',
-            'defaultColor': '#d2d2d2'
+            numColors: 10,
+            method: 'label',
+            defaultColor: '#d2d2d2',
+            labels: {} // colors for specific labels
         };
 
         this.options = $.extend({}, _defaults, options);
@@ -38,6 +39,7 @@ graph.Colorable = app.createClass({
     colorNodeByLabel: function (data) {
 
         var color = this.options.defaultColor,
+            labels = this.options.labels,
             colorIndex,
             label;
         
@@ -45,13 +47,19 @@ graph.Colorable = app.createClass({
             label = data._labels[0];
             
             if (!this.colorMap.hasOwnProperty(label)) {
-                this.colorMap[label] = this.colorCount;
-                this.colorCount++;
+
+                // check if we've defined the label color in the options
+                if (labels.hasOwnProperty(label)) {
+                    // stuff it in the colorMap
+                    this.colorMap[label] = labels[label];
+                } else {
+                    colorIndex = this.colorCount % this.options.numColors;
+                    this.colorMap[label] = this.colors(colorIndex);;
+                    this.colorCount++;
+                }
             }
 
-            colorIndex = this.colorMap[label];
-
-            color = this.colors(colorIndex % this.options.numColors);
+            color = this.colorMap[label];
         }
 
         return color;
