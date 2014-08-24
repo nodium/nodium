@@ -41,16 +41,10 @@ graph.Holdable = app.createClass({
         var self = this;
         var graph = this.graph;
 
-        console.log("hold start");
-
         this.holdTimeoutId = window.setTimeout(function () {
 
             // we're only really holding the node if we're not dragging
-            console.log("ehehehe");
-            console.log(graph.dragging);
             if (!graph.dragging) {
-                console.log("holding");
-                console.log(position);
                 graph.holding = true;
 
                 if (node) {
@@ -88,12 +82,9 @@ graph.Holdable = app.createClass({
 
     handleHoldEnd: function (event, node, data) {
 
-        console.log('hold end');
-
         window.clearTimeout(this.holdTimeoutId);
         
         if (!node) {
-            console.log("hold end exit");
             return;
         }
 

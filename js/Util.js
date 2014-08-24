@@ -76,9 +76,6 @@ window.curry = function (fn, scope) {
  */
 window.curryWithArguments = function (fn, scope) {
 
-    console.log("currying with arguments");
-    console.log(arguments);
-
     var args = arguments.slice(2);
 
     scope = scope || window;
@@ -181,7 +178,6 @@ window.getFunction = function (functionPath) {
         child;
 
     while (child = components.shift()) {
-        console.log(child);
         if (!parent[child]) {
             return null;
         }

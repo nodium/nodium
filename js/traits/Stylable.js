@@ -77,7 +77,6 @@ graph.Stylable = app.createClass({
         }
 
         objString = this.objectToString(obj);
-        console.log(objString);
 
         return objString;
     },
@@ -108,6 +107,8 @@ graph.Stylable = app.createClass({
 
 			properties = obj[style];
 
+            // TODO this only works if properties are in data
+            // each style should have its own parser
 			for (property in properties) {
 				data[property] = properties[property];
 			}
@@ -118,8 +119,6 @@ graph.Stylable = app.createClass({
 	 * Translate the style strings inside nodes to node data and style
 	 */
 	handleGraphLoaded: function (event, nodes, edges) {
-
-		console.log("styling graph");
 
 		var i,
 			node;
@@ -132,8 +131,6 @@ graph.Stylable = app.createClass({
 	},
 
     handleNodeStyled: function (event, node, data) {
-
-        console.log("handling node style");
 
         var styleString = this.getStyleString(node, data);
         data._style = styleString;

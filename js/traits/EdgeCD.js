@@ -100,7 +100,6 @@ graph.EdgeCD = app.createClass({
 
         // TODO move this to some edge-deleted/created handlers somewhere else
         this.graph.drawLinks();
-        // this.graph.redrawNodes();
         this.graph.force.start();
 
         // console.log(d3.selectAll('.node, .link'));

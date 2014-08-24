@@ -105,11 +105,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     handleKeyDown: function (event) {
 
-        console.log('handleKeyDown');
-        console.log(event);
-
         if (event.keyCode === 27) {
-            console.log("escapering");
             $(this).trigger(KeyboardEvent.ESCAPE);
         } else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
             console.log('ctrl+f');

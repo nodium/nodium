@@ -22,10 +22,21 @@ graph.Zoomable = app.createClass({
             .on('zoom', zoomHandler)
             .on('zoomstart', zoomStartHandler)
             .on('zoomend', zoomEndHandler)
-          );
+          )
+          .on('dblclick.zoom', null); // disables zoom on double click
+
+        this.elem = $('.graph-content', this.graph.selector).get(0);
     },
 
     handleZoom: function () {
+
+        var position = d3.mouse(this.elem),
+            xdiff = this.dragStartPosition[0] - position[0],
+            ydiff = this.dragStartPosition[1] - position[1];
+
+        if (xdiff != 0 || ydiff != 0) {
+            this.graph.dragging = true;
+        }
 
         var prototype = 'translate(__translate__) scale(__scale__)',
             transform = prototype
@@ -37,7 +48,7 @@ graph.Zoomable = app.createClass({
 
     handleZoomStart: function () {
 
-        this.graph.dragging = true;
+        this.dragStartPosition = d3.mouse(this.elem);
     },
 
     handleZoomEnd: function () {

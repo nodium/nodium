@@ -28,8 +28,6 @@ graph.API = app.createClass({
     },
 
     initialize: function () {
-        console.log("yo");
-        console.log(this.kernel);
         var createNode = window.curry(this.handleNodeCreated, this);
         $(this.kernel).on(NodeEvent.CREATED, createNode);
         var deleteNode = window.curry(this.handleNodeDeleted, this);
@@ -155,10 +153,7 @@ graph.API = app.createClass({
             type: 'POST',
             async: false
         }).done(function (result) {
-            console.log(result);
             data.id = result.self;
-
-            console.log(data);
          });
     },
 
@@ -167,8 +162,6 @@ graph.API = app.createClass({
      * all relationships
      */
     handleNodeDeleted: function (event, data) {
-
-        console.log("deleting neo4j node");
 
         var nodeId,
             index,
@@ -195,9 +188,6 @@ graph.API = app.createClass({
             "params" : {}
         };
 
-
-        console.log(query);
-
         $.post(url, query)
          .done(function (result) {
             console.log(result);
@@ -206,9 +196,6 @@ graph.API = app.createClass({
 
     handleEdgeCreated: function (event, data, source, target) {
 
-        console.log("creating neo4j edge");
-        console.log(data);
-
         var props = {
             to: target.id,
             type: "POINTS"
@@ -216,22 +203,17 @@ graph.API = app.createClass({
 
         $.post(source.id+'/relationships', props)
          .done(function (result) {
-            console.log(result);
             data.id = result.self;
          });
     },
 
     handleEdgeDeleted: function (event, data) {
 
-        console.log("deleting neo4j edge");
-        console.log(data.id);
-
         $.ajax({
             url: data.id,
             type: 'DELETE'
         })
         .done(function (result) {
-            console.log(result);
         });
     },
 
@@ -239,7 +221,6 @@ graph.API = app.createClass({
 
         console.log("handling node update");
         console.log(data.id);
-        console.log(data);
 
         // prepare the data to be sent
         var properties,
@@ -251,16 +232,12 @@ graph.API = app.createClass({
 
         obj = $.extend({}, properties, specialProperties);
 
-        console.log("SENDING");
-        console.log(obj);
-
         $.ajax({
             url: data.id + '/properties',
             type: 'PUT',
             data: obj
         })
         .done(function (result) {
-            console.log(result);
         });
     },
 
@@ -272,7 +249,6 @@ graph.API = app.createClass({
 
         console.log("handling node label update");
         console.log(data.id);
-        console.log(data);
 
         $.ajax({
             url: data.id + '/labels',
@@ -281,7 +257,6 @@ graph.API = app.createClass({
             data: JSON.stringify(data._labels)
         })
         .done(function (result) {
-            console.log(result);
         });
     }
 });

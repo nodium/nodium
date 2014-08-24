@@ -357,17 +357,12 @@ graph.Graph = app.createClass({
      */
     redrawNode: function (node, data) {
 
-        console.log("redraw");
-        console.log(node);
-        console.log(data);
-
         if (!node && !data) {
             console.log("can't redraw node");
             return;
         }
 
         if (!node && data !== undefined) {
-            console.log(data.index);
             node = $('.node').get(data.index);
         }
 
@@ -377,15 +372,11 @@ graph.Graph = app.createClass({
 
     drawNodes: function () {
 
-        console.log(this.getVisibleNodes());
-
         // in case you only want to draw a subset
         var nodes = this.getVisibleNodes(),
             node = d3.select(this.selector + ' .nodes').selectAll('.node')
                 .data(nodes),
             nodeEnter = node.enter().append('g');
-
-        console.log(nodeEnter);
 
         this.drawNodeExit(node.exit());
         this.attachNodeEvents(nodeEnter);
@@ -629,14 +620,10 @@ graph.Graph = app.createClass({
 
     handleMouseDown: function (graph, data) {
 
-        console.log("mousedown");
-
         $(graph).trigger('mouse-down', [this, data]);
     },  
 
     handleMouseUp: function (graph, data) {
-
-    	console.log("mouse up");
 
         $(graph).trigger('mouse-up');
     },  
@@ -683,7 +670,7 @@ graph.Graph = app.createClass({
         $(graph).trigger(d3.event, [this, data]);
 
         // if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
-        if (!d3.event.sourceEvent.defaultPrevented) {
+        if (graph.dragDistance != 0 && !d3.event.sourceEvent.defaultPrevented) {
 
         	graph.dragging = true;
 
@@ -728,12 +715,15 @@ graph.Graph = app.createClass({
         // use d3 event?
         $(graph).trigger('drag-end', [this, data]);
 
+        if (graph.dragDistance !== 0) {
+            graph.force.resume();
+        }
+
         // clean up
         graph.draggedNode.node.style['pointerEvents'] = 'auto';
         graph.draggedNode = null;
         graph.dragging = false;
-
-        graph.force.resume();
+        graph.dragDistance = 0;
     },
 
 
