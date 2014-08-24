@@ -670,7 +670,7 @@ graph.Graph = app.createClass({
         $(graph).trigger(d3.event, [this, data]);
 
         // if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
-        if (graph.dragDistance != 0 && !d3.event.sourceEvent.defaultPrevented) {
+        if (graph.dragDistance != 0 && !graph.holding /* && !d3.event.sourceEvent.defaultPrevented*/) {
 
         	graph.dragging = true;
 

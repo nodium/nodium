@@ -45,6 +45,7 @@ graph.Holdable = app.createClass({
 
             // we're only really holding the node if we're not dragging
             if (!graph.dragging) {
+                console.log("holding");
                 graph.holding = true;
 
                 if (node) {
@@ -52,6 +53,7 @@ graph.Holdable = app.createClass({
                     $(self.kernel).trigger('holding-node', [node, data]);
                 } else {
                     $(self.kernel).trigger('holding-canvas', [position]);
+                    graph.holding = false;
                 }
             }
         }, 500);
@@ -109,7 +111,6 @@ graph.Holdable = app.createClass({
 
         this.graph.dragging = false;
         if (this.graph.holding) {
-
             this.graph.holding = false;
             $('#hold-action-notification')
                 .toggle()

@@ -281,6 +281,10 @@ graph.NodeCD = app.createClass({
             node = this.graph.selectedNode.node;
         }
 
+        if (!node && data !== undefined) {
+            node = $('.node').get(data.index)
+        }
+
         console.log(this.graph.selectedNode);
 
         nodeData = this.graph.selectedNode.data;
