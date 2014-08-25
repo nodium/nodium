@@ -4,7 +4,8 @@
 
 var graph       = window.setNamespace('app.graph'),
     app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent');
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    EdgeEvent   = window.use('app.event.EdgeEvent');
 
 /**
  * NodeEditor trait
@@ -240,7 +241,7 @@ graph.NodeCD = app.createClass({
         newData.fixed = true;
 
         $(this.kernel)
-            .trigger('create-edge', [data, newData])
+            .trigger(EdgeEvent.CREATE, [data, newData])
             .trigger(NodeEvent.SELECT, [null, newData]);
         
         newData.fixed = false;

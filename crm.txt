@@ -1,0 +1,13 @@
+Create different types of links
+
+Render different types of links
+
+Set (validation) property of node to pre-defined values through event
+
+Render node according to (validation) property value
+
+Functionality to set synonym to gangleader
+(and remove previous gangleader)
+
+extra:
+Allow hiding of sets of nodes and edges
