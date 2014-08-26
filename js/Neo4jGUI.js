@@ -4,6 +4,7 @@
 
 var app        = window.setNamespace('app'),
     graph      = window.setNamespace('app.graph'),
+    modules    = window.setNamespace('app.modules'),
     ui         = window.setNamespace('app.ui'),
     animations = window.setNamespace('app.graph.animations'),
     NodeEvent  = window.use('app.event.NodeEvent');
@@ -31,7 +32,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         // so that the traits contain only the logic and are kept generic
 
         this
-        .register(new graph.Zoomable())
+        .register(new modules.Zoomable())
         .register(new graph.NodeCD(), [
             ['node-clicked', 'handleNodeSelect'],
             [NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
@@ -41,7 +42,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-up', 'handleCreateChildNode'],
             ['holding-canvas', 'handleCanvasHold']
         ])
-        .register(new graph.EdgeCD(), [
+        .register(new modules.EdgeCRUD(), [
             ['drag-end', 'handleLinking']
         ])
         .register(new graph.Holdable({

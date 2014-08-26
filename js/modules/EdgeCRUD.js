@@ -3,6 +3,7 @@
 'use strict';
 
 var graph     = window.setNamespace('app.graph'),
+    modules   = window.setNamespace('app.modules'),
     app       = window.use('app'),
     EdgeEvent = window.use('app.event.EdgeEvent');
 
@@ -11,7 +12,7 @@ var graph     = window.setNamespace('app.graph'),
  *
  * Adds functionality to link nodes by hovering them on top of each other
  */
-graph.EdgeCD = app.createClass({
+modules.EdgeCRUD = app.createClass({
 
     /**
      * Initializes variables and attaches events used for creating edges
@@ -122,17 +123,6 @@ graph.EdgeCD = app.createClass({
         // TODO move this to some edge-deleted/created handlers somewhere else
         this.graph.drawLinks();
         this.graph.force.start();
-
-        // console.log(d3.selectAll('.node, .link'));
-        // d3.selectAll('.node, .link').sort(function (a, b) { // select the parent and sort the path's
-        //  if (a._fields && !b._fields) {
-        //      return 1;
-        //  } else if (!a._fields && b._fields) {
-        //      return -1;
-        //  } else {
-        //      return 0;
-        //  }
-        // });
     }
 });
 

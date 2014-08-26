@@ -2,15 +2,15 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
-    app   = window.use('app');
+var modules = window.setNamespace('app.modules'),
+    app     = window.use('app');
 
 /**
  * Zoomable trait
  *
  * Adds standard d3 zooming and panning functionality to the graph
  */
-graph.Zoomable = app.createClass({
+modules.Zoomable = app.createClass({
 
     initialize: function () {
 
