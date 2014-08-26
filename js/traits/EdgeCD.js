@@ -21,7 +21,7 @@ graph.EdgeCD = app.createClass({
         // non-customizable events
         $(this.kernel)
             .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this))
-            .on(EdgeEvent.MODECHANGED, this.handleModeChanged.bind(this));
+            .on(EdgeEvent.UPDATEFUNCTION, this.handleFunctionUpdate.bind(this));
     },
 
 
@@ -50,16 +50,19 @@ graph.EdgeCD = app.createClass({
         this.updateLink(source, target);
     },
 
-    handleModeChanged: function (event, fn) {
+    handleFunctionUpdate: function (event, name, fn) {
 
-        console.log('handling mode change')
+        console.log('handling function update');
+        console.log(name);
         console.log(fn);
+
+        this[name] = fn;
     },
 
     /**
      * returns the type of edge that should be used for this source and target
      */
-    getEdgeType: function (source, target) {
+    resolveEdgeType: function (source, target) {
         return 'POINTS_TO';
     },
 
@@ -74,12 +77,13 @@ graph.EdgeCD = app.createClass({
             toDelete,
             deletered = false;
 
-        type = type === undefined ? "POINTS_TO" : type;
+        type = type === undefined ? this.resolveEdgeType(source, target) : type;
 
         if (source.index == target.index) {
             return;
         }
         console.log("updating link");
+        console.log(type);
 
         // check if there's already an edge between source and target
         for (i = edges.length-1; i >= 0; i--) {

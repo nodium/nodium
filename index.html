@@ -18,7 +18,7 @@
 					<ul id="node-fields" data-prototype='<li class="node-field"><div><input type="text" class="node-key" value="{field}" /><button type="button" class="delete-property" tabindex="-1"><span class="icon-remove"></span></button></div><textarea class="node-value" rows="{rows}">{value}</textarea></li>'>
 					</ul>
 					<button id="new-property" type="button"><span class="icon-plus"></span></button>
-					<ul id="node-labels" data-prototype='<li class="node-label"><div><input type="text" class="node-label-value" value="{label}" /><button type="button" class="delete-label" tabindex="-1"><span class="icon-remove"></span></button></div></li>'>
+					<ul id="node-labels" data-prototype='<li class="node-label node-field"><div><input type="text" class="node-label-value node-key" value="{label}" /><button type="button" class="delete-label delete-property" tabindex="-1"><span class="icon-remove"></span></button></div></li>'>
 					</ul>
 					<button id="new-label" type="button"><span class="icon-plus"></span></button>
 					<button id="delete-button" type="submit"><span class="icon-trash"></span>Delete node</button>
@@ -56,9 +56,9 @@
 	            <input type="text" name="new-node-name" id="new-node-name" placeholder="Name of the node.." />
 	        </form>
 	        <form id="edit-mode">
-	        	<label title="Link Nodes"><input type="radio" name="action" value="link"><span class="icon-link"></span></label>
-	        	<label title="Synonym"><input type="radio" name="action" value="synonym"><span class="icon-exchange"></span></label>
-				<label title="Influence"><input type="radio" name="action" value="influence"><span class="icon-fighter-jet"></span></label>
+	        	<label title="Link Nodes"><input type="radio" name="action" value="NORMAL"><span class="icon-link"></span></label>
+	        	<label title="Synonym"><input type="radio" name="action" value="SYNONYM"><span class="icon-exchange"></span></label>
+				<label title="Influence"><input type="radio" name="action" value="INFLUENCE"><span class="icon-fighter-jet"></span></label>
 			</form>
 	    </div>
 	</body>
@@ -75,10 +75,12 @@
 	<script src="js/event/Event.js"></script>
 	<script src="js/event/KeyboardEvent.js"></script>
 	<script src="js/event/NodeEvent.js"></script>
+	<script src="js/event/EdgeEvent.js"></script>
 	<script src="js/ui/UIElement.js"></script>
 	<script src="js/ui/NodeEditPanel.js"></script>
 	<script src="js/ui/NodeFilterPanel.js"></script>
 	<script src="js/ui/PanelContainer.js"></script>
+	<script src="js/ui/EdgeModePanel.js"></script>
 	<script src="js/Graph.js"></script>
 	<script src="js/Graphics.js"></script>
 	<script src="js/GraphAPI.js"></script>
