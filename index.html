@@ -55,7 +55,11 @@
 			<form method="POST" id="new-node-form">
 	            <input type="text" name="new-node-name" id="new-node-name" placeholder="Name of the node.." />
 	        </form>
-	        <span id="hold-action-notification"></span>
+	        <form id="edit-mode">
+	        	<label title="Link Nodes"><input type="radio" name="action" value="link"><span class="icon-link"></span></label>
+	        	<label title="Synonym"><input type="radio" name="action" value="synonym"><span class="icon-exchange"></span></label>
+				<label title="Influence"><input type="radio" name="action" value="influence"><span class="icon-fighter-jet"></span></label>
+			</form>
 	    </div>
 	</body>
 	<!--<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>-->

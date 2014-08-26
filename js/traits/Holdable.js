@@ -31,9 +31,6 @@ graph.Holdable = app.createClass({
         this.graph.holdActions[graph.Drag.RIGHT] = "None";
         this.graph.holdActions[graph.Drag.UP] = "None";
         this.graph.holdActions[graph.Drag.DOWN] = "None";
-
-        // add the action notification element
-        $('#hold-action-notification').toggle();
     },
 
     handleHoldStart: function (event, node, data, position) {
@@ -41,23 +38,18 @@ graph.Holdable = app.createClass({
         var self = this;
         var graph = this.graph;
 
-        console.log("hold start");
-
         this.holdTimeoutId = window.setTimeout(function () {
 
             // we're only really holding the node if we're not dragging
-            console.log("ehehehe");
-            console.log(graph.dragging);
             if (!graph.dragging) {
                 console.log("holding");
-                console.log(position);
                 graph.holding = true;
 
                 if (node) {
-                    $('#hold-action-notification').toggle();
                     $(self.kernel).trigger('holding-node', [node, data]);
                 } else {
                     $(self.kernel).trigger('holding-canvas', [position]);
+                    graph.holding = false;
                 }
             }
         }, 500);
@@ -88,12 +80,9 @@ graph.Holdable = app.createClass({
 
     handleHoldEnd: function (event, node, data) {
 
-        console.log('hold end');
-
         window.clearTimeout(this.holdTimeoutId);
         
         if (!node) {
-            console.log("hold end exit");
             return;
         }
 
@@ -117,13 +106,7 @@ graph.Holdable = app.createClass({
         }
 
         this.graph.dragging = false;
-        if (this.graph.holding) {
-
-            this.graph.holding = false;
-            $('#hold-action-notification')
-                .toggle()
-                .text("");
-        }
+        this.graph.holding = false;
     },
 });
 

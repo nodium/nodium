@@ -44,7 +44,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-end', 'handleLinking']
         ])
         .register(new graph.Holdable({
-            'duration': 400
+            'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
             ['drag', 'handleHoldDrag'],
             ['drag-end', 'handleHoldEnd'],
@@ -61,7 +61,11 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.FILTER, 'handleNodeFilter'],
             [NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
         ])
-        .register(new graph.Colorable(), [
+        .register(new graph.Colorable({
+            labels: {
+                test: '#cccc66'
+            }
+        }), [
             [NodeEvent.DRAWN, 'handleColorNodes'],
             [NodeEvent.UPDATEDLABEL, 'handleColorNode']
         ])
@@ -105,11 +109,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     handleKeyDown: function (event) {
 
-        console.log('handleKeyDown');
-        console.log(event);
-
         if (event.keyCode === 27) {
-            console.log("escapering");
             $(this).trigger(KeyboardEvent.ESCAPE);
         } else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
             console.log('ctrl+f');

@@ -2,8 +2,9 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
-    app   = window.use('app');
+var graph     = window.setNamespace('app.graph'),
+    app       = window.use('app'),
+    EdgeEvent = window.use('app.event.EdgeEvent');
 
 /**
  * EdgeCD trait
@@ -17,10 +18,13 @@ graph.EdgeCD = app.createClass({
      */
     initialize: function () {
 
-        // non-customizable event
-        var createEdge = window.curry(this.handleCreateEdge, this);
-        $(this.kernel).on('create-edge', createEdge);
+        // non-customizable events
+        $(this.kernel)
+            .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this))
+            .on(EdgeEvent.MODECHANGED, this.handleModeChanged.bind(this));
     },
+
+
 
     /**
      * Handles the event 
@@ -46,6 +50,19 @@ graph.EdgeCD = app.createClass({
         this.updateLink(source, target);
     },
 
+    handleModeChanged: function (event, fn) {
+
+        console.log('handling mode change')
+        console.log(fn);
+    },
+
+    /**
+     * returns the type of edge that should be used for this source and target
+     */
+    getEdgeType: function (source, target) {
+        return 'POINTS_TO';
+    },
+
     /**
      * Creates a edge from source to target of type type if it does not exist yet.
      * Deletes the edge if it exists.
@@ -64,7 +81,7 @@ graph.EdgeCD = app.createClass({
         }
         console.log("updating link");
 
-        // check if there's a edge already between source and target
+        // check if there's already an edge between source and target
         for (i = edges.length-1; i >= 0; i--) {
             edge = edges[i];
 
@@ -100,7 +117,6 @@ graph.EdgeCD = app.createClass({
 
         // TODO move this to some edge-deleted/created handlers somewhere else
         this.graph.drawLinks();
-        // this.graph.redrawNodes();
         this.graph.force.start();
 
         // console.log(d3.selectAll('.node, .link'));

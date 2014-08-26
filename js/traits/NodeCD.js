@@ -4,7 +4,8 @@
 
 var graph       = window.setNamespace('app.graph'),
     app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent');
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    EdgeEvent   = window.use('app.event.EdgeEvent');
 
 /**
  * NodeEditor trait
@@ -36,6 +37,8 @@ graph.NodeCD = app.createClass({
      */
     createNode: function (data, x, y) {
 
+        console.log("creating node, x: " + x + ", y: " + y);
+
         // then add node metadata
         this.graph.addNodeMetadata(data);
         data._labels = [];
@@ -47,6 +50,7 @@ graph.NodeCD = app.createClass({
         // TODO do this after the trigger
         this.graph.nodes.push(data);
         this.graph.drawNodes();
+        this.graph.handleTick();
         this.graph.force.start();
 
         $(this.kernel).trigger(NodeEvent.CREATED, [data]);
@@ -72,6 +76,10 @@ graph.NodeCD = app.createClass({
      * Handles the delete-node event
      */
     destroyNode: function (data) {
+
+        if (!confirm("destroy node?")) {
+            return;
+        }
 
         var graph = this.graph;
         this.deleteEdgesForNode(data.index);
@@ -171,7 +179,14 @@ graph.NodeCD = app.createClass({
 
         var selectedNode = this.graph.selectedNode;
 
+        // do nothing if we're trying to reselect the selected node
         if (selectedNode) {
+
+            if (selectedNode.data.index == data.index) {
+                console.log("not doing anything =I");
+                return;
+            }
+
             $(this.kernel).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
         }
 
@@ -204,21 +219,12 @@ graph.NodeCD = app.createClass({
         console.log('handling unselecting node');
 
         if (data) {
-            console.log("data was set");
-            console.log(data);
-            console.log(node);
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
         } else if (selectedNode) {
-            console.log("selected node set")
-            console.log(selectedNode);
             $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
-        } /*else {
-            $(this.kernel).trigger(NodeEvent.UNSELECTED);
-        }*/
+        }
 
         if (selectedNode) {
-            console.log(selectedNode);
-
             this.graph.selectedNode = null;
         }
     },
@@ -232,10 +238,13 @@ graph.NodeCD = app.createClass({
         // passing newNode to trigger select doesn't work, because the nodes
         // are redrawn in the create edge trigger
 
+        newData.fixed = true;
+
         $(this.kernel)
-            .trigger('create-edge', [data, newData])
+            .trigger(EdgeEvent.CREATE, [data, newData])
             .trigger(NodeEvent.SELECT, [null, newData]);
         
+        newData.fixed = false;
     },
 
     handleNodeCreate: function (event) {
@@ -271,6 +280,10 @@ graph.NodeCD = app.createClass({
 
         if (!node) {
             node = this.graph.selectedNode.node;
+        }
+
+        if (!node && data !== undefined) {
+            node = $('.node').get(data.index)
         }
 
         console.log(this.graph.selectedNode);
