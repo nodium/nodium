@@ -44,15 +44,16 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
         $(container).on('menu-collapse', collapseHandler);
         // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
+        console.log(this.kernel.on);
         this.kernel
-            .on(NodeEvent.SELECTED)
-            .on(NodeEvent.UNSELECTED);
+            .on(this, NodeEvent.SELECTED)
+            .on(this, NodeEvent.UNSELECTED);
         // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
         this
-            .on('#node-form', Event.SUBMIT)
-            .on('#node-form', Event.FOCUS_OUT, 'textarea')
-            .on('#node-form', Event.FOCUS_OUT, 'input');
+            .on(this, '#node-form', Event.SUBMIT)
+            .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
+            .on(this, '#node-form', Event.FOCUS_OUT, 'input');
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
         $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);

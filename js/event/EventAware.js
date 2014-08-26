@@ -1,7 +1,5 @@
 (function (window, $, undefined){
 
-'use strict';
-
 var event   = window.setNamespace('app.event'),
     app     = window.use('app'),
     toCamelCase = function (dashedString) {
@@ -14,7 +12,7 @@ event.EventAware = app.createClass({
 
     construct: function () {   
 
-        this.events = []; 
+        this.events = [];
     },
 
     destroy: function () {
@@ -50,9 +48,9 @@ event.EventAware = app.createClass({
         return this;
     },
 
-    on: function () {
-
-        var args        = Array.prototype.slice.call(arguments, 0),
+    on: function (callbackOwner) {
+        console.log(arguments);
+        var args        = Array.prototype.slice.call(arguments, 1),
             eventName,
             selector,
             target;
@@ -63,7 +61,8 @@ event.EventAware = app.createClass({
 
         eventName = args[0];
 
-        args.push(this.resolveEvent(eventName, this));
+
+        args.push(this.resolveEvent(eventName, callbackOwner));
 
         target = this.resolveSelector(selector);
         target.on.apply(target, args);
@@ -85,7 +84,7 @@ event.EventAware = app.createClass({
         if (fn && 'function' === typeof fn) {
             return fn.bind(target);
         } else {
-            throw new Error('Could not resolve ' + eventName + ' to function.')
+            throw new Error('Could not resolve ' + eventName + ' to function.');
         }
     },
 

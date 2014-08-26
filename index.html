@@ -76,6 +76,7 @@
 	<script src="js/event/KeyboardEvent.js"></script>
 	<script src="js/event/NodeEvent.js"></script>
 	<script src="js/event/EdgeEvent.js"></script>
+	<script src="js/event/EventAware.js"></script>
 	<script src="js/ui/UIElement.js"></script>
 	<script src="js/ui/NodeEditPanel.js"></script>
 	<script src="js/ui/NodeFilterPanel.js"></script>
@@ -101,12 +102,13 @@
 		$(document).on('ready', function () {
 
 			var g 		= new graph.Neo4jGUI('#graph'),
-				menu 	= new ui.PanelContainer('#inspector', {});
+				menu 	= new ui.PanelContainer('#inspector', {}),
+				kernel  = g;
 
 			menu
 				.init()
-				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, g))
-				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, g));
+				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, kernel))
+				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, kernel));
 
 			// window.setTimeout(function () {
 			// 	$(g).trigger('node-filter', ['php']);
