@@ -328,7 +328,6 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     getLinkClassValue: function (data) {
-        console.log("wrong link class");
         return "link";
     },
 

@@ -44,7 +44,6 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
         $(container).on('menu-collapse', collapseHandler);
         // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
-        console.log(this.kernel.on);
         this.kernel
             .on(this, NodeEvent.SELECTED)
             .on(this, NodeEvent.UNSELECTED);

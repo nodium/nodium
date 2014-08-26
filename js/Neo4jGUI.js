@@ -127,7 +127,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     // CRM
     getLinkClassValue: function (data) {
 
-        console.log("getting link class value");
         var value = 'link';
 
         if (data.type) {
@@ -140,7 +139,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     // CRM
     drawLinkEnter: function (linkEnter) {
 
-        console.log("ehehehee");
         var proto = Object.getPrototypeOf(Object.getPrototypeOf(this));
         proto.drawLinkEnter.call(this, linkEnter);
 

@@ -71,8 +71,6 @@ graph.Colorable = app.createClass({
 
     handleColorNode: function (event, node) {
 
-        console.log("coloring node");
-        console.log(d3.select(node));
         graphics.colorNodes(d3.select(node), this.colorNodeByLabel.bind(this));
     },
 
@@ -81,11 +79,7 @@ graph.Colorable = app.createClass({
      */
     handleColorNodes: function (event, nodeEnter) {
 
-        console.log('coloring nodes');
-
         var nodes = nodeEnter; // || this.graph.node;
-
-        console.log(nodes);
 
         graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this));
     }

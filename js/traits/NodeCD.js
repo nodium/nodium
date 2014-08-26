@@ -166,6 +166,13 @@ graph.NodeCD = app.createClass({
         return data;
     },
 
+    updateProperty: function (node, data, property, value) {
+
+        data[property] = value;
+
+        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
+    },
+
     /**
      * Event Listeners
      */
@@ -334,6 +341,11 @@ graph.NodeCD = app.createClass({
         if (nodeData) {
             this.destroyNode(nodeData);
         }
+    },
+
+    handlePropertyUpdate: function (event, node, data, property, value) {
+
+        this.updateProperty(node, data, property, value);
     },
 
     handleGraphLoaded: function (event, nodes, edges) {

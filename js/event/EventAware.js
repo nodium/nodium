@@ -49,7 +49,6 @@ event.EventAware = app.createClass({
     },
 
     on: function (callbackOwner) {
-        console.log(arguments);
         var args        = Array.prototype.slice.call(arguments, 1),
             eventName,
             selector,

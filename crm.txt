@@ -1,6 +1,6 @@
 DONE Create different types of links
 
-Render different types of links
+DONE Render different types of links
 
 Set (validation) property of node to pre-defined values through event
 
