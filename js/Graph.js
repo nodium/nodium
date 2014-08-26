@@ -4,9 +4,10 @@
 
 var graph       = window.setNamespace('app.graph'),
     app         = window.use('app'),
+    EventAware  = window.use('app.event.EventAware'),
     NodeEvent   = window.use('app.event.NodeEvent');
 
-graph.Graph = app.createClass({
+graph.Graph = app.createClass(EventAware, {
 
     construct: function (selector) {
 
