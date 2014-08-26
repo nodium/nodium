@@ -18,13 +18,14 @@ ui.EdgeModePanel = app.createClass({
         this.edgeMode = this.EdgeModes.NORMAL;
 
         // $(this.kernel).on(EdgeEvent.MODECHANGE, this.handleModeChange.bind(this));
-        $('edit-mode').on(Event.CHANGE, 'input[type=radio]', this.handleModeChange.bind(this));
+        $(selector).on(Event.CHANGE, 'input[type=radio]', this.handleModeChange.bind(this));
     },
 
     initialize: function () {
 
     	// have the edge module know how to deduce edge type
-    	$(this.kernel).trigger(EdgeEvent.MODECHANGED, [this.getEdgeType.bind(this)]);
+        console.log(EdgeEvent.UPDATEFUNCTION);
+    	$(this.kernel).trigger(EdgeEvent.UPDATEFUNCTION, ['resolveEdgeType', this.resolveEdgeType.bind(this)]);
     },
 
     /**
@@ -37,21 +38,30 @@ ui.EdgeModePanel = app.createClass({
         var target = event.target;
         // get the active one and stuff
 
-        this.edgeMode = $(target).children().first().val();
+        console.log(target);
+
+        this.edgeMode = $(target).val();
+
+        console.log(this.edgeMode);
     },
 
     /**
      * Calculates the edge type to use for these nodes
      * and with the selected mode
      */
-    getEdgeType: function (source, target) {
+    resolveEdgeType: function (source, target) {
     	var edgeType = this.edgeMode;
+
+        console.log("resolving edge type");
+        console.log(edgeType);
 
     	if (edgeType === this.EdgeModes.NORMAL) {
     		if (source.type == 'test' || target.type == 'test') {
     			edgeType = 'LOLZ';
     		}
     	}
+
+        return edgeType;
     },
 
     // stuff this into something else?
@@ -61,3 +71,5 @@ ui.EdgeModePanel = app.createClass({
     	INFLUENCE: 'INFLUENCE'
     }
 });
+
+}(window, jQuery, d3));

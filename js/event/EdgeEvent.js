@@ -15,7 +15,8 @@
 		UNSELECTED: 'edge-unselected',
 		DRAWN: 'edge-drawn',
 		MODECHANGE: 'edge-mode-change',
-		MODECHANGED: 'edge-mode-change'
+		MODECHANGED: 'edge-mode-change',
+		UPDATEFUNCTION: 'edge-update-function'
 	};
 
 	event.EdgeEvent = EdgeEvent;

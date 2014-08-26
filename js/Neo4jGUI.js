@@ -4,6 +4,7 @@
 
 var app        = window.setNamespace('app'),
     graph      = window.setNamespace('app.graph'),
+    ui         = window.setNamespace('app.ui'),
     animations = window.setNamespace('app.graph.animations'),
     NodeEvent  = window.use('app.event.NodeEvent');
 
@@ -51,7 +52,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['mouse-up', 'handleHoldEnd'],
             ['drag-end', 'app.graph.graphics.handleNodeScale', 1],
             ['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
-            ['mouse-up', 'handleHoldEnd']
         ])
         .register(new graph.Pinnable(), [
             ['drag-right', 'handleNodePinned']
@@ -79,6 +79,10 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 			['node-pinned', 'handleNodeStyled'],
 			['drag-end', 'handleNodeStyled']
 		]);
+
+        // ui
+        this
+        .register(new ui.EdgeModePanel({}, '#edit-mode'));
 
         // UI handlers that initiate an action event
         var keyDownHandler = window.curry(this.handleKeyDown, this);
