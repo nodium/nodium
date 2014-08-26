@@ -47,6 +47,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         // .register(new modules.EdgeCRUD(), [
         //     ['drag-end', 'handleLinking']
         // ])
+        // CRM
         .register(new modules.CRMEdgeCRUD({
             modes: {
                 LINK: 'LINK',
@@ -121,6 +122,42 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     getGraphData: function () {
         this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
+    },
+
+    // CRM
+    getLinkClassValue: function (data) {
+
+        console.log("getting link class value");
+        var value = 'link';
+
+        if (data.type) {
+            value += ' ' + data.type.toLowerCase() + '-link';
+        }
+
+        return value;
+    },
+
+    // CRM
+    drawLinkEnter: function (linkEnter) {
+
+        console.log("ehehehee");
+        var proto = Object.getPrototypeOf(Object.getPrototypeOf(this));
+        proto.drawLinkEnter.call(this, linkEnter);
+
+        linkEnter.attr("marker-mid", function (data) {
+            var linkType = null;
+            if (data.type) {
+                linkType = data.type.toUpperCase();
+            }
+
+            if (linkType === 'INFLUENCE') {
+                return 'url(#influence-arrow)';
+            } else if (linkType === 'SYNONYM') {
+                return 'url(#synonym-arrow)';
+            } else {
+                return 'url(#arrow)';
+            }
+        });
     },
 
     handleKeyDown: function (event) {

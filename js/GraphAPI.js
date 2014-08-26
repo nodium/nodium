@@ -123,8 +123,14 @@ graph.API = app.createClass({
 		 		edges.push({
 		 			id: edge.self,
 		 			source: nodeMap[edge.start],
-		 			target: nodeMap[edge.end]
+		 			target: nodeMap[edge.end],
+                    type: edge.type
 		 		});
+
+                if (edge.type == 'SYNONYM') {
+                    console.log('SYNONYM');
+                    console.log(edge);
+                }
 		 	}
 
 		 	graph = {
