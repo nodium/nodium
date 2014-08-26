@@ -504,6 +504,11 @@ label > input[type=radio] {
   width: 1px;
 }
 
+/* line 147, sass/graph-editor.scss */
+#edit-mode .selected {
+  color: #331833;
+}
+
 /* Graph stuff */
 /* line 1, sass/_nodes.scss */
 circle {
@@ -543,33 +548,32 @@ text {
 .overlay {
   fill: white;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.08s linear;
+  transition: opacity 0.06s linear;
 }
 
-/* line 36, sass/_nodes.scss */
+/* line 35, sass/_nodes.scss */
 .accepted .top-circle {
   fill: #00b67c;
   opacity: 1;
 }
 
-/* line 41, sass/_nodes.scss */
+/* line 40, sass/_nodes.scss */
 .denied .top-circle {
   fill: #e2abb9;
   opacity: 1;
 }
 
-/* line 46, sass/_nodes.scss */
+/* line 45, sass/_nodes.scss */
 .filtered .overlay {
   opacity: 0.5;
 }
 
-/* line 50, sass/_nodes.scss */
+/* line 49, sass/_nodes.scss */
 .node.selected .top-circle {
   stroke-width: 5px;
 }
 
-/* line 151, sass/graph-editor.scss */
+/* line 155, sass/graph-editor.scss */
 .link {
   stroke: #64baf1;
   stroke-width: 4px;

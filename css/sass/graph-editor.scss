@@ -144,6 +144,10 @@ label > input[type=radio] {
 	width: 1px;
 }
 
+#edit-mode .selected {
+	color: $color-dark
+}
+
 /* Graph stuff */
 
 @import "_nodes.scss";

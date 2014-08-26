@@ -236,8 +236,8 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
             propertiesList.append(fieldHTML);
         }
 
-        this.createListElements('#node-labels', data._labels);
-        $('.node-label-values').typeahead()
+        // this.createListElements('#node-labels', data._labels);
+        // $('.node-label-values').typeahead()
     },
 
     unsetData: function (data) {
