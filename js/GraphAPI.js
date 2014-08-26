@@ -198,7 +198,7 @@ graph.API = app.createClass({
 
         var props = {
             to: target.id,
-            type: "POINTS"
+            type: data.type
         };
 
         $.post(source.id+'/relationships', props)

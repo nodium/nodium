@@ -31,12 +31,9 @@ app.createClass = function () {
             return new Constructor(arguments);
         }
 
-        // console.log(this);
-        // console.log(this.construct);
         if (this.construct && typeof this.construct === 'function') {
             this.construct.apply(this, Array.prototype.slice.call(arguments, 0));
         }
-        console.log("yo");
     };
 
     if (null != SuperClass) {
@@ -45,7 +42,6 @@ app.createClass = function () {
         for (p in props) {
 
             if (props.hasOwnProperty(p)) {
-                console.log(p);
                 prototype[p] = props[p];
             }
         }

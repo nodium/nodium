@@ -32,7 +32,9 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         // so that the traits contain only the logic and are kept generic
 
         this
-        .register(new modules.Zoomable())
+        .register(new modules.Zoomable({
+            doubleclick: false
+        }))
         .register(new graph.NodeCD(), [
             ['node-clicked', 'handleNodeSelect'],
             [NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
@@ -42,7 +44,16 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-up', 'handleCreateChildNode'],
             ['holding-canvas', 'handleCanvasHold']
         ])
-        .register(new modules.EdgeCRUD(), [
+        // .register(new modules.EdgeCRUD(), [
+        //     ['drag-end', 'handleLinking']
+        // ])
+        .register(new modules.CRMEdgeCRUD({
+            modes: {
+                LINK: 'LINK',
+                SYNONYM: 'SYNONYM',
+                INFLUENCE: 'INFLUENCE'
+            }
+        }), [
             ['drag-end', 'handleLinking']
         ])
         .register(new graph.Holdable({

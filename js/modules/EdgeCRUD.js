@@ -5,7 +5,8 @@
 var graph     = window.setNamespace('app.graph'),
     modules   = window.setNamespace('app.modules'),
     app       = window.use('app'),
-    EdgeEvent = window.use('app.event.EdgeEvent');
+    EdgeEvent = window.use('app.event.EdgeEvent'),
+    _defaults;
 
 /**
  * EdgeCD trait
@@ -14,6 +15,11 @@ var graph     = window.setNamespace('app.graph'),
  */
 modules.EdgeCRUD = app.createClass({
 
+    construct: function (options) {
+
+        this.options = $.extend({}, _defaults, options);
+    },
+
     /**
      * Initializes variables and attaches events used for creating edges
      */
@@ -21,11 +27,8 @@ modules.EdgeCRUD = app.createClass({
 
         // non-customizable events
         $(this.kernel)
-            .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this))
-            .on(EdgeEvent.UPDATEFUNCTION, this.handleFunctionUpdate.bind(this));
+            .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this));
     },
-
-
 
     /**
      * Handles the event 
@@ -49,15 +52,6 @@ modules.EdgeCRUD = app.createClass({
         console.log('handling edge creation');
 
         this.updateLink(source, target);
-    },
-
-    handleFunctionUpdate: function (event, name, fn) {
-
-        console.log('handling function update');
-        console.log(name);
-        console.log(fn);
-
-        this[name] = fn;
     },
 
     /**
@@ -115,7 +109,7 @@ modules.EdgeCRUD = app.createClass({
 
             edges.push(edge);
 
-            $(this.kernel).trigger('edge-created', [edge, source, target]);
+            $(this.kernel).trigger(EdgeEvent.CREATED, [edge, source, target]);
         } else {
             $(this.kernel).trigger('edge-deleted', [toDelete]);
         }

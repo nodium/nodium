@@ -2,8 +2,9 @@
 
 'use strict';
 
-var modules = window.setNamespace('app.modules'),
-    app     = window.use('app');
+var modules   = window.setNamespace('app.modules'),
+    app       = window.use('app'),
+    _defaults;
 
 /**
  * Zoomable trait
@@ -11,6 +12,11 @@ var modules = window.setNamespace('app.modules'),
  * Adds standard d3 zooming and panning functionality to the graph
  */
 modules.Zoomable = app.createClass({
+
+    construct: function (options) {
+
+        this.options = $.extend({}, _defaults, options);
+    },
 
     initialize: function () {
 
@@ -23,7 +29,12 @@ modules.Zoomable = app.createClass({
             .on('zoomstart', zoomStartHandler)
             .on('zoomend', zoomEndHandler)
           )
-          .on('dblclick.zoom', null); // disables zoom on double click
+
+        // disables zoom on double click
+        if (!this.options.doubleclick) {
+            d3.select(this.graph.selector + ' .graph-viewport')
+                .on('dblclick.zoom', null);
+        }
 
         this.elem = $('.graph-content', this.graph.selector).get(0);
     },
