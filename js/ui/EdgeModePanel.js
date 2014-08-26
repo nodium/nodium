@@ -16,17 +16,18 @@ ui.EdgeModePanel = app.createClass({
         this.name = 'Edge mode';
         this.selector = selector;
 
-        $(selector).on(Event.CHANGE, 'input[type=radio]', this.handleModeChange.bind(this));
+        $(selector).on(Event.CHANGE, 'input[type=radio]', this.handleChange.bind(this));
         $('input[value=LINK]').click();
     },
 
     initialize: function () {
+
     },
 
     /**
      * set the edge mode variable
      */
-    handleModeChange: function (event) {
+    handleChange: function (event) {
 
         var target = event.target,
             mode = $(target).val();

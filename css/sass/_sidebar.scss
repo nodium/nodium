@@ -123,7 +123,8 @@ aside {
 }
 
 .node-field button,
-#new-property {
+#new-property,
+#new-label {
 	text-align: center;
 	font-size: 10px;
 	font-size: 1.0rem;
@@ -132,7 +133,8 @@ aside {
 	background: transparent;
 }
 
-#new-property {
+#new-property,
+#new-label {
 	color: $color-light;
 	height: 35px;
 }
@@ -146,6 +148,12 @@ aside {
 .node-field textarea {
 	background: transparent;
 	color: $color-light;
+}
+
+.node-label.node-field div {
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
 }
 
 #inspector ul {
@@ -182,6 +190,10 @@ aside {
 
 #node-fields::before {
 	content: 'Properties';
+}
+
+#node-labels::before {
+	content: 'Labels';
 }
 
 #node-filter-result::before {

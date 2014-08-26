@@ -20,7 +20,7 @@ ui.UIElement = app.createClass(EventAware, {
     		return $(selector, this.view)	
     	}
     	
-    	return $(this.view);
+    	return this.view;
     }
 });
 

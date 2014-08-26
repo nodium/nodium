@@ -234,9 +234,10 @@ aside {
   color: #b3b3b3;
 }
 
-/* line 126, sass/_sidebar.scss */
+/* line 127, sass/_sidebar.scss */
 .node-field button,
-#new-property {
+#new-property,
+#new-label {
   text-align: center;
   font-size: 10px;
   font-size: 1.0rem;
@@ -245,19 +246,20 @@ aside {
   background: transparent;
 }
 
-/* line 135, sass/_sidebar.scss */
-#new-property {
+/* line 137, sass/_sidebar.scss */
+#new-property,
+#new-label {
   color: white;
   height: 35px;
 }
 
-/* line 140, sass/_sidebar.scss */
+/* line 142, sass/_sidebar.scss */
 #delete-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 146, sass/_sidebar.scss */
+/* line 148, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
@@ -265,6 +267,13 @@ aside {
 }
 
 /* line 153, sass/_sidebar.scss */
+.node-label.node-field div {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+/* line 161, sass/_sidebar.scss */
 #inspector ul::before {
   width: 100%;
   padding: 6px 0 6px 38px;
@@ -278,38 +287,43 @@ aside {
   border-bottom: 1px solid #b3b3b3;
 }
 
-/* line 168, sass/_sidebar.scss */
+/* line 176, sass/_sidebar.scss */
 #inspector li {
   color: #b3b3b3;
   cursor: pointer;
   transition: color 0.08s linear;
 }
-/* line 174, sass/_sidebar.scss */
+/* line 182, sass/_sidebar.scss */
 #inspector li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 178, sass/_sidebar.scss */
+/* line 186, sass/_sidebar.scss */
 #inspector li:hover {
   color: white;
 }
 
-/* line 183, sass/_sidebar.scss */
+/* line 191, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
 }
 
-/* line 187, sass/_sidebar.scss */
+/* line 195, sass/_sidebar.scss */
+#node-labels::before {
+  content: 'Labels';
+}
+
+/* line 199, sass/_sidebar.scss */
 #node-filter-result::before {
   content: 'Result';
 }
 
-/* line 191, sass/_sidebar.scss */
+/* line 203, sass/_sidebar.scss */
 #node-filter-result {
   overflow-y: auto;
   height: calc(100vh - 35px - 16px);
 }
 
-/* line 197, sass/_sidebar.scss */
+/* line 209, sass/_sidebar.scss */
 .list-item {
   width: 100%;
   height: 38px;
