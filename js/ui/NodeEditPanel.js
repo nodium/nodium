@@ -35,26 +35,24 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
         var collapseHandler = window.curry(this.handleCollapse, this),
             nodeCreatedHandler = window.curry(this.handleNodeCreated, this),
-            nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
-            nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
-            focusOutHandler = window.curry(this.handleFocusOut, this),
-            formSubmitHandler = window.curry(this.handleSubmit, this),
+            // nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
+            // nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
             newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this),
             deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this),
             newLabelButtonClickHandler = window.curry(this.handleNewLabelButtonClick, this),
             deleteLabelButtonClickHandler = window.curry(this.handleDeleteLabelButtonClick, this);
 
         $(container).on('menu-collapse', collapseHandler);
-        $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
-        $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
+        // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
+        this.kernel
+            .on(NodeEvent.SELECTED)
+            .on(NodeEvent.UNSELECTED);
+        // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
         this
             .on('#node-form', Event.SUBMIT)
             .on('#node-form', Event.FOCUS_OUT, 'textarea')
-            .on('#node-form', Event.FOCUS_OUT, 'input')
-        // $('#node-form', this.view).on(Event.SUBMIT, formSubmitHandler);
-        // $('#node-form', this.view).on(Event.FOCUS_OUT, 'textarea', focusOutHandler);
-        // $('#node-form', this.view).on(Event.FOCUS_OUT, 'input', focusOutHandler);
+            .on('#node-form', Event.FOCUS_OUT, 'input');
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
         $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);
