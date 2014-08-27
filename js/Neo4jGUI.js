@@ -37,8 +37,10 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         }))
         .register(new graph.NodeCD(), [
             ['node-clicked', 'handleNodeSelect'],
-            [NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
-            [NodeEvent.UNSELECTED, 'app.graph.graphics.handleNodeUnselected'],
+            // [NodeEvent.SELECTED, 'app.graph.graphics.handleNodeSelected'],
+            // [NodeEvent.UNSELECTED, 'app.graph.graphics.handleNodeUnselected'],
+            [NodeEvent.SELECTED, 'app.graph.graphics.handleClassNode', 'selected'],
+            [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
             [NodeEvent.DESTROYED, 'handleNodeUnselect'],
             ['drag-down', 'handleNodeDestroy'],
             ['drag-up', 'handleCreateChildNode'],
