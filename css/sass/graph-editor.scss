@@ -151,8 +151,4 @@ label > input[type=radio] {
 /* Graph stuff */
 
 @import "_nodes.scss";
-
-.link {
-	stroke: rgb(100, 186, 241);
-    stroke-width: 4px;
-}
+@import "_links.scss";

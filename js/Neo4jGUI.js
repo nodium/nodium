@@ -80,14 +80,14 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.DRAWN, 'handleNodeDrawn'],
             [NodeEvent.UPDATED, 'app.graph.graphics.handleNodeUpdated']
         ])
-        .register(new graph.Colorable({
-            labels: {
-                test: '#cccc66'
-            }
-        }), [
-            [NodeEvent.DRAWN, 'handleColorNodes'],
-            [NodeEvent.UPDATEDLABEL, 'handleColorNode']
-        ])
+        // .register(new graph.Colorable({
+        //     labels: {
+        //         test: '#cccc66'
+        //     }
+        // }), [
+        //     [NodeEvent.DRAWN, 'handleColorNodes'],
+        //     [NodeEvent.UPDATEDLABEL, 'handleColorNode']
+        // ])
         .register(this.api)
         .register(new graph.Stylable({
 			key: '__nodestyle',

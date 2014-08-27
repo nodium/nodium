@@ -1,0 +1,35 @@
+$link-color: rgb(127, 127, 127);
+$influence-link-color: rgb(233, 202, 32);
+$synonym-link-color: rgb(213, 213, 213);
+
+.link {
+	stroke: $link-color;
+    stroke-width: 4px;
+}
+
+.influence-link {
+	stroke: $influence-link-color;
+}
+
+.synonym-link {
+	stroke: $synonym-link-color;
+}
+
+.marker {
+	fill: transparent;
+	stroke-width: 1px;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+#arrow {
+	stroke: $link-color;
+}
+
+#influence-arrow {
+	stroke: $influence-link-color;
+}
+
+#synonym-arrow {
+	stroke: $synonym-link-color;
+}

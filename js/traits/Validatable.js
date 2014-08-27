@@ -16,10 +16,6 @@ modules.Validatable = app.createClass({
 
     setNodeStatus: function (node, data, status) {
 
-    	console.log('setNodeStatus');
-    	console.log(node);
-    	console.log(data);
-
     	if (false === data.hasOwnProperty('status') || data.status !== status) {
 
     		console.log(data.status);

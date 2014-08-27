@@ -33,15 +33,18 @@ text {
 }
 
 .accepted .top-circle {
-	fill: rgb(0, 182, 124);
-	stroke: shade(rgb(0, 182, 124), 30%);
-	opacity: 1;
+
+	$accepted-color: rgb(92, 198, 184);
+	fill: $accepted-color;
+	stroke: shade($accepted-color, 30%);
 }
 
 .denied .top-circle {
-	fill: rgb(226, 171, 185);
-	stroke: shade(rgb(226, 171, 185), 30%);
-	opacity: 1;
+
+	$denied-color: rgb(233, 119, 119);
+	
+	fill: $denied-color;
+	stroke: shade($denied-color, 30%);
 }
 
 .filtered .overlay {
