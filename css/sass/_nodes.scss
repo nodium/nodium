@@ -34,11 +34,13 @@ text {
 
 .accepted .top-circle {
 	fill: rgb(0, 182, 124);
+	stroke: shade(rgb(0, 182, 124), 30%);
 	opacity: 1;
 }
 
 .denied .top-circle {
 	fill: rgb(226, 171, 185);
+	stroke: shade(rgb(226, 171, 185), 30%);
 	opacity: 1;
 }
 

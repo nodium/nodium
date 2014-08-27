@@ -33,26 +33,28 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
     init: function (container) {
 
-        var collapseHandler = window.curry(this.handleCollapse, this),
-            nodeCreatedHandler = window.curry(this.handleNodeCreated, this),
+        var collapseHandler = this.handleCollapse.bind(this),
+            // nodeCreatedHandler = this.handleNodeCreated.bind(this),
             // nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
             // nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
-            newPropertyButtonClickHandler = window.curry(this.handleNewPropertyButtonClick, this),
-            deletePropertyButtonClickHandler = window.curry(this.handleDeletePropertyButtonClick, this),
-            newLabelButtonClickHandler = window.curry(this.handleNewLabelButtonClick, this),
-            deleteLabelButtonClickHandler = window.curry(this.handleDeleteLabelButtonClick, this);
+            newPropertyButtonClickHandler = this.handleNewPropertyButtonClick.bind(this),
+            deletePropertyButtonClickHandler = this.handleDeletePropertyButtonClick.bind(this),
+            newLabelButtonClickHandler = this.handleNewLabelButtonClick.bind(this),
+            deleteLabelButtonClickHandler = this.handleDeleteLabelButtonClick.bind(this);
 
         $(container).on('menu-collapse', collapseHandler);
         // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
         this.kernel
             .on(this, NodeEvent.SELECTED)
-            .on(this, NodeEvent.UNSELECTED);
+            .on(this, NodeEvent.UNSELECTED)
+            .on(this, NodeEvent.UPDATED);
         // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
         this
             .on(this, '#node-form', Event.SUBMIT)
             .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
             .on(this, '#node-form', Event.FOCUS_OUT, 'input');
+
         $('#new-property', this.view).on(Event.CLICK, newPropertyButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-property', deletePropertyButtonClickHandler);
         $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);
@@ -325,6 +327,16 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
 
         this.unsetData();
         this.view.trigger('panel-hide', [this]);
+    },
+
+    handleNodeUpdated: function (event, node, data) {
+
+        if (this.isVisible && this.nodeData.index === data.index) {
+            this.setData(data);
+
+
+            
+        }
     }
 });
 
