@@ -12,9 +12,13 @@ var graph       = window.setNamespace('app.graph'),
 
 graphics.scaleNode = function (scale, node, graph) {
 
+    console.log("scaling node");
+    console.log(node);
     d3.select(node).select('circle').transition()
         .duration(400)
-        .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
+        .attr("r", function(d) { console.log(this); 
+            console.log(scale * graph.getNodeRadius(d)*2);
+            return scale * graph.getNodeRadius(d)*2; });
 };
 
 graphics.classNode = function (className, value, node, data, graph) {
@@ -39,6 +43,11 @@ graphics.handleClassNode = function (className, event, node, data) {
 graphics.handleUnclassNode = function (className, event, node, data) {
 
     graphics.classNode(className, false, node, data, this.graph);
+};
+
+graphics.handleNodeColor = function (color, event, node, data) {
+
+    graphics.colorNodes(d3.select(node), color, 500);
 };
 
 graphics.colorNodes = function (nodes, color, duration) {

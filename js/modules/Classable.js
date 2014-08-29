@@ -90,17 +90,23 @@ modules.Classable = app.createClass({
         return classes;
     },
 
-    handleClassNode: function (event, node) {
+    // handleClassNode: function (event, node) {
 
-        graphics.classNodes(d3.select(node), this.classNodeByProperty.bind(this));
-    },
+    //     graphics.classNodes(d3.select(node), this.classNodeByProperty.bind(this));
+    // },
 
     /**
      * trigger the (re)coloring of nodes
      */
-    handleClassNodes: function (event, nodes) {
+    handleClassNodes: function (event, nodes, data) {
 
         var strategy = this.options.strategy;
+
+        // we use data to determine if we're dealing with a
+        // d3 nodeEnter set or a single node
+        if (data) {
+            nodes = d3.select(nodes);
+        }
 
         if (strategy === ColorStrategy.PROPERTY) {
             graphics.classNodes(nodes, this.classNodeByProperty.bind(this));

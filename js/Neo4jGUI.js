@@ -66,6 +66,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['mouse-up', 'handleHoldEnd'],
             ['drag-end', 'app.graph.graphics.handleNodeScale', 1],
             ['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
+            // ['drag-end', 'handleColorNode'],
+            // ['holding-node', 'app.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
         .register(new graph.Pinnable(), [
             ['drag-up', 'handleNodePinned']
@@ -79,32 +81,32 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-left', 'handleDenyNode'],
             ['drag-right', 'handleAcceptNode']
         ])
-        .register(new graph.Colorable({
-            labels: {
-                test: '#cccc66'
-            },
-            properties: {
-                status: {
-                    'accepted': '#5cc6b8',
-                    'denied': '#e97777'
-                }
-            }
-        }), [
-            [NodeEvent.DRAWN, 'handleColorNodes'],
-            [NodeEvent.UPDATED, 'handleColorNode'],
-            [NodeEvent.UPDATEDLABEL, 'handleColorNode']
-        ])
-        // .register(new modules.Classable({
+        // .register(new graph.Colorable({
+        //     labels: {
+        //         test: '#cccc66'
+        //     },
         //     properties: {
         //         status: {
-        //             'accepted': 'accepted',
-        //             'denied': 'denied'
+        //             'accepted': '#5cc6b8',
+        //             'denied': '#e97777'
         //         }
         //     }
         // }), [
-        //     [NodeEvent.DRAWN, 'handleClassNodes'],
-        //     [NodeEvent.UPDATED, 'handleClassNode']
+        //     [NodeEvent.DRAWN, 'handleColorNodes'],
+        //     [NodeEvent.UPDATED, 'handleColorNodes'],
+        //     [NodeEvent.UPDATEDLABEL, 'handleColorNodes']
         // ])
+        .register(new modules.Classable({
+            properties: {
+                status: {
+                    'accepted': 'accepted',
+                    'denied': 'denied'
+                }
+            }
+        }), [
+            [NodeEvent.DRAWN, 'handleClassNodes'],
+            [NodeEvent.UPDATED, 'handleClassNodes']
+        ])
         .register(this.api)
         .register(new graph.Stylable({
 			key: '__nodestyle',

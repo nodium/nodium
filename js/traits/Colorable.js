@@ -118,19 +118,23 @@ graph.Colorable = app.createClass({
 
     },
 
-    handleColorNode: function (event, node) {
-
-        this.handleColorNodes(event, d3.select(node));
-    },
-
     /**
      * trigger the (re)coloring of nodes
      * Note: the nodes are alread d3 selections
      */
-    handleColorNodes: function (event, nodes) {
+    handleColorNodes: function (event, nodes, data) {
 
         var strategy = this.options.strategy,
+            duration;
+
+        // we use data to determine if we're dealing with a
+        // d3 nodeEnter set or a single node
+        if (data) {
+            nodes = d3.select(nodes);
             duration = 500;
+        } else {
+            duration = 0;
+        }
 
         if (strategy === ColorStrategy.PROPERTY) {
             graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this), duration);
