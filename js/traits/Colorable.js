@@ -120,7 +120,7 @@ graph.Colorable = app.createClass({
 
     handleColorNode: function (event, node) {
 
-        graphics.colorNodes(d3.select(node), this.colorNodeByLabel.bind(this));
+        this.handleColorNodes(event, d3.select(node));
     },
 
     /**
@@ -129,12 +129,13 @@ graph.Colorable = app.createClass({
      */
     handleColorNodes: function (event, nodes) {
 
-        var strategy = this.options.strategy;
+        var strategy = this.options.strategy,
+            duration = 500;
 
         if (strategy === ColorStrategy.PROPERTY) {
-            graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this));
+            graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this), duration);
         } else {
-            graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this));
+            graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this), duration);
         }
     }
 });

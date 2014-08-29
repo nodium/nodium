@@ -41,10 +41,10 @@ graphics.handleUnclassNode = function (className, event, node, data) {
     graphics.classNode(className, false, node, data, this.graph);
 };
 
-graphics.colorNodes = function (nodes, color) {
+graphics.colorNodes = function (nodes, color, duration) {
 
     nodes.selectAll('.top-circle').transition()
-        .duration(500)
+        .duration(duration)
         .style('fill', color);
 };
 
