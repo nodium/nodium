@@ -77,10 +77,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
         ])
         .register(new modules.Validatable(), [
-            ['drag-left', 'handleDragLeft'],
-            ['drag-right', 'handleDragRight'],
-            // [NodeEvent.DRAWN, 'handleNodeDrawn'],
-            // [NodeEvent.UPDATED, 'app.graph.graphics.handleNodeUpdated']
+            ['drag-left', 'handleDenyNode'],
+            ['drag-right', 'handleAcceptNode']
         ])
         // .register(new graph.Colorable({
         //     labels: {

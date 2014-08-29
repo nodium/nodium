@@ -41,36 +41,6 @@ graphics.handleUnclassNode = function (className, event, node, data) {
     graphics.classNode(className, false, node, data, this.graph);
 };
 
-graphics.handleNodeUpdated = function (event, node, data) {
-
-    console.log("handling node updates");
-    console.log(arguments);
-    // console.log(node);
-    // console.log(data);
-
-    var view = d3.select($('.node').get(data.index)),
-        status,
-        s;
-
-    console.log(view);
-    console.log(data.status);
-
-    for (s in NodeStatus) {
-
-        if (false === NodeStatus.hasOwnProperty(s)) {
-            continue;
-        }
-
-        status = NodeStatus[s];
-
-        if (status !== data.status) {
-            view.classed(status, false);
-        }
-    }
-
-    view.classed(data.status, true);
-};
-
 graphics.colorNodes = function (nodes, color) {
 
     nodes.selectAll('.top-circle').transition()
@@ -83,8 +53,6 @@ graphics.classNodes = function (nodes, classifier) {
     console.log("classing nodes");
 
     nodes.each(function (data) {
-        // console.log(data);
-        // console.log(d3.select(this));
         d3.select(this).classed(classifier(data));
     });
 };

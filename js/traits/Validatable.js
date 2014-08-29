@@ -35,7 +35,7 @@ modules.Validatable = app.createClass({
      /**
       * Invalidates a node
       */
-    handleDragLeft: function (event, node, data) {
+    handleDenyNode: function (event, node, data) {
 
     	this.setNodeStatus(node, data, NodeStatus.DENIED);
     },
@@ -43,7 +43,7 @@ modules.Validatable = app.createClass({
     /**
      * Validates a node
      */
-    handleDragRight: function (event, node, data) {
+    handleAcceptNode: function (event, node, data) {
 
     	this.setNodeStatus(node, data, NodeStatus.ACCEPTED);
     }
