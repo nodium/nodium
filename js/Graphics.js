@@ -17,51 +17,28 @@ graphics.scaleNode = function (scale, node, graph) {
         .attr("r", function(d) { return scale * graph.getNodeRadius(d)*2; });
 };
 
+graphics.classNode = function (className, value, node, data, graph) {
+
+    // node = (node === undefined) ? d3.select($('.node').get(data.index)) : node;
+    // doesn't work because node isn't a d3 selection?
+    node = d3.select($('.node').get(data.index));
+
+    node.classed(className, value);
+};
+
 graphics.handleNodeScale = function (scale, event, node) {
 
     graphics.scaleNode(scale, node, this.graph);
 };
 
-graphics.handleNodeSelected = function (event, node, data) {
+graphics.handleClassNode = function (className, event, node, data) {
 
-    d3.select($('.node').get(data.index)).classed('selected', true);
+    graphics.classNode(className, true, node, data, this.graph);
 };
 
-graphics.handleNodeUnselected = function (event, node, data) {
+graphics.handleUnclassNode = function (className, event, node, data) {
 
-    console.log("handling node unselected");
-
-    d3.select($('.node').get(data.index)).classed('selected', false);
-};
-
-graphics.handleNodeUpdated = function (event, node, data) {
-
-    console.log("handling node updates");
-    console.log(arguments);
-    // console.log(node);
-    // console.log(data);
-
-    var view = d3.select($('.node').get(data.index)),
-        status,
-        s;
-
-    console.log(view);
-    console.log(data.status);
-
-    for (s in NodeStatus) {
-
-        if (false === NodeStatus.hasOwnProperty(s)) {
-            continue;
-        }
-
-        status = NodeStatus[s];
-
-        if (status !== data.status) {
-            view.classed(status, false);        
-        }
-    }
-
-    view.classed(data.status, true);
+    graphics.classNode(className, false, node, data, this.graph);
 };
 
 graphics.colorNodes = function (nodes, color) {
@@ -69,6 +46,15 @@ graphics.colorNodes = function (nodes, color) {
     nodes.selectAll('.top-circle').transition()
         .duration(500)
         .style('fill', color);
+};
+
+graphics.classNodes = function (nodes, classifier) {
+
+    console.log("classing nodes");
+
+    nodes.each(function (data) {
+        d3.select(this).classed(classifier(data));
+    });
 };
 
 })(window, jQuery, d3);

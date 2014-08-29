@@ -2,9 +2,20 @@
 
 'use strict';
 
-var graph       = window.setNamespace('app.graph'),
-    app         = window.use('app'),
-    graphics    = window.use('app.graph.graphics');
+var graph         = window.setNamespace('app.graph'),
+    app           = window.use('app'),
+    graphics      = window.use('app.graph.graphics'),
+    ColorStrategy = window.use('app.constants.ColorStrategy'),
+
+    _defaults = {
+        numColors: 10, // number of random colors
+        strategy: ColorStrategy.PROPERTY, // coloring strategy priority
+        defaultColor: '#d2d2d2', // default node color
+        labels: {}, // colors for specific labels
+        labelPriority: [],
+        properties: {}, // colors for properties (+ optionally values)
+        propertyPriority: []
+    };
 
 /**
  * Colorable extension
@@ -18,13 +29,6 @@ graph.Colorable = app.createClass({
         this.colorMap = {};
         this.colorCount = 0;
         this.colors = d3.scale.category10();
-
-        var _defaults = {
-            numColors: 10,
-            method: 'label',
-            defaultColor: '#d2d2d2',
-            labels: {} // colors for specific labels
-        };
 
         this.options = $.extend({}, _defaults, options);
     },
@@ -65,6 +69,51 @@ graph.Colorable = app.createClass({
         return color;
     },
 
+    colorNodeByProperty: function (data) {
+
+        var color = this.options.defaultColor,
+            properties = this.options.properties,
+            property,
+            priority = this.options.propertyPriority,
+            usePriority = priority.length !== 0,
+            rank,
+            values,
+            value,
+            colorRank = -1; // the rank of the assigned color
+
+        // first try to color according to the priority list
+        for (property in properties) {
+
+            // to color the node with this property,
+            // - the node has to have the property
+            // - the property value has to have a color
+            if (!data.hasOwnProperty(property)) {
+                continue;
+            }
+
+            value = data[property];
+            values = properties[property];
+
+            if (!values.hasOwnProperty(value)) {
+                continue;
+            }
+
+            rank = priority.indexOf(property);
+            if (usePriority && rank !== -1 && rank < colorRank) {
+                color = values[value];
+                colorRank = rank;
+            } else {
+                // only color if no ranked color assigned yet
+                // all ranked colors go first
+                if (colorRank === -1) {
+                    color = values[value];
+                }
+            }
+        }
+
+        return color;
+    },
+
     colorNodesRandomly: function () {
 
     },
@@ -76,12 +125,17 @@ graph.Colorable = app.createClass({
 
     /**
      * trigger the (re)coloring of nodes
+     * Note: the nodes are alread d3 selections
      */
-    handleColorNodes: function (event, nodeEnter) {
+    handleColorNodes: function (event, nodes) {
 
-        var nodes = nodeEnter; // || this.graph.node;
+        var strategy = this.options.strategy;
 
-        graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this));
+        if (strategy === ColorStrategy.PROPERTY) {
+            graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this));
+        } else {
+            graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this));
+        }
     }
 });
 
