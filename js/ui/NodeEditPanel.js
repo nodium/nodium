@@ -33,8 +33,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     init: function (container) {
 
-        var collapseHandler = this.handleCollapse.bind(this),
-            // nodeCreatedHandler = this.handleNodeCreated.bind(this),
+        var // nodeCreatedHandler = this.handleNodeCreated.bind(this),
             // nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
             // nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
             newPropertyButtonClickHandler = this.handleNewPropertyButtonClick.bind(this),
@@ -42,7 +41,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             newLabelButtonClickHandler = this.handleNewLabelButtonClick.bind(this),
             deleteLabelButtonClickHandler = this.handleDeleteLabelButtonClick.bind(this);
 
-        $(container).on('menu-collapse', collapseHandler);
+        $(container).on('menu-collapse', this.handleMenuCollapse.bind(this));
         // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
         this.kernel
             .on(this, NodeEvent.SELECTED)
@@ -249,13 +248,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     /**
      * Event handlers
      */
-
-    handleCollapse: function (event) {
-
-        if (this.isVisible) {
-            this.hide();
-        }
-    },
 
     handleDeletePropertyButtonClick: function (event) {
 

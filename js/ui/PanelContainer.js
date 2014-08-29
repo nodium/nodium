@@ -8,29 +8,23 @@ var ui      = window.setNamespace('app.ui'),
         expanded: false
     };
 
-ui.PanelContainer = app.createClass(ui.UIElement, {
+ui.PanelContainer = app.createClass({
 
     construct: function (selector, options) {
 
         this.options = $.extend({}, _defaults, options);
         this.view = $(selector);
-    },
-
-    init: function () {
         this.panels = {};
         this.isExpanded = this.options.expanded;
 
-        var menuClickHandler = window.curry(this.handleMenuButtonClicked, this);
-        $('.panel-navigation', this.view).on('click', 'button', menuClickHandler);
+        $(window).on('keydown', this.handleKeyDown.bind(this));
 
-        var keyDownHandler = window.curry(this.handleKeyDown, this);
-        $(window).on('keydown', keyDownHandler);
+        $(this.view)
+            .on('panel-show', '.panel', this.handlePanelShow.bind(this))
+            .on('panel-hide', '.panel', this.handlePanelHide.bind(this));
 
-        var showHandler = window.curry(this.handlePanelShow, this);
-        $(this.view).on('panel-show', '.panel', showHandler);
-
-        var hideHandler = window.curry(this.handlePanelHide, this);
-        $(this.view).on('panel-hide', '.panel', hideHandler);
+        $('.panel-navigation', this.view)
+            .on('click', 'button', this.handleMenuButtonClicked.bind(this));
 
         return this;
     },
