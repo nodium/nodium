@@ -20,7 +20,16 @@ ui.NodeExplorerPanel = app.createClass(ui.UIPanel, {
 
     init: function (container) {
 
+        $(container).on('menu-collapse', this.handleCollapse.bind(this));
+
         return this;
+    },
+
+    show: function () {
+
+        this.super('show');
+
+        $(this.kernel).trigger('mode-change', 'explorer');
     }
 });
 

@@ -20,13 +20,12 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
 
     init: function (container) {
 
-        var collapseHandler = window.curry(this.handleCollapse, this),
-            filterUnsetHandler = window.curry(this.handleFilterUnset, this),
+        var filterUnsetHandler = window.curry(this.handleFilterUnset, this),
             filterChangeHandler = window.curry(this.handleFilterChange, this),
             nodeFilteredHandler = window.curry(this.handleNodeFiltered, this),
             listItemClickHandler = window.curry(this.handleListItemClicked, this);
 
-        $(container).on('menu-collapse', collapseHandler);
+        $(container).on('menu-collapse', this.handleMenuCollapse.bind(this));
         $(this.kernel)
             .on(NodeEvent.FILTER_UNSET, filterUnsetHandler)
             .on(NodeEvent.FILTERED, nodeFilteredHandler);
@@ -105,13 +104,6 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
     /**
      * Event handlers
      */
-
-    handleCollapse: function (event) {
-
-        if (this.isVisible) {
-            this.hide();
-        }
-    },
 
     handleListItemClicked: function (event) {
 

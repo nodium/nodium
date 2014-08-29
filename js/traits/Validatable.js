@@ -33,9 +33,9 @@ modules.Validatable = app.createClass({
      */
 
 
-     /**
-        * Invalidates a node
-        */
+    /**
+     * Invalidates a node
+     */
     handleDenyNode: function (event, node, data) {
 
         this.setNodeStatus(node, data, NodeStatus.DENIED);

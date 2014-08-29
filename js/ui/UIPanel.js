@@ -22,7 +22,17 @@ ui.UIPanel = app.createClass(ui.UIElement, {
         this.view.addClass('active');
     },
 
-    super: window.use('app.snippet.super')
+    super: window.use('app.snippet.super'),
+
+    /**
+     * Event handlers
+     */
+    handleMenuCollapse: function (event) {
+
+        if (this.isVisible) {
+            this.hide();
+        }
+    },
 });
 
 }(window, window.jQuery));

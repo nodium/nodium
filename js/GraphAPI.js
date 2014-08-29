@@ -7,7 +7,8 @@ var graph       = window.setNamespace('app.graph'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     _defaults   = {
         host: 'localhost',
-        port: 7474
+        port: 7474,
+        version: 2,
     };
 
 graph.API = app.createClass({
@@ -45,8 +46,8 @@ graph.API = app.createClass({
         // OPTIONAL MATCH n-[r]-m
         var special = this.options.special;
         var nodeQuery = {
-          "query" : "START n=node(*) RETURN n, labels(n)",
-          // query: 'START n=node(*) RETURN n',
+          // "query" : "START n=node(*) RETURN n, labels(n)",
+          query: 'START n=node(*) RETURN n',
           "params" : {}
         };
         var edgeQuery = {

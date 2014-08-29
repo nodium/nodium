@@ -8,7 +8,7 @@ var ui      = window.setNamespace('app.ui'),
         expanded: false
     };
 
-ui.PanelContainer = app.createClass({
+ui.PanelContainer = app.createClass(ui.UIElement, {
 
     construct: function (selector, options) {
 
