@@ -122,14 +122,10 @@
 				kernel  = g;
 
 			menu
-				.init()
 				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, kernel))
 				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, kernel))
 				.addPanel(new ui.NodeExplorerPanel('#ui-node-explorer', {}, kernel));
 
-			// window.setTimeout(function () {
-			// 	$(g).trigger('node-filter', ['php']);
-			// }, 2000);
 		});
 	</script>
 </html>
