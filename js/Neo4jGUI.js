@@ -66,7 +66,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['mouse-up', 'handleHoldEnd'],
             ['drag-end', 'app.graph.graphics.handleNodeScale', 1],
             ['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
-            // ['drag-end', 'handleColorNode'],
             // ['holding-node', 'app.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
         .register(new graph.Pinnable(), [
