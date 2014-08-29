@@ -20,6 +20,9 @@ modules.Validatable = app.createClass({
 
     		console.log(data.status);
     		data.status = status;
+        if (data._fields.indexOf('status') === -1) {
+          data._fields.push('status');
+        }
 
     		$(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
     	}
@@ -43,21 +46,6 @@ modules.Validatable = app.createClass({
     handleDragRight: function (event, node, data) {
 
     	this.setNodeStatus(node, data, NodeStatus.ACCEPTED);
-    },
-
-    handleNodeDrawn: function (event, nodeEnter) {
-
-    	var graph = this.graph;
-
-    	nodeEnter.attr('class', function (data) {
-
-	    	data.status = data.status || NodeStatus.PENDING;
-
-	    	return [
-	    		graph.getNodeClassValue(),
-	    		data.status
-	    	].join(' ');
-	    });
     }
 });
 

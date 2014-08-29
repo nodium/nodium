@@ -78,4 +78,15 @@ graphics.colorNodes = function (nodes, color) {
         .style('fill', color);
 };
 
+graphics.classNodes = function (nodes, classifier) {
+
+    console.log("classing nodes");
+
+    nodes.each(function (data) {
+        // console.log(data);
+        // console.log(d3.select(this));
+        d3.select(this).classed(classifier(data));
+    });
+};
+
 })(window, jQuery, d3);
