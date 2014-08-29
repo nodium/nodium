@@ -7,7 +7,7 @@ var ui          = window.setNamespace('app.ui'),
     Event       = window.use('app.event.Event'),
     _defaults;
 
-ui.NodeFilterPanel = app.createClass({
+ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
 
     construct: function (selector, options, kernel) {
 
@@ -24,8 +24,7 @@ ui.NodeFilterPanel = app.createClass({
             filterUnsetHandler = window.curry(this.handleFilterUnset, this),
             filterChangeHandler = window.curry(this.handleFilterChange, this),
             nodeFilteredHandler = window.curry(this.handleNodeFiltered, this),
-            listItemClickHandler = window.curry(this.handleListItemClicked, this),
-            queryChangeHandler = window.curry(this.handleQueryChange, this);
+            listItemClickHandler = window.curry(this.handleListItemClicked, this);
 
         $(container).on('menu-collapse', collapseHandler);
         $(this.kernel)
@@ -34,29 +33,18 @@ ui.NodeFilterPanel = app.createClass({
         $('#node-query', this.view).on([
                 Event.INPUT,
                 Event.PASTE,
-            ].join(' '), queryChangeHandler);
+            ].join(' '), this.handleQueryChange.bind(this));
 
         $(this.view).on(Event.CLICK, 'li', listItemClickHandler);
 
         return this;
     },
 
-    destroy: function () {
-        this.view.remove();
-    },
-
-    hide: function () {
-
-        this.isVisible = false;
-        this.view.removeClass('active');
-    },
-
     show: function () {
 
         var filterField = $('#node-query', this.view);
 
-        this.isVisible = true;
-        this.view.addClass('active');
+        this.super('show');
 
         // delay setting focus to filterField to prevent breaking the layout
         window.setTimeout(function () {

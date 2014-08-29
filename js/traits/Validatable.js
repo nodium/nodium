@@ -29,9 +29,9 @@ modules.Validatable = app.createClass({
      * Event handlers
      */
 
-     /**
-      * Invalidates a node
-      */
+    /**
+     * Invalidates a node
+     */
     handleDragLeft: function (event, node, data) {
 
     	this.setNodeStatus(node, data, NodeStatus.DENIED);

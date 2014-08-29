@@ -8,14 +8,19 @@ var ui          = window.setNamespace('app.ui'),
     Event       = window.use('app.event.Event'),
     _defaults;
 
-ui.NodeExplorerPanel = app.createClass(ui.UIElement, {
+ui.NodeExplorerPanel = app.createClass(ui.UIPanel, {
 
-    construct: function () {
+    construct: function (selector, options, kernel) {
 
     	this.initialize(selector, kernel);
     	this.options = $.extend({}, _defaults, options);
         this.name = 'Graph Explorer';
         this.icon = 'icon-globe';
+    },
+
+    init: function (container) {
+
+        return this;
     }
 });
 

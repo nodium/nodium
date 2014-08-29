@@ -41,8 +41,6 @@ ui.PanelContainer = app.createClass({
 
     addPanel: function (panel) {
 
-        console.log(this);
-
         this.createMenuItem(panel.icon);
         this.panels[panel.icon] = panel;
 

@@ -1,8 +1,7 @@
 (function (window, undefined) {
-	var event = window.setNamespace('app.event'),
-		NodeEvent;
+	var event = window.setNamespace('app.event');
 
-	NodeEvent = {
+	const NodeEvent = {
 		CREATE: 'node-create',
 		UPDATE: 'node-update',
 		UPDATELABEL: 'node-update-label',

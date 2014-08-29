@@ -7,7 +7,8 @@ var app        = window.setNamespace('app'),
     modules    = window.setNamespace('app.modules'),
     ui         = window.setNamespace('app.ui'),
     animations = window.setNamespace('app.graph.animations'),
-    NodeEvent  = window.use('app.event.NodeEvent');
+    NodeEvent  = window.use('app.event.NodeEvent'),
+    KeyboardEvent = window.use('app.event.KeyboardEvent');
 
 /**
  * A generic neo4j user interface

@@ -1,10 +1,9 @@
 (function (window, undefined) {
-	var event = window.setNamespace('app.event'),
-		NodeEvent;
+	var event = window.setNamespace('app.event');
 
-	KeyboardEvent = {
+	const KeyboardEvent = {
 		ESCAPE: 'key-escape',
 	};
 
-	event.NodeEvent = NodeEvent;
+	event.KeyboardEvent = KeyboardEvent;
 }(window));

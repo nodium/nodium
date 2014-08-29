@@ -126,11 +126,6 @@ graph.API = app.createClass({
 		 			target: nodeMap[edge.end],
                     type: edge.type
 		 		});
-
-                if (edge.type == 'SYNONYM') {
-                    console.log('SYNONYM');
-                    console.log(edge);
-                }
 		 	}
 
 		 	graph = {

@@ -8,7 +8,7 @@ var ui          = window.setNamespace('app.ui'),
     Event       = window.use('app.event.Event'),
     _defaults;
 
-ui.NodeEditPanel = app.createClass(ui.UIElement, {
+ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     construct: function (selector, options, kernel) {
 
@@ -63,22 +63,11 @@ ui.NodeEditPanel = app.createClass(ui.UIElement, {
         return this;
     },
 
-    destroy: function () {
-        this.view.remove();
-    },
-
-    hide: function () {
-
-        this.isVisible = false;
-        this.view.removeClass('active');
-    },
-
     show: function () {
 
         var titleField = $('#node-title', this.view);
 
-        this.isVisible = true;
-        this.view.addClass('active');
+        this.super('show');
 
         // delay setting focus to titleField to prevent breaking the layout
         window.setTimeout(function () {

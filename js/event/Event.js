@@ -1,11 +1,10 @@
 (function (use, undefined) {
 
-    'use strict';
+    // 'use strict';
 
-    var event = window.setNamespace('app.event'),
-        Event;
+    var event = window.setNamespace('app.event');
 
-    Event = {
+    const Event = {
         CHANGE:     'change',
         CLICK:      'click',
         FOCUS_OUT:  'focusout',
