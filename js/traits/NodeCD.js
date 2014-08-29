@@ -27,6 +27,8 @@ graph.NodeCD = app.createClass({
         $(this.kernel)
             .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
             .on(NodeEvent.UNSELECT, this.handleNodeUnselect.bind(this))
+            .on(NodeEvent.CREATE, this.handleNodeCreate.bind(this))
+            .on(NodeEvent.DESTROY, this.handleNodeDestroy.bind(this))
             .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
             .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this))
             .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));

@@ -60,6 +60,8 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         $('#new-label', this.view).on(Event.CLICK, newLabelButtonClickHandler);
         $('#node-form', this.view).on(Event.CLICK, '.delete-label', deleteLabelButtonClickHandler);
 
+        $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
+
         return this;
     },
 
@@ -263,6 +265,15 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleDeleteLabelButtonClick: function (event) {
 
         this.destroyListElement(event.currentTarget, NodeEvent.UPDATELABEL);
+    },
+
+    handleDeleteNodeButtonClick: function (event) {
+
+        // TODO maybe change this if the edit panel knows about the graph state?
+
+        console.log(this.nodeData);
+
+        $(this.kernel).trigger(NodeEvent.DESTROY, [undefined, this.nodeData]);
     },
 
     handleFocusout: function (event) {
