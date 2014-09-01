@@ -144,6 +144,46 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         this.initialize();
     },
 
+    createForce: function () {
+
+        var self = this,
+            force,
+            tickHandler;
+
+        force = d3.layout.force()
+        .gravity(0.005)
+        .charge(-2000)
+        .chargeDistance(1500)
+        .linkDistance(function (data) {
+            return self.getLinkDistance(data);
+        })
+        .size([10000, 10000])
+        .nodes(this.nodes)
+        .links(this.edges)
+        .linkStrength(function (data) {
+            return 1;
+        })
+
+        return force;
+    },
+
+    getLinkDistance: function (linkData){
+        var distance = 150,
+            r1,
+            r2;
+
+        if(linkData.source.r && linkData.target.r) {
+            distance += (linkData.source.r + linkData.target.r );
+        } else {
+            r1 = this.getNodeRadius(linkData.source);
+            r2 = this.getNodeRadius(linkData.target);
+
+            distance += (r1 + r2);
+        }
+        
+        return distance;
+    },
+
     getGraphData: function () {
         this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
     },
