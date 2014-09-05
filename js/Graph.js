@@ -100,6 +100,7 @@ graph.Graph = app.createClass(EventAware, {
         var graphData = $(this.selector).data('graph');
         $(this.selector).attr('data-graph', null);
 
+        // TODO wut is this doing here? uhhggg
         for (var i = 0; i < graphData.nodes.length; i++) {
             this.addNodeMetadata(graphData.nodes[i]);
         }

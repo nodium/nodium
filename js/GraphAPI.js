@@ -19,7 +19,11 @@ graph.API = app.createClass({
     },
 
     url: function (path) {
-        var url = 'http://' + this.options.host + ':' + this.options.port;
+        var url = 'http://' + this.options.host;
+
+        if (this.options.port) {
+            url += ':' + this.options.port;
+        }
 
         if (path) {
             url += path;
