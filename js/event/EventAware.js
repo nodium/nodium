@@ -10,7 +10,9 @@ var event   = window.setNamespace('app.event'),
 
 event.EventAware = app.createClass({
 
-    construct: function () {   
+    construct: function () {
+
+        console.log("eventaware");
 
         this.events = [];
     },

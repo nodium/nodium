@@ -17,9 +17,10 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     construct: function (selector) {
 
-        var self = this;
+        console.log("neo4jgui");
+        console.log(this.selector)
 
-        this.selector = selector;
+        var self = this;
         this.mode = '';
         this.kernel = this;
 

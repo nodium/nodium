@@ -8,6 +8,8 @@ window.app = window.app || {};
 app.debug = false;
 app.registeredNamespaces = [];
 
+var superflag = false;
+
 app.createClass = function () {
 
     var Constructor,
@@ -32,11 +34,21 @@ app.createClass = function () {
         }
 
         if (this.construct && typeof this.construct === 'function') {
-            this.construct.apply(this, Array.prototype.slice.call(arguments, 0));
+
+            var args = Array.prototype.slice.call(arguments, 0);
+
+            args.unshift('construct');
+            this.super.apply(this, args);
+
+            if (!superflag) {
+                this.construct.apply(this, args.slice(1));
+            }
         }
+        superflag = false;
     };
 
     if (null != SuperClass) {
+        superflag = true;
         prototype = new SuperClass();
 
         for (p in props) {
@@ -45,6 +57,8 @@ app.createClass = function () {
                 prototype[p] = props[p];
             }
         }
+    } else {
+        props.super = app.snippet.super;
     }
 
     Constructor.prototype = prototype || props;
