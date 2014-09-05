@@ -5,22 +5,22 @@
 var transformer = window.setNamespace('app.transformer'),
     app         = window.use('app');
     _defaults   = {
-
+    	map: {} // the non property values
     };
 
-transformer.DataTransformerInterface = app.createClass({
+transformer.AbstractDataTransformer = app.createClass({
 
 	construct: function (options) {
 
 		this.options = $.extend({}, _defaults, options);
 	},
 
-	from: function (data) {
-		return data;
+	from: function () {
+		throw 'The data transformer should implement a "from" function';
 	},
 
-	to: function (data) {
-		return data;
+	to: function () {
+		throw 'The data transformer should implement a "to" function';
 	}
 });
 

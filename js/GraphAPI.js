@@ -9,13 +9,17 @@ var graph       = window.setNamespace('app.graph'),
         host: 'localhost',
         port: 7474,
         version: 2,
-    };
+    },
+    self;
 
 graph.API = app.createClass({
 
     construct: function (options) {
 
         this.options = $.extend({}, _defaults, options);
+
+        this.transformer = new transformer.Neo4jTransformer();
+        self = this;
     },
 
     url: function (path) {
@@ -65,6 +69,8 @@ graph.API = app.createClass({
 
         $.post(url, edgeQuery)
          .done(function (edgeResult) {
+
+            self.from(nodeResult, edgeResult);
 
             var graph,
 		 		nodes = [],
