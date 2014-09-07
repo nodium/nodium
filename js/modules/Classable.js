@@ -27,35 +27,6 @@ modules.Classable = app.createClass({
         this.options = $.extend({}, _defaults, options);
     },
 
-    // colorNodeByLabel: function (data) {
-
-    //     var color = this.options.defaultColor,
-    //         labels = this.options.labels,
-    //         colorIndex,
-    //         label;
-        
-    //     if (data._labels && data._labels.length > 0) {
-    //         label = data._labels[0];
-            
-    //         if (!this.colorMap.hasOwnProperty(label)) {
-
-    //             // check if we've defined the label color in the options
-    //             if (labels.hasOwnProperty(label)) {
-    //                 // stuff it in the colorMap
-    //                 this.colorMap[label] = labels[label];
-    //             } else {
-    //                 colorIndex = this.colorCount % this.options.numColors;
-    //                 this.colorMap[label] = this.colors(colorIndex);;
-    //                 this.colorCount++;
-    //             }
-    //         }
-
-    //         color = this.colorMap[label];
-    //     }
-
-    //     return color;
-    // },
-
     // TODO make possible to set more classes at once
     classNodeByProperty: function (data) {
 
@@ -69,7 +40,7 @@ modules.Classable = app.createClass({
 
         for (property in properties) {
 
-            value = data[property];
+            value = data._properties[property];
             values = properties[property];
 
             for (option in values) {
@@ -89,11 +60,6 @@ modules.Classable = app.createClass({
 
         return classes;
     },
-
-    // handleClassNode: function (event, node) {
-
-    //     graphics.classNodes(d3.select(node), this.classNodeByProperty.bind(this));
-    // },
 
     /**
      * trigger the (re)coloring of nodes

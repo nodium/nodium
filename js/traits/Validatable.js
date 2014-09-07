@@ -11,6 +11,7 @@ var modules     = window.setNamespace('app.modules'),
 modules.Validatable = app.createClass({
 
     construct: function (options) {
+        
         this.options = $.extend({}, _defaults, options);
     },
 
@@ -18,11 +19,7 @@ modules.Validatable = app.createClass({
 
         if (!data._properties.hasOwnProperty('status') || data._properties.status !== status) {
 
-            data.status = status;
-
-            // if (data._fields.indexOf('status') === -1) {
-            //     data._fields.push('status');
-            // }
+            data._properties.status = status;
 
             $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
         }
