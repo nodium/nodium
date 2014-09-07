@@ -218,44 +218,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         return properties;
     },
 
-    /**
-     * DEPRECATED FOR NOW
-     */
-    /*
-    updateProperty: function (field) {
-        var property,
-            value,
-            nodeField;
-
-        if (!this.nodeData) {
-            return;
-        }
-
-        // catch the special property fields
-        if (this.exceptions.hasOwnProperty(field.id)) {
-            property = this.exceptions[field.id];
-            value = $(field).val();
-        } else {
-            nodeField = $(field).closest('.node-field');
-            property = $('input', nodeField).val();
-            value = $('textarea', nodeField).val();
-        }
-
-        // TODO currently this doesn't take into account when the property name
-        // was updated. This is still handled in nodeCD.handleNodeUpdate (which
-        // doesn't yet use the this.nodeData that's being passed to it)
-
-        console.log("ui update property: " + property + ": " + value);
-
-        // only update when the value was changed
-        if (this.nodeData[property] != value && value != '') {
-            this.nodeData[property] = value;
-
-            $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
-        }
-    },
-    */
-
     updateLabels: function () {
 
         var labels;
@@ -391,8 +353,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     },
 
     handleNewPropertyButtonClick: function (event) {
-
-        // this.createProperty();
 
         this.createListElement('#node-fields', {
             field: '',

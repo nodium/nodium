@@ -77,8 +77,6 @@ graph.API = app.createClass({
 
     get: function (callback) {
 
-        // OPTIONAL MATCH n-[r]-m
-        // var special = this.options.special;
         var nodeQuery = {
           "query" : "START n=node(*) RETURN n, labels(n)",
           // query: 'START n=node(*) RETURN n',
@@ -145,7 +143,7 @@ graph.API = app.createClass({
         // };
         query = {
             "query" : "START n=node("+data._id+") OPTIONAL MATCH n-[r]-() DELETE n,r",
-            // "query" : "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r",
+            // "query" : "START n=node("+data._id+") MATCH n-[r?]-() DELETE n,r",
             "params" : {}
         };
 
@@ -185,15 +183,6 @@ graph.API = app.createClass({
 
         console.log("handling node update");
         console.log(data._id);
-
-        // prepare the data to be sent
-        // var properties,
-        // 	specialProperties,
-        // 	obj;
-
-        // properties = this.graph.getCleanNodeData(data);
-        // specialProperties = this.graph.getSpecialNodeData(data, this.options.special);
-        // obj = $.extend({}, properties, specialProperties);
 
         var obj = transformer.neo4j.toNode(data),
             url = this.nodeUrl(data._id) + '/properties';

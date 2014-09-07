@@ -134,72 +134,6 @@ modules.NodeCD = app.createClass({
         return true;
     },
 
-    /**
-     * Update the data and return the filtered updated data
-     */
-    /*
-    updateNodeDataWithFields: function (data) {
-
-        var titleField = this.graph.getNodeTitleKey(),
-            fields = $('#node-fields').children(),
-            key,
-            value,
-            result = {};
-
-        // clear the fields metadata, we'll refill this
-        // data._fields = [titleField];
-
-        // set the title field separately
-        data._properties[titleField] = $('#node-title').val();
-        if (data._properties[titleField]) {
-            result[titleField] = data[titleField];
-        }
-
-        for (var i = 0; i < fields.length; i++) {
-            key = $('.node-key', fields[i]).val();
-            value = $('.node-value', fields[i]).val();
-
-            // skip if the key is empty
-            if (key == "" || value == "") {
-                continue;
-            }
-
-            // data._fields.push(key);
-            data._properties[key] = value;
-            result[key] = value;
-        }
-
-        // TODO maybe we should try to remove the unused fields from the node data,
-        // but this is not strictly necessary, the fields metadata works as a filter
-
-        // return result;
-    },
-
-    updateNodeDataWithLabels: function (data) {
-
-        var labels = $('#node-labels').children(),
-            label;
-
-        // clear the labels metadata, we'll refill this
-        data._labels = [];
-
-        console.log(labels);
-
-        for (var i = 0; i < labels.length; i++) {
-            label = $('.node-label-value', labels[i]).val();
-
-            // skip if the key is empty
-            if (label == '') {
-                continue;
-            }
-
-            data._labels.push(label);
-        }
-
-        return data;
-    },
-    */
-
     updateProperty: function (node, data, property, value) {
 
         data[property] = value;
@@ -363,36 +297,7 @@ modules.NodeCD = app.createClass({
             $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
         }
     },
-
-    /*
-    handleNodeLabelUpdate: function (event, node, data, labels) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        var newData;
-
-        console.log("handling node label update");
-
-
-        // TODO plzplz dis stuff is ugly
-        if (!this.graph.selectedNode) {
-            return;
-        }
-
-        if (!data) {
-            data = this.graph.selectedNode.data;
-        }
-        newData = this.updateNodeDataWithLabels(data);
-
-        if (!node) {
-            node = this.graph.selectedNode.node;
-        }
-
-        $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
-    },
-    */
-
+    
     handleNodeDestroy: function (event, node, data) {
 
         var selectedNode = this.graph.selectedNode,
