@@ -2,7 +2,8 @@
 
 'use strict';
 
-var graph       = window.setNamespace('app.graph'),
+var modules       = window.setNamespace('app.modules'),
+    transformer = window.setNamespace('app.transformer'),
     app         = window.use('app'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     EdgeEvent   = window.use('app.event.EdgeEvent');
@@ -12,7 +13,7 @@ var graph       = window.setNamespace('app.graph'),
  *
  * Adds functionality to create new nodes
  */
-graph.NodeCD = app.createClass({
+modules.NodeCD = app.createClass({
 
     construct: function () {
 
@@ -42,22 +43,22 @@ graph.NodeCD = app.createClass({
         console.log("creating node, x: " + x + ", y: " + y);
 
         // then add node metadata
-        this.graph.addNodeMetadata(data);
-        data._labels = [];
+        // this.graph.addNodeMetadata(data);
+        var node = transformer.neo4j.initNode(data);
 
-        data.x = x || 0;
-        data.y = y || 0;
+        node.x = x || 0;
+        node.y = y || 0;
 
         // then let d3 add other properties
         // TODO do this after the trigger
-        this.graph.nodes.push(data);
+        this.graph.nodes.push(node);
         this.graph.drawNodes();
         this.graph.handleTick();
         this.graph.force.start();
 
-        $(this.kernel).trigger(NodeEvent.CREATED, [data]);
+        $(this.kernel).trigger(NodeEvent.CREATED, [node]);
 
-        return data;
+        return node;
     },
 
     deleteEdgesForNode: function (nodeIndex) {
@@ -104,9 +105,39 @@ graph.NodeCD = app.createClass({
         $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
     },
 
+    updateDataWithLabels: function (data, labels) {
+
+        // return false if data wasn't updated
+        if (_.isEqual(data._labels, labels)) {
+            return false;
+        }
+
+        data._labels = labels;
+
+        return true;
+    },
+
+    updateDataWithProperties: function (data, properties) {
+
+        console.log(data._properties);
+        console.log(properties);
+
+        // return false if data wasn't updated
+        if (_.isEqual(data._properties, properties)) {
+            console.log("equal")
+            return false;
+        }
+
+        console.log("unequal");
+        data._properties = properties;
+
+        return true;
+    },
+
     /**
      * Update the data and return the filtered updated data
      */
+    /*
     updateNodeDataWithFields: function (data) {
 
         var titleField = this.graph.getNodeTitleKey(),
@@ -116,11 +147,11 @@ graph.NodeCD = app.createClass({
             result = {};
 
         // clear the fields metadata, we'll refill this
-        data._fields = [titleField];
+        // data._fields = [titleField];
 
         // set the title field separately
-        data[titleField] = $('#node-title').val();
-        if (data[titleField]) {
+        data._properties[titleField] = $('#node-title').val();
+        if (data._properties[titleField]) {
             result[titleField] = data[titleField];
         }
 
@@ -133,15 +164,15 @@ graph.NodeCD = app.createClass({
                 continue;
             }
 
-            data._fields.push(key);
-            data[key] = value;
+            // data._fields.push(key);
+            data._properties[key] = value;
             result[key] = value;
         }
 
         // TODO maybe we should try to remove the unused fields from the node data,
         // but this is not strictly necessary, the fields metadata works as a filter
 
-        return result;
+        // return result;
     },
 
     updateNodeDataWithLabels: function (data) {
@@ -167,6 +198,7 @@ graph.NodeCD = app.createClass({
 
         return data;
     },
+    */
 
     updateProperty: function (node, data, property, value) {
 
@@ -271,42 +303,69 @@ graph.NodeCD = app.createClass({
         this.createNode({name: input});
     },
 
-    handleNodeUpdate: function (event, node, data) {
+    /**
+     * Handles the update of properties
+     */
+    handleNodeUpdate: function (event, node, data, properties) {
 
         event.preventDefault();
         event.stopPropagation();
 
-        var data,
-            fieldName,
-            titleField = this.graph.getNodeTitleKey(),
-            nodeData;      
+        console.log("handling node properties update");
 
-        console.log("handling node update");
-
-        if (!this.graph.selectedNode) {
+        if (!properties) {
+            console.log("no properties passed");
             return;
         }
 
-        if (!node) {
-            node = this.graph.selectedNode.node;
+        // let's see if we can do without the bothersome selectedNode
+        // if (!this.graph.selectedNode) {
+        //     return;
+        // }
+
+        // if (!node) {
+        //     node = this.graph.selectedNode.node;
+        // }
+
+        node = this.graph.resolveNode(node, data);
+        data = this.graph.resolveData(node, data);
+
+        if (this.updateDataWithProperties(data, properties)) {
+
+            // TODO this should be a response (in graphics?) to NodeEvent.UPDATED
+            console.log(node);
+            this.graph.setNodeText(node, data);
+
+            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
         }
-
-        if (!node && data !== undefined) {
-            node = $('.node').get(data.index)
-        }
-
-        console.log(this.graph.selectedNode);
-
-        nodeData = this.graph.selectedNode.data;
-        data = this.updateNodeDataWithFields(nodeData);
-
-        console.log(node);
-        this.graph.setNodeText(node, nodeData);
-
-        $(this.kernel).trigger(NodeEvent.UPDATED, [node, nodeData]);
     },
 
-    handleNodeLabelUpdate: function (event, node, data) {
+    /**
+     * Handles the update of properties
+     */
+    handleNodeLabelUpdate: function (event, node, data, labels) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        console.log("handling node labels update");
+
+        if (!labels) {
+            console.log("no labels passed");
+            return;
+        }
+
+        node = this.graph.resolveNode(node, data);
+        data = this.graph.resolveData(node, data);
+
+        if (this.updateDataWithLabels(data, labels)) {
+
+            $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
+        }
+    },
+
+    /*
+    handleNodeLabelUpdate: function (event, node, data, labels) {
 
         event.preventDefault();
         event.stopPropagation();
@@ -332,6 +391,7 @@ graph.NodeCD = app.createClass({
 
         $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
     },
+    */
 
     handleNodeDestroy: function (event, node, data) {
 

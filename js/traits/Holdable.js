@@ -2,7 +2,7 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
+var modules = window.setNamespace('app.modules'),
     app   = window.use('app');
 
 /**
@@ -10,7 +10,7 @@ var graph = window.setNamespace('app.graph'),
  *
  * Adds functionality to click and hold a node or the canvas
  */
-graph.Holdable = app.createClass({
+modules.Holdable = app.createClass({
 
     construct: function (options) {
 

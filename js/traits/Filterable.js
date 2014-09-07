@@ -2,7 +2,7 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
+var modules = window.setNamespace('app.modules'),
     app   = window.use('app');
 
 /**
@@ -10,11 +10,8 @@ var graph = window.setNamespace('app.graph'),
  *
  * Adds functionality to click and hold a node or the canvas
  */
-graph.Filterable = app.createClass({
+modules.Filterable = app.createClass({
 
-    /**
-     * Initializes variables and attaches events used for creating edges
-     */
     initialize: function () {
 
         
@@ -46,8 +43,12 @@ graph.Filterable = app.createClass({
 
             regex = new RegExp(needle, "i");
 
-            for (i = data._fields.length; i > 0; i--) {
-                field = data._fields[i - 1];
+            for (field in data._properties) {
+
+                if (!data.hasOwnProperty(field)) {
+                    continue;
+                }
+
                 value = String(data[field]);
 
                 if (value.match(regex)) {

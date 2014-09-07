@@ -2,12 +2,13 @@
 
 'use strict';
 
-var app        = window.setNamespace('app'),
-    graph      = window.setNamespace('app.graph'),
-    modules    = window.setNamespace('app.modules'),
-    ui         = window.setNamespace('app.ui'),
-    animations = window.setNamespace('app.graph.animations'),
-    NodeEvent  = window.use('app.event.NodeEvent'),
+var app           = window.setNamespace('app'),
+    graph         = window.setNamespace('app.graph'),
+    modules       = window.setNamespace('app.modules'),
+    transformer   = window.setNamespace('app.transformer'),
+    ui            = window.setNamespace('app.ui'),
+    animations    = window.setNamespace('app.graph.animations'),
+    NodeEvent     = window.use('app.event.NodeEvent'),
     KeyboardEvent = window.use('app.event.KeyboardEvent');
 
 /**
@@ -37,7 +38,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new modules.Zoomable({
             doubleclick: false
         }))
-        .register(new graph.NodeCD(), [
+        .register(new modules.NodeCD(), [
             ['node-clicked', 'handleNodeSelect'],
             [NodeEvent.SELECTED, 'app.graph.graphics.handleClassNode', 'selected'],
             [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
@@ -59,7 +60,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         }), [
             ['drag-end', 'handleLinking']
         ])
-        .register(new graph.Holdable({
+        .register(new modules.Holdable({
             'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
             ['drag', 'handleHoldDrag'],
@@ -69,10 +70,10 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
             // ['holding-node', 'app.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
-        .register(new graph.Pinnable(), [
+        .register(new modules.Pinnable(), [
             ['drag-up', 'handleNodePinned']
         ])
-        .register(new graph.Filterable(), [
+        .register(new modules.Filterable(), [
             [NodeEvent.DRAWN, 'handleNodeDrawn'],
             [NodeEvent.FILTER, 'handleNodeFilter'],
             [NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
@@ -81,7 +82,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             ['drag-left', 'handleDenyNode'],
             ['drag-right', 'handleAcceptNode']
         ])
-        // .register(new graph.Colorable({
+        // .register(new modules.Colorable({
         //     labels: {
         //         test: '#cccc66'
         //     },
@@ -108,7 +109,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.UPDATED, 'handleClassNodes']
         ])
         .register(this.api)
-        .register(new graph.Stylable({
+        .register(new modules.Stylable({
 			key: '__nodestyle',
 			styles: {
 				pinnable: ['fixed', 'x', 'y', 'px', 'py']
@@ -117,6 +118,13 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 			['node-pinned', 'handleNodeStyled'],
 			['drag-end', 'handleNodeStyled']
 		]);
+
+        // initialize transformers
+        new transformer.Neo4jTransformer({
+            map: {
+                __nodestyle: '_style'
+            }
+        });
 
         // ui
         this
@@ -186,7 +194,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     },
 
     getGraphData: function () {
-        this.api.get(window.curry(this.handleGraphData, this), this.addNodeMetadata);
+        this.api.get(window.curry(this.handleGraphData, this));
     },
 
     // CRM

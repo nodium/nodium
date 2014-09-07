@@ -16,13 +16,13 @@ modules.Validatable = app.createClass({
 
     setNodeStatus: function (node, data, status) {
 
-        if (false === data.hasOwnProperty('status') || data.status !== status) {
+        if (!data._properties.hasOwnProperty('status') || data._properties.status !== status) {
 
             data.status = status;
 
-            if (data._fields.indexOf('status') === -1) {
-                data._fields.push('status');
-            }
+            // if (data._fields.indexOf('status') === -1) {
+            //     data._fields.push('status');
+            // }
 
             $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
         }

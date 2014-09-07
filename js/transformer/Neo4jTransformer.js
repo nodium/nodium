@@ -11,16 +11,25 @@ var transformer = window.setNamespace('app.transformer'),
  */
 transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransformer, {
 
-	nodeId: function (data) {
+	construct: function () {
 
-		var dataId = index = data.id.lastIndexOf('/'),
+		// transformer should only be instantiated once per app
+		transformer.neo4j = this;
+	},
+
+	/**
+	 * Extract the node id from neo4j node's self property
+	 */
+	idFromSelf: function (selfString) {
+
+		var index = selfString.lastIndexOf('/'),
 			id;
 
         if (index == -1) {
             return null;
         }
 
-        id = data.id.substring(index + 1, data.id.length);
+        id = selfString.substring(index + 1, selfString.length);
 
         return id;
 	},
@@ -28,25 +37,24 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 	/**
 	 * Transform data from neo4j
 	 */
-	from: function (nodeResult, edgeResult) {
+	from: function (neo4jNodes, neo4jEdges) {
 
-		var graph,
-			nodes = [],
+		var nodes = [],
 			edges = [],
 			node, id, nodeData, nodeLabels,
-			obj,
+			nodeIndexMap = {}, nodeCount = 0,
 			edge,
-			nodeIndexMap = {},
-			nodeCount = 0,
 			properties,
 			map = this.options.map,
 			mappedProperties;
 
-		for (var i = 0; i < nodeResult.data.length; i++) {
+		for (var i = 0; i < neo4jNodes.data.length; i++) {
+
 			properties = {};
 			mappedProperties = {};
-			nodeData = nodeResult.data[i][0];
-			nodeLabels = nodeResult.data[i][1];
+
+			nodeData = neo4jNodes.data[i][0];
+			nodeLabels = neo4jNodes.data[i][1];
 
 			if (!nodeData || nodeIndexMap[nodeData.self] !== undefined) {
 				continue;
@@ -64,26 +72,83 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 			nodeIndexMap[nodeData.self] = nodeCount;
 			nodeCount++;
 
-			node = {
-				_id: this.nodeId(nodeData.self),
-				_properties: properties,
-				_labels: nodeLabels
-			};
+			node = this.initNode(
+				properties,
+				this.idFromSelf(nodeData.self),
+				nodeLabels
+			);
 
-			// throw everything back in one object for now
-			// TODO keep data split from other node stuff
 			$.extend(node, mappedProperties);
 			nodes.push(node);
 		}
 
-		console.log(nodes);
+		// convert the edges to an array of d3 edges,
+	 	// which have node indices as source and target
+	 	for (var i = 0; i < neo4jEdges.data.length; i++) {
+	 		edge = neo4jEdges.data[i][0];
+
+	 		if (!edge) {
+	 			continue;
+	 		}
+
+	 		console.log(edge.self);
+
+	 		edges.push({
+	 			_id: this.idFromSelf(edge.self),
+	 			source: nodeIndexMap[edge.start],
+	 			target: nodeIndexMap[edge.end],
+                type: edge.type
+	 		});
+	 	}
+
+	 	console.log(nodes);
+
+	 	return {
+	 		nodes: nodes,
+	 		edges: edges
+	 	}
 	},
 
 	/**
-	 * Transform data to neo4j
+	 * Transform data to neo4j nodes and edges
 	 */
-	to: function (data) {
-		return data;
+	to: function (nodes, edges) {
+
+		var neoNodes = [],
+			neoEdges = [],
+			node,
+			edge,
+			properties,
+			mappedProperties,
+			obj;
+
+		if (nodes) {
+			for (var i = 0; i < nodes.length; i++) {
+				node = nodes[i];
+
+				mappedProperties = this.getMappedProperties(node);
+				obj = $.extend({}, node._properties, mappedProperties);
+
+				neoNodes.push(obj);
+			}
+		}
+
+		if (edges) {
+			for (var i = 0; i < edges.length; i++) {
+				edge = edges[i];
+
+				neoEdges.push(edge);
+			}
+		}
+
+		return {
+			nodes: neoNodes,
+			edges: neoEdges
+		}
+	},
+
+	toNode: function (node) {
+		return this.to([node]).nodes[0];
 	}
 });
 

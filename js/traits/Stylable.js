@@ -2,7 +2,7 @@
 
 'use strict';
 
-var graph       = window.setNamespace('app.graph'),
+var modules       = window.setNamespace('app.modules'),
     app         = window.use('app'),
     NodeEvent   = window.use('app.event.NodeEvent');
 
@@ -11,7 +11,7 @@ var graph       = window.setNamespace('app.graph'),
  *
  * Adds functionality to store node style in the database
  */
-graph.Stylable = app.createClass({
+modules.Stylable = app.createClass({
 
     construct: function (options) {
 

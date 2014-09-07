@@ -148,6 +148,80 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         $(this.kernel).trigger(event, [null, this.nodeData]);
     },
 
+    /**
+     * Gets the labels from the html fields
+     */
+    getLabels: function () {
+
+        var fields = $('#node-labels').children(),
+            i,
+            labels = [],
+            value;
+
+        for (i = 0; i < fields.length; i++) {
+            value = $('.node-label-value', fields[i]).val();
+
+            // skip if the key is empty
+            if (value == '') {
+                continue;
+            }
+
+            labels.push(value);
+        }
+
+        return labels;
+    },
+
+    /**
+     * Gets the properties from the html fields
+     */
+    getProperties: function () {
+
+        // TODO generalize field selectors
+        var fields = $('#node-fields').children(),
+            i,
+            selector,
+            key,
+            value,
+            properties = {};
+
+        // handle the special fields
+        for (selector in this.exceptions) {
+
+            if (!this.exceptions.hasOwnProperty(selector)) {
+                continue;
+            }
+
+            key = this.exceptions[selector];
+            value = $('#' + selector).val();
+
+            if (key == '' || value == '') {
+                continue;
+            }
+
+            properties[key] = value;
+        }
+
+        // handle the regular property fields
+        for (i = 0; i < fields.length; i++) {
+            key = $('.node-key', fields[i]).val();
+            value = $('.node-value', fields[i]).val();
+
+            // skip if the key is empty
+            if (key == '' || value == '') {
+                continue;
+            }
+
+            properties[key] = value;
+        }
+
+        return properties;
+    },
+
+    /**
+     * DEPRECATED FOR NOW
+     */
+    /*
     updateProperty: function (field) {
         var property,
             value,
@@ -180,13 +254,34 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
         }
     },
+    */
 
-    updateLabel: function (field) {
+    updateLabels: function () {
 
-        // var label = $(field).val();
+        var labels;
 
-        // move updating full labels array to here instead of nodecd?
-        $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData]);
+        // we don't have an object to update
+        if (!this.nodeData) {
+            return;
+        }
+
+        labels = this.getLabels();
+
+        $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData, labels]);
+    },
+
+    updateProperties: function () {
+
+        var properties;
+
+        // we don't have an object to update
+        if (!this.nodeData) {
+            return;
+        }
+
+        properties = this.getProperties();
+
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, properties]);
     },
 
     setData: function (data) {
@@ -194,33 +289,38 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         var propertiesList = $('#node-fields', this.view),
             fieldHTML,
             fieldName,
-            titleField = this.kernel.getNodeTitleKey(), // this will not work soon
+            titleField = 'name', // TODO use this.exceptions
             value,
             i;
 
+        console.log("setting data");
+        console.log(data);
+
         this.nodeData = data || {};
-        console.log(this.nodeData);
 
         // set the title field
-        value = data[titleField] || '';
+        value = data._properties[titleField] || '';
 
         $('#node-title', this.view).val(value);
 
         // create the html form elements
         propertiesList.empty();
 
-        for (i = data._fields.length; i > 0; i--) {
+        for (fieldName in data._properties) {
 
-            fieldName = data._fields[i - 1];
+            if (!data._properties.hasOwnProperty(fieldName)) {
+                continue;
+            }
 
             // the title property is rendered differently
+            // TODO not generic enough
             if (fieldName === titleField) {
                 continue;
             }
 
             fieldHTML = window.createFromPrototype(propertiesList, {
                 field: fieldName,
-                value: data[fieldName],
+                value: data._properties[fieldName],
                 rows: 1
             });
 
@@ -271,12 +371,13 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleFocusout: function (event) {
 
         // check if we're updating property or label
-        console.log(event.currentTarget);
         if ($(event.currentTarget).hasClass('node-label-value')) {
             console.log("updating label");
-            this.updateLabel(event.currentTarget);
+            // this.updateLabel(event.currentTarget);
+            this.updateLabels();
         } else {
-            this.updateProperty(event.currentTarget);
+            // this.updateProperty(event.currentTarget);
+            this.updateProperties();
         }
     },
 
@@ -324,10 +425,8 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleNodeUpdated: function (event, node, data) {
 
         if (this.isVisible && this.nodeData.index === data.index) {
+
             this.setData(data);
-
-
-            
         }
     }
 });

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var graph         = window.setNamespace('app.graph'),
+var modules         = window.setNamespace('app.modules'),
     app           = window.use('app'),
     graphics      = window.use('app.graph.graphics'),
     ColorStrategy = window.use('app.constants.ColorStrategy'),
@@ -22,7 +22,7 @@ var graph         = window.setNamespace('app.graph'),
  *
  * Adds functionality to color nodes and edges
  */
-graph.Colorable = app.createClass({
+modules.Colorable = app.createClass({
 
     construct: function (options) {
 
@@ -31,10 +31,6 @@ graph.Colorable = app.createClass({
         this.colors = d3.scale.category10();
 
         this.options = $.extend({}, _defaults, options);
-    },
-
-    getNodeColor: function () {
-
     },
 
     /**
@@ -112,10 +108,6 @@ graph.Colorable = app.createClass({
         }
 
         return color;
-    },
-
-    colorNodesRandomly: function () {
-
     },
 
     /**

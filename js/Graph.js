@@ -103,79 +103,79 @@ graph.Graph = app.createClass(EventAware, {
         $(this.selector).attr('data-graph', null);
 
         // TODO wut is this doing here? uhhggg
-        for (var i = 0; i < graphData.nodes.length; i++) {
-            this.addNodeMetadata(graphData.nodes[i]);
-        }
+        // for (var i = 0; i < graphData.nodes.length; i++) {
+        //     this.addNodeMetadata(graphData.nodes[i]);
+        // }
 
         this.handleGraphData(graphData);
     },
 
-    /** 
-     * Adds the metadata so we can distinguish the actual data
-     * fields from the properties added by d3
-     */
-    addNodeMetadata: function (node) {
-        var fields = [],
-            key;
+    // /** 
+    //  * Adds the metadata so we can distinguish the actual data
+    //  * fields from the properties added by d3
+    //  */
+    // addNodeMetadata: function (node) {
+    //     var fields = [],
+    //         key;
 
-        for (key in node) {
-            fields.push(key);
-        }
+    //     for (key in node) {
+    //         fields.push(key);
+    //     }
 
-        node._fields = fields;
-    },
+    //     node._fields = fields;
+    // },
 
-    /**
-     * Returns an object with only the real data of the node
-     */
-    getCleanNodeData: function (data) {
+    // /**
+    //  * Returns an object with only the real data of the node
+    //  */
+    // getCleanNodeData: function (data) {
 
-        var fields = data._fields,
-            cleaned = {},
-            key,
-            value;
+    //     var fields = data._fields,
+    //         cleaned = {},
+    //         key,
+    //         value;
 
-        if (!fields) {
-            return cleaned;
-        }
+    //     if (!fields) {
+    //         return cleaned;
+    //     }
 
-        for (var i = 0; i < fields.length; i++) {
-            key = fields[i];
-            value = data[key];
+    //     for (var i = 0; i < fields.length; i++) {
+    //         key = fields[i];
+    //         value = data[key];
 
-            if (!value) {
-                continue;
-            }
+    //         if (!value) {
+    //             continue;
+    //         }
 
-            cleaned[key] = value;
-        }
+    //         cleaned[key] = value;
+    //     }
 
-        return cleaned;
-    },
+    //     return cleaned;
+    // },
 
-    /**
-     * Returns an object with the database field linked to the data value
-     */
-    getSpecialNodeData: function (data, obj) {
+    // /**
+    //  * Returns an object with the database field linked to the data value
+    //  */
+    // getSpecialNodeData: function (data, obj) {
 
-        var cleaned = {},
-            dataField,
-            dbField,
-            value;
+    //     var cleaned = {},
+    //         dataField,
+    //         dbField,
+    //         value;
 
-        for (dbField in obj) {
-            dataField = obj[dbField];
-            value = data[dataField];
+    //     for (dbField in obj) {
+    //         dataField = obj[dbField];
+    //         value = data[dataField];
 
-            if (!value) {
-                continue;
-            }
+    //         if (!value) {
+    //             continue;
+    //         }
 
-            cleaned[dbField] = value;
-        }
+    //         cleaned[dbField] = value;
+    //     }
 
-        return cleaned;
-    },
+    //     return cleaned;
+    // },
 
     /**
      * asynchronous callback function incase of database call
@@ -481,7 +481,7 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     getNodeText: function (data) {
-        return data[this.getNodeTitleKey()];
+        return data._properties[this.getNodeTitleKey()];
     },
 
     drawNodeTexts: function (nodeEnter) {
@@ -525,22 +525,6 @@ graph.Graph = app.createClass(EventAware, {
 
         var text = $('text', node).get(0);
         this.drawNodeText.apply(text, [this, data]);
-
-        /*
-        var nameParts = this.splitNodeText(name),
-            t1 = d3.select(node).select("text:first-of-type"),
-            t2 = d3.select(node).select("text:last-of-type");
-
-        t1.text(null);
-        t2.text(null);
-        
-        if (nameParts[0]) {
-            t1.text(nameParts[0]);
-        }
-        if (nameParts[1]) {
-            t2.text(nameParts[1]);
-        }
-        */
     },
 
     /*
@@ -589,6 +573,36 @@ graph.Graph = app.createClass(EventAware, {
         linkExit.remove();
     },
 
+    getNodeFromData: function (data) {
+        
+        if (data) {
+            return $('.node').get(data.index);
+        }
+
+        return null;
+    },
+
+    resolveNode: function (node, data) {
+        
+        if (node) {
+            return node;
+        }
+
+        return this.getNodeFromData(data);
+    },
+
+    getDataFromNode: function (node) {
+        return null;
+    },
+
+    resolveData: function (node, data) {
+
+        if (data) {
+            return data;
+        }
+
+        return getDataFromNode(node);
+    },
 
 
     /*

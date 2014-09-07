@@ -3,6 +3,7 @@
 'use strict';
 
 var graph       = window.setNamespace('app.graph'),
+    transformer = window.use('app.transformer'),
     app         = window.use('app'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     _defaults   = {
@@ -18,7 +19,6 @@ graph.API = app.createClass({
 
         this.options = $.extend({}, _defaults, options);
 
-        this.transformer = new transformer.Neo4jTransformer();
         self = this;
     },
 
@@ -36,6 +36,32 @@ graph.API = app.createClass({
         return url;
     },
 
+    nodeUrl: function (id) {
+
+        var path = '/db/data/node';
+
+        if (id) {
+            path += '/' + id;
+        }
+
+        return this.url(path);
+    },
+
+    edgeUrl: function (id) {
+
+        var path = '/db/data/relationship';
+
+        if (id) {
+            path += '/' + id;
+        }
+
+        return this.url(path);
+    },
+
+    cypherUrl: function () {
+        return this.url('/db/data/cypher');
+    },
+
     initialize: function () {
         var createNode = window.curry(this.handleNodeCreated, this);
         $(this.kernel).on(NodeEvent.CREATED, createNode);
@@ -49,10 +75,10 @@ graph.API = app.createClass({
         $(this.kernel).on(NodeEvent.UPDATEDLABEL, this.handleNodeLabelUpdated.bind(this));
     },
 
-    get: function (callback, addNodeMetadata) {
+    get: function (callback) {
 
         // OPTIONAL MATCH n-[r]-m
-        var special = this.options.special;
+        // var special = this.options.special;
         var nodeQuery = {
           "query" : "START n=node(*) RETURN n, labels(n)",
           // query: 'START n=node(*) RETURN n',
@@ -62,89 +88,19 @@ graph.API = app.createClass({
           "query" : "START r=relationship(*) RETURN r",
           "params" : {}
         };
-        var url = this.url('/db/data/cypher');
+        var url = this.cypherUrl();
+        var graph;
 
+        // TODO use promises
         $.post(url, nodeQuery)
          .done(function (nodeResult) {
 
         $.post(url, edgeQuery)
          .done(function (edgeResult) {
 
-            self.from(nodeResult, edgeResult);
+            graph = transformer.neo4j.from(nodeResult, edgeResult);
 
-            var graph,
-		 		nodes = [],
-		 		edges = [],
-		 		node, nodeId, nodeData, nodeLabels,
-		 		obj,
-		 		edge,
-		 		nodeMap = {},
-		 		nodeCount = 0,
-		 		properties,
-		 		specialProperties;
-
-		 	if (!nodeResult.data) {
-		 		return;
-		 	}
-
-		 	// build the nodes array and the index map
-		 	for (var i = 0; i < nodeResult.data.length; i++) {
-		 		properties = {};
-		 		specialProperties = {};
-		 		nodeData = nodeResult.data[i];
-		 		node = nodeData[0];
-		 		nodeLabels = nodeData[1];
-
-		 		if (!node || nodeMap[node.self] !== undefined) {
-		 			continue;
-		 		}
-
-		 		// split data properties from special app properties
-		 		for (var j in node.data) {
-		 			if (special.hasOwnProperty(j)) {
-		 				specialProperties[special[j]] = node.data[j];
-		 			} else {
-		 				properties[j] = node.data[j];
-		 			}
-		 		}
-
-		 		addNodeMetadata(properties);
-
-		 		properties._labels = nodeLabels;
-		 		properties.id = node.self;
-
-		 		nodeMap[node.self] = nodeCount;
-		 		nodeCount++;
-
-		 		// throw everything back in one object for now
-		 		// TODO keep data split from other node stuff
-		 		obj = $.extend({}, properties, specialProperties);
-		 		nodes.push(obj);
-		 	}
-
-		 	// convert the edges to an array of d3 edges,
-		 	// which have node indices as source and target
-		 	for (var i = 0; i < edgeResult.data.length; i++) {
-		 		edge = edgeResult.data[i][0];
-
-		 		if (!edge) {
-		 			continue;
-		 		}
-
-		 		edges.push({
-		 			id: edge.self,
-		 			source: nodeMap[edge.start],
-		 			target: nodeMap[edge.end],
-                    type: edge.type
-		 		});
-		 	}
-
-		 	graph = {
-		 		nodes: nodes,
-		 		edges: edges
-		 	};
-
-		 	callback(graph);
+            callback(graph);
          });
         });
     },
@@ -155,8 +111,8 @@ graph.API = app.createClass({
      */
     handleNodeCreated: function (event, data) {
 
-        var props = this.graph.getCleanNodeData(data),
-            url = this.url('/db/data/node');
+        var url = this.nodeUrl();
+            props = transformer.neo4j.to([data]).nodes[0],
 
         // $.post(url, props)
         $.ajax({
@@ -165,7 +121,7 @@ graph.API = app.createClass({
             type: 'POST',
             async: false
         }).done(function (result) {
-            data.id = result.self;
+            data._id = transformer.neo4j.result.self;
          });
     },
 
@@ -178,14 +134,7 @@ graph.API = app.createClass({
         var nodeId,
             index,
             query,
-            url = this.url('/db/data/cypher');
-
-        index = data.id.lastIndexOf('/');
-        if (index == -1) {
-            return;
-        }
-
-        nodeId = data.id.substring(index+1, data.id.length);
+            url = this.cypherUrl();
 
         // TODO this query should work, but can't find parameter nodeId
         // query = {
@@ -195,7 +144,7 @@ graph.API = app.createClass({
         //  }
         // };
         query = {
-            "query" : "START n=node("+nodeId+") OPTIONAL MATCH n-[r]-() DELETE n,r",
+            "query" : "START n=node("+data._id+") OPTIONAL MATCH n-[r]-() DELETE n,r",
             // "query" : "START n=node("+nodeId+") MATCH n-[r?]-() DELETE n,r",
             "params" : {}
         };
@@ -208,21 +157,24 @@ graph.API = app.createClass({
 
     handleEdgeCreated: function (event, data, source, target) {
 
-        var props = {
-            to: target.id,
-            type: data.type
-        };
+        var url = this.nodeUrl(source._id) + '/relationships',
+            props = {
+                to: this.edgeUrl(target._id),
+                type: data.type
+            };
 
-        $.post(source.id+'/relationships', props)
+        $.post(url, props)
          .done(function (result) {
-            data.id = result.self;
+            data._id = transformer.neo4j.idFromSelf(result.self);
          });
     },
 
     handleEdgeDeleted: function (event, data) {
 
+        var url = this.edgeUrl(data._id);
+
         $.ajax({
-            url: data.id,
+            url: url,
             type: 'DELETE'
         })
         .done(function (result) {
@@ -232,20 +184,25 @@ graph.API = app.createClass({
     handleNodeUpdated: function (event, node, data) {
 
         console.log("handling node update");
-        console.log(data.id);
+        console.log(data._id);
 
         // prepare the data to be sent
-        var properties,
-        	specialProperties,
-        	obj;
+        // var properties,
+        // 	specialProperties,
+        // 	obj;
 
-        properties = this.graph.getCleanNodeData(data);
-        specialProperties = this.graph.getSpecialNodeData(data, this.options.special);
+        // properties = this.graph.getCleanNodeData(data);
+        // specialProperties = this.graph.getSpecialNodeData(data, this.options.special);
+        // obj = $.extend({}, properties, specialProperties);
 
-        obj = $.extend({}, properties, specialProperties);
+        var obj = transformer.neo4j.toNode(data),
+            url = this.nodeUrl(data._id) + '/properties';
+
+        console.log(url);
+        console.log(obj);
 
         $.ajax({
-            url: data.id + '/properties',
+            url: url,
             type: 'PUT',
             data: obj
         })
@@ -260,10 +217,13 @@ graph.API = app.createClass({
     handleNodeLabelUpdated: function (event, node, data) {
 
         console.log("handling node label update");
-        console.log(data.id);
+        console.log(data._id);
+
+        var url = this.nodeUrl(data._id) + '/labels';
+        console.log(url);
 
         $.ajax({
-            url: data.id + '/labels',
+            url: url,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(data._labels)

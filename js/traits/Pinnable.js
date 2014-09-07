@@ -2,7 +2,7 @@
 
 'use strict';
 
-var graph = window.setNamespace('app.graph'),
+var modules = window.setNamespace('app.modules'),
 	app   = window.use('app');
 
 /**
@@ -10,7 +10,7 @@ var graph = window.setNamespace('app.graph'),
  *
  * Adds functionality to fix node placement
  */
-graph.Pinnable = app.createClass({
+modules.Pinnable = app.createClass({
 
 	/**
 	 * This is actually a toggle to either pin or unpin a node
