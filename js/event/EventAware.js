@@ -12,8 +12,6 @@ event.EventAware = app.createClass({
 
     construct: function () {
 
-        console.log("eventaware");
-
         this.events = [];
     },
 

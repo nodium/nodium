@@ -59,8 +59,6 @@ graphics.colorNodes = function (nodes, color, duration) {
 
 graphics.classNodes = function (nodes, classifier) {
 
-    console.log("classing nodes");
-
     nodes.each(function (data) {
         d3.select(this).classed(classifier(data));
     });

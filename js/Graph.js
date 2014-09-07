@@ -11,8 +11,6 @@ graph.Graph = app.createClass(EventAware, {
 
     construct: function (selector) {
 
-        console.log("graph");
-
         // the base graph svg
         // contains a .graph-viewport and a .graph-content
         this.selector = selector || this.selector;
@@ -295,7 +293,6 @@ graph.Graph = app.createClass(EventAware, {
     redrawNode: function (node, data) {
 
         if (!node && !data) {
-            console.log("can't redraw node");
             return;
         }
 

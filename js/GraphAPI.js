@@ -149,7 +149,6 @@ graph.API = app.createClass({
 
         $.post(url, query)
          .done(function (result) {
-            console.log(result);
         });
     },
 
@@ -187,9 +186,6 @@ graph.API = app.createClass({
         var obj = transformer.neo4j.toNode(data),
             url = this.nodeUrl(data._id) + '/properties';
 
-        console.log(url);
-        console.log(obj);
-
         $.ajax({
             url: url,
             type: 'PUT',
@@ -209,7 +205,6 @@ graph.API = app.createClass({
         console.log(data._id);
 
         var url = this.nodeUrl(data._id) + '/labels';
-        console.log(url);
 
         $.ajax({
             url: url,

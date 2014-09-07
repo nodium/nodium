@@ -91,8 +91,6 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 	 			continue;
 	 		}
 
-	 		console.log(edge.self);
-
 	 		edges.push({
 	 			_id: this.idFromSelf(edge.self),
 	 			source: nodeIndexMap[edge.start],
@@ -100,8 +98,6 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
                 type: edge.type
 	 		});
 	 	}
-
-	 	console.log(nodes);
 
 	 	return {
 	 		nodes: nodes,

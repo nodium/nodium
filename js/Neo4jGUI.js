@@ -18,9 +18,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     construct: function (selector) {
 
-        console.log("neo4jgui");
-        console.log(this.selector)
-
         var self = this;
         this.mode = '';
         this.kernel = this;
@@ -256,8 +253,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     handleEscapeKey: function (event) {
 
         var eventType;
-
-        console.log(this.mode);
 
         switch (this.mode) {
             case 'select':

@@ -255,9 +255,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             value,
             i;
 
-        console.log("setting data");
-        console.log(data);
-
         this.nodeData = data || {};
 
         // set the title field
@@ -324,8 +321,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleDeleteNodeButtonClick: function (event) {
 
         // TODO maybe change this if the edit panel knows about the graph state?
-
-        console.log(this.nodeData);
 
         $(this.kernel).trigger(NodeEvent.DESTROY, [undefined, this.nodeData]);
     },

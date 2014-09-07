@@ -119,16 +119,11 @@ modules.NodeCD = app.createClass({
 
     updateDataWithProperties: function (data, properties) {
 
-        console.log(data._properties);
-        console.log(properties);
-
         // return false if data wasn't updated
         if (_.isEqual(data._properties, properties)) {
-            console.log("equal")
             return false;
         }
 
-        console.log("unequal");
         data._properties = properties;
 
         return true;
@@ -252,22 +247,12 @@ modules.NodeCD = app.createClass({
             return;
         }
 
-        // let's see if we can do without the bothersome selectedNode
-        // if (!this.graph.selectedNode) {
-        //     return;
-        // }
-
-        // if (!node) {
-        //     node = this.graph.selectedNode.node;
-        // }
-
         node = this.graph.resolveNode(node, data);
         data = this.graph.resolveData(node, data);
 
         if (this.updateDataWithProperties(data, properties)) {
 
             // TODO this should be a response (in graphics?) to NodeEvent.UPDATED
-            console.log(node);
             this.graph.setNodeText(node, data);
 
             $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
@@ -297,7 +282,7 @@ modules.NodeCD = app.createClass({
             $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
         }
     },
-    
+
     handleNodeDestroy: function (event, node, data) {
 
         var selectedNode = this.graph.selectedNode,
