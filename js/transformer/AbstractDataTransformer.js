@@ -29,7 +29,6 @@ transformer.AbstractDataTransformer = app.createClass({
 
 	/**
      * Returns an object with the database field linked to the data value
-     * TODO this should make use of the map??
      */
     filterAndChangePropertyKeys: function (data, obj) {
 
@@ -55,15 +54,6 @@ transformer.AbstractDataTransformer = app.createClass({
         }
 
         return mapped;
-    },
-
-    initNode: function (properties, id, labels) {
-
-    	return {
-    		_id: id || null,
-    		_labels: labels || [],
-    		_properties: properties || {}
-    	};
     }
 });
 

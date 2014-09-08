@@ -135,7 +135,7 @@ modules.Storable = app.createClass({
         var styleString = this.getStyleString(node, data);
         data._style = styleString;
 
-        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data, this.options.key, styleString]);
+        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
     }
 });
 

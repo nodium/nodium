@@ -3,7 +3,8 @@
 'use strict';
 
 var transformer = window.setNamespace('app.transformer'),
-    app         = window.use('app');
+    app         = window.use('app'),
+    model       = window.use('app.model');
 
 /**
  * An interface between the Neo4j data structure and the data structure
@@ -72,7 +73,7 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 			nodeIndexMap[nodeData.self] = nodeCount;
 			nodeCount++;
 
-			node = this.initNode(
+			node = model.Node.create(
 				properties,
 				this.idFromSelf(nodeData.self),
 				nodeLabels

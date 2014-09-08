@@ -2,9 +2,10 @@
 
 'use strict';
 
-var modules       = window.setNamespace('app.modules'),
+var modules     = window.setNamespace('app.modules'),
     transformer = window.setNamespace('app.transformer'),
     app         = window.use('app'),
+    model       = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     EdgeEvent   = window.use('app.event.EdgeEvent');
 
@@ -41,7 +42,7 @@ modules.NodeCRUD = app.createClass({
         console.log("creating node, x: " + x + ", y: " + y);
 
         // then add node metadata
-        var node = transformer.neo4j.initNode(properties);
+        var node = model.Node.create(properties);
 
         node.x = x || 0;
         node.y = y || 0;
@@ -136,15 +137,6 @@ modules.NodeCRUD = app.createClass({
     /**
      * Event Listeners
      */
-
-    handleCanvasHold: function (event, position) {
-
-        var nodeData;
-
-        nodeData = this.createNode({}, position.x, position.y);
-
-        $(this.kernel).trigger(NodeEvent.SELECT, [null, nodeData]);
-    },
 
     handleCreateChildNode: function (event, node, data) {
 
