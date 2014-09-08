@@ -45,11 +45,11 @@ modules.Filterable = app.createClass({
 
             for (field in data._properties) {
 
-                if (!data.hasOwnProperty(field)) {
+                if (!data._properties.hasOwnProperty(field)) {
                     continue;
                 }
 
-                value = String(data[field]);
+                value = String(data._properties[field]);
 
                 if (value.match(regex)) {
                     filteredData.push(data);

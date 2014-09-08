@@ -2,11 +2,17 @@
 
 'use strict';
 
-var modules = window.setNamespace('app.modules'),
-    app   = window.use('app');
+var modules   = window.setNamespace('app.modules'),
+    app       = window.use('app'),
+    HoldEvent = window.use('app.event.HoldEvent'),
+
+    _defaults = {
+        'duration': 500
+    },
+    self;
 
 /**
- * Holdable trait
+ * Holdable module
  *
  * Adds functionality to click and hold a node or the canvas
  */
@@ -14,9 +20,7 @@ modules.Holdable = app.createClass({
 
     construct: function (options) {
 
-        var _defaults = {
-            'duration': 1000
-        };
+        self = this;
 
         this.options = $.extend({}, _defaults, options);
     },
@@ -26,6 +30,7 @@ modules.Holdable = app.createClass({
      */
     initialize: function () {
 
+        // TODO graph.holdActions???
         this.graph.holdActions = {};
         this.graph.holdActions[graph.Drag.LEFT] = "None";
         this.graph.holdActions[graph.Drag.RIGHT] = "None";
@@ -35,7 +40,6 @@ modules.Holdable = app.createClass({
 
     handleHoldStart: function (event, node, data, position) {
 
-        var self = this;
         var graph = this.graph;
 
         this.holdTimeoutId = window.setTimeout(function () {
@@ -46,13 +50,13 @@ modules.Holdable = app.createClass({
                 graph.holding = true;
 
                 if (node) {
-                    $(self.kernel).trigger('holding-node', [node, data]);
+                    $(self.kernel).trigger(HoldEvent.NODE, [node, data]);
                 } else {
-                    $(self.kernel).trigger('holding-canvas', [position]);
+                    $(self.kernel).trigger(HoldEvent.CANVAS, [{}, position]);
                     graph.holding = false;
                 }
             }
-        }, 500);
+        }, this.options.duration);
     },
 
     /**
@@ -73,9 +77,6 @@ modules.Holdable = app.createClass({
         } else {
             infoText = "Too close";
         }
-
-        // $info = $('#hold-action-notification');
-        // $info.text(infoText);
     },
 
     handleHoldEnd: function (event, node, data) {
@@ -91,16 +92,16 @@ modules.Holdable = app.createClass({
         if (this.graph.holding && this.graph.dragDistance > 100) {
             switch(this.graph.dragDirection) {
                 case graph.Drag.LEFT:
-                    $(this.kernel).trigger('drag-left', [node, data]);
+                    $(this.kernel).trigger(HoldEvent.DRAGLEFT, [node, data]);
                     break;
                 case graph.Drag.RIGHT:
-                    $(this.kernel).trigger('drag-right', [node, data]);
+                    $(this.kernel).trigger(HoldEvent.DRAGRIGHT, [node, data]);
                     break;
                 case graph.Drag.UP:
-                    $(this.kernel).trigger('drag-up', [node, data]);
+                    $(this.kernel).trigger(HoldEvent.DRAGUP, [node, data]);
                     break;
                 case graph.Drag.DOWN:
-                    $(this.kernel).trigger('drag-down', [node, data]);
+                    $(this.kernel).trigger(HoldEvent.DRAGDOWN, [node, data]);
                     break;
             }
         }

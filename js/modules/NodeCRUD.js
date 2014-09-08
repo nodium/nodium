@@ -13,7 +13,7 @@ var modules       = window.setNamespace('app.modules'),
  *
  * Adds functionality to create new nodes
  */
-modules.NodeCD = app.createClass({
+modules.NodeCRUD = app.createClass({
 
     construct: function () {
 
@@ -26,8 +26,6 @@ modules.NodeCD = app.createClass({
     initialize: function () {
 
         $(this.kernel)
-            .on(NodeEvent.SELECT, this.handleNodeSelect.bind(this))
-            .on(NodeEvent.UNSELECT, this.handleNodeUnselect.bind(this))
             .on(NodeEvent.CREATE, this.handleNodeCreate.bind(this))
             .on(NodeEvent.DESTROY, this.handleNodeDestroy.bind(this))
             .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
@@ -38,13 +36,12 @@ modules.NodeCD = app.createClass({
     /**
      * Create a node from a given set of key value pairs
      */
-    createNode: function (data, x, y) {
+    createNode: function (properties, x, y) {
 
         console.log("creating node, x: " + x + ", y: " + y);
 
         // then add node metadata
-        // this.graph.addNodeMetadata(data);
-        var node = transformer.neo4j.initNode(data);
+        var node = transformer.neo4j.initNode(properties);
 
         node.x = x || 0;
         node.y = y || 0;
@@ -140,35 +137,6 @@ modules.NodeCD = app.createClass({
      * Event Listeners
      */
 
-    /**
-     * Read the node into the edit form
-     */
-    handleNodeSelect: function (event, node, data) {
-
-        console.log('node select');
-
-        var selectedNode = this.graph.selectedNode;
-
-        // do nothing if we're trying to reselect the selected node
-        if (selectedNode) {
-
-            if (selectedNode.data.index == data.index) {
-                console.log("not doing anything =I");
-                return;
-            }
-
-            $(this.kernel).trigger(NodeEvent.UNSELECT, [selectedNode.node, selectedNode.data]);
-        }
-
-        // TODO fix this differently
-        this.graph.selectedNode = {
-            node: node,
-            data: data
-        };
-
-        $(this.kernel).trigger(NodeEvent.SELECTED, [node, data]);
-    },
-
     handleCanvasHold: function (event, position) {
 
         var nodeData;
@@ -176,27 +144,6 @@ modules.NodeCD = app.createClass({
         nodeData = this.createNode({}, position.x, position.y);
 
         $(this.kernel).trigger(NodeEvent.SELECT, [null, nodeData]);
-    },
-
-    /**
-     *
-     */
-    handleNodeUnselect: function (event, node, data) {
-
-        // if node and data are null, unselect all nodes
-        var selectedNode = this.graph.selectedNode;
-
-        console.log('handling unselecting node');
-
-        if (data) {
-            $(this.kernel).trigger(NodeEvent.UNSELECTED, [node, data]);
-        } else if (selectedNode) {
-            $(this.kernel).trigger(NodeEvent.UNSELECTED, [selectedNode.node, selectedNode.data]);
-        }
-
-        if (selectedNode) {
-            this.graph.selectedNode = null;
-        }
     },
 
     handleCreateChildNode: function (event, node, data) {
@@ -217,19 +164,24 @@ modules.NodeCD = app.createClass({
         newData.fixed = false;
     },
 
-    handleNodeCreate: function (event) {
+    handleNodeCreate: function (event, properties, position) {
+
+        var data;
 
         event.preventDefault();
         event.stopPropagation();
 
-        var input = $('#new-node-name').val();
-        if (input == '') {
-            return;
+        if (!position) {
+            position = {
+                x: 0,
+                y: 0
+            };
         }
 
-        $('#new-node-name').val('');
+        data = this.createNode(properties, position.x, position.y);
 
-        this.createNode({name: input});
+        // TODO make event chaining configurable?
+        $(this.kernel).trigger(NodeEvent.SELECT, [null, data]);
     },
 
     /**
@@ -285,14 +237,7 @@ modules.NodeCD = app.createClass({
 
     handleNodeDestroy: function (event, node, data) {
 
-        var selectedNode = this.graph.selectedNode,
-            nodeData;
-
-        nodeData = data || (selectedNode && selectedNode.data);
-
-        if (nodeData) {
-            this.destroyNode(nodeData);
-        }
+        this.destroyNode(data);
     },
 
     handlePropertyUpdate: function (event, node, data, property, value) {

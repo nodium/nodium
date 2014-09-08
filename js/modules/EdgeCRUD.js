@@ -111,10 +111,10 @@ modules.EdgeCRUD = app.createClass({
 
             $(this.kernel).trigger(EdgeEvent.CREATED, [edge, source, target]);
         } else {
-            $(this.kernel).trigger('edge-deleted', [toDelete]);
+            $(this.kernel).trigger(EdgeEvent.DESTROYED, [toDelete]);
         }
 
-        // TODO move this to some edge-deleted/created handlers somewhere else
+        // TODO move this to some edge deleted/created handlers somewhere else
         this.graph.drawLinks();
         this.graph.force.start();
     }

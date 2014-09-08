@@ -9,6 +9,8 @@ var app           = window.setNamespace('app'),
     ui            = window.setNamespace('app.ui'),
     animations    = window.setNamespace('app.graph.animations'),
     NodeEvent     = window.use('app.event.NodeEvent'),
+    DragEvent     = window.use('app.event.DragEvent'),
+    HoldEvent     = window.use('app.event.HoldEvent'),
     KeyboardEvent = window.use('app.event.KeyboardEvent');
 
 /**
@@ -35,17 +37,19 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new modules.Zoomable({
             doubleclick: false
         }))
-        .register(new modules.NodeCD(), [
+        .register(new modules.Selectable(), [
             ['node-clicked', 'handleNodeSelect'],
             [NodeEvent.SELECTED, 'app.graph.graphics.handleClassNode', 'selected'],
             [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
-            [NodeEvent.DESTROYED, 'handleNodeUnselect'],
-            ['drag-down', 'handleNodeDestroy'],
-            // ['drag-up', 'handleCreateChildNode'],
-            ['holding-canvas', 'handleCanvasHold']
+            [NodeEvent.DESTROYED, 'handleNodeUnselect']
+        ])
+        .register(new modules.NodeCRUD(), [
+            [HoldEvent.DRAGDOWN, 'handleNodeDestroy'],
+            // [HoldEvent.DRAGUP, 'handleCreateChildNode'],
+            [HoldEvent.CANVAS, 'handleNodeCreate']
         ])
         // .register(new modules.EdgeCRUD(), [
-        //     ['drag-end', 'handleLinking']
+        //     [DragEvent.END, 'handleLinking']
         // ])
         // CRM
         .register(new modules.CRMEdgeCRUD({
@@ -55,20 +59,20 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
                 INFLUENCE: 'INFLUENCE'
             }
         }), [
-            ['drag-end', 'handleLinking']
+            [DragEvent.END, 'handleLinking']
         ])
         .register(new modules.Holdable({
             'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
-            ['drag', 'handleHoldDrag'],
-            ['drag-end', 'handleHoldEnd'],
+            [DragEvent.DRAG, 'handleHoldDrag'],
+            [DragEvent.END, 'handleHoldEnd'],
             ['mouse-up', 'handleHoldEnd'],
-            ['drag-end', 'app.graph.graphics.handleNodeScale', 1],
-            ['holding-node', 'app.graph.graphics.handleNodeScale', 1.3],
-            // ['holding-node', 'app.graph.graphics.handleNodeColor', '#ffcc00'],
+            [DragEvent.END, 'app.graph.graphics.handleNodeScale', 1],
+            [HoldEvent.NODE, 'app.graph.graphics.handleNodeScale', 1.3],
+            // [HoldEvent.NODE, 'app.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
         .register(new modules.Pinnable(), [
-            ['drag-up', 'handleNodePinned']
+            [HoldEvent.DRAGUP, 'handleNodePinned']
         ])
         .register(new modules.Filterable(), [
             [NodeEvent.DRAWN, 'handleNodeDrawn'],
@@ -76,8 +80,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.FILTER_UNSET, 'handleNodeFilterUnset']
         ])
         .register(new modules.Validatable(), [
-            ['drag-left', 'handleDenyNode'],
-            ['drag-right', 'handleAcceptNode']
+            [HoldEvent.DRAGLEFT, 'handleDenyNode'],
+            [HoldEvent.DRAGRIGHT, 'handleAcceptNode']
         ])
         // .register(new modules.Colorable({
         //     labels: {
@@ -113,7 +117,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 			}
 		}), [
 			['node-pinned', 'handleNodeStyled'],
-			['drag-end', 'handleNodeStyled']
+			[DragEvent.END, 'handleNodeStyled']
 		]);
 
         // initialize transformers

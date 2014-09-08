@@ -18,8 +18,8 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         this.name = 'Node Editor';
         this.icon = 'icon-pencil';
 
-        // this is a temporary solution
         // mapping of node fields to ui field id
+        // generalize this with options
         this.exceptions = {
             'node-title': 'name'
         };
@@ -50,7 +50,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
         this
-            .on(this, '#node-form', Event.SUBMIT)
             .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
             .on(this, '#node-form', Event.FOCUS_OUT, 'input');
 
@@ -320,31 +319,20 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     handleDeleteNodeButtonClick: function (event) {
 
-        // TODO maybe change this if the edit panel knows about the graph state?
+        event.preventDefault();
+        event.stopPropagation();
 
-        $(this.kernel).trigger(NodeEvent.DESTROY, [undefined, this.nodeData]);
+        $(this.kernel).trigger(NodeEvent.DESTROY, [null, this.nodeData]);
     },
 
     handleFocusout: function (event) {
 
         // check if we're updating property or label
         if ($(event.currentTarget).hasClass('node-label-value')) {
-            console.log("updating label");
-            // this.updateLabel(event.currentTarget);
             this.updateLabels();
         } else {
-            // this.updateProperty(event.currentTarget);
             this.updateProperties();
         }
-    },
-
-    handleSubmit: function (event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        $(this.kernel).trigger(NodeEvent.DESTROY, [null, this.nodeData]);
-        this.view.trigger('panel-hide', [this]);
     },
 
     handleNewPropertyButtonClick: function (event) {

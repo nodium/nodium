@@ -58,19 +58,19 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
         var nodesList = $('#node-filter-result', this.view),
             listItemHTML,
             nodeName,
-            titleField = this.kernel.getNodeTitleKey(),
+            titleField = 'name', // TODO generalize
             value,
             i,
             nodesData;
 
-        nodesData = _.sortBy(data, titleField);        
+        nodesData = _.sortBy(data, titleField);
 
         // create the html form elements
         nodesList.empty();
 
         for (i = nodesData.length; i > 0; i--) {
 
-            nodeName = nodesData[i - 1][titleField];
+            nodeName = nodesData[i - 1]._properties[titleField];
 
             listItemHTML = window.createFromPrototype(nodesList, {
                 name: nodeName,

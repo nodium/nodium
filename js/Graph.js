@@ -5,7 +5,10 @@
 var graph       = window.setNamespace('app.graph'),
     app         = window.use('app'),
     EventAware  = window.use('app.event.EventAware'),
-    NodeEvent   = window.use('app.event.NodeEvent');
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    DragEvent   = window.use('app.event.DragEvent'),
+    HoldEvent   = window.use('app.event.HoldEvent'),
+    self;
 
 graph.Graph = app.createClass(EventAware, {
 
@@ -24,30 +27,14 @@ graph.Graph = app.createClass(EventAware, {
         // needed for drag starts
         this.hoveredNode = null;
 
-        // the node that was clicked on
-        this.selectedNode = null;
-
-        this._modules = [];
-
         // set during initialization
         this.nodeCount;
         this.edgeCount;
+
+        self = this;
     },
 
-    /**
-     * Add one trait
-     */
-    register: function (trait, events) {
-
-        this._modules.push({
-            trait: trait,
-            events: events
-        });
-
-        return this;
-    },
-
-    attachTraitEvents: function (events, trait) {
+    attachModuleEvents: function (events, module) {
 
         var e,
             key,
@@ -71,18 +58,15 @@ graph.Graph = app.createClass(EventAware, {
                 continue;
             }
 
-            // try to either get the function from the trait or from the full name
-            if (trait[value] && typeof(trait[value]) === "function") {
-                func = trait[value];
+            // try to either get the function from the module or from the full name
+            if (module[value] && typeof(module[value]) === "function") {
+                func = module[value];
             } else {
                 func = window.getFunction(value);
             }
 
             if (func) {
-                // console.log("attaching " + value + " to " + key);
-                $(this).on(key, window.partial(func, trait, args));
-            } else {
-                // console.log("couldn't attach " + value + " to " + key);
+                $(this).on(key, window.partial(func, module, args));
             }
         }
     },
@@ -99,11 +83,6 @@ graph.Graph = app.createClass(EventAware, {
 
         var graphData = $(this.selector).data('graph');
         $(this.selector).attr('data-graph', null);
-
-        // TODO wut is this doing here? uhhggg
-        // for (var i = 0; i < graphData.nodes.length; i++) {
-        //     this.addNodeMetadata(graphData.nodes[i]);
-        // }
 
         this.handleGraphData(graphData);
     },
@@ -136,8 +115,7 @@ graph.Graph = app.createClass(EventAware, {
 
     createForce: function () {
 
-        var self = this,
-            force,
+        var force,
             tickHandler;
 
         force = d3.layout.force()
@@ -160,10 +138,7 @@ graph.Graph = app.createClass(EventAware, {
      */
     initialize: function () {
 
-        this.initializeModules();
-        this.initializeType();
-
-        // put in resizable trait?
+        // put in resizable module?
         var windowResizeHandler = window.curry(this.handleWindowResize, this);
         $(window).on('resize', windowResizeHandler);
 
@@ -173,32 +148,25 @@ graph.Graph = app.createClass(EventAware, {
         this.getGraphData();
     },
 
-    initializeType: function () {
+    /**
+     * Register a module to the graph
+     */
+    register: function (module, events) {
 
-    },
+        module.graph = this;
 
-    initializeModules: function () {
+        // kernel should have its own class instead of this
+        module.kernel = this;
 
-        var trait,
-            events;
-
-        for (var i = 0; i < this._modules.length; i++) {
-            trait = this._modules[i].trait;
-            events = this._modules[i].events;
-
-            trait.graph = this;
-
-            // kernel should have its own class
-            trait.kernel = this;
-
-            if (events) {
-                this.attachTraitEvents(events, trait);
-            }
-
-            if (typeof(trait.initialize) === "function") {
-                trait.initialize();
-            }
+        if (events) {
+            this.attachModuleEvents(events, module);
         }
+
+        if (typeof(module.initialize) === "function") {
+            module.initialize();
+        }
+
+        return this;
     },
 
     initializeViewport: function () {
@@ -339,8 +307,6 @@ graph.Graph = app.createClass(EventAware, {
 
     drawNodeEnter: function (nodeEnter) {
 
-        var self = this;
-
         nodeEnter.attr('class', function (data) {
             return self.getNodeClassValue(data);
         });
@@ -361,6 +327,7 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     splitNodeText: function (name, treshold) {
+
         var parts,
             part,
             half,
@@ -415,8 +382,6 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     drawNodeTexts: function (nodeEnter) {
-
-        var self = this;
 
         var textNode = nodeEnter.append('text')
             .attr('text-anchor', 'middle')
@@ -491,8 +456,6 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     drawLinkEnter: function (linkEnter) {
-
-        var self = this;
 
         linkEnter.attr('class', function (data) {
             return self.getLinkClassValue(data);
@@ -640,7 +603,7 @@ graph.Graph = app.createClass(EventAware, {
     handleNodeDragStart: function (graph, data) {
 
         // use d3 event?
-        $(graph).trigger('drag-start', [this, data]);
+        $(graph).trigger(DragEvent.START, [this, data]);
 
         // used to stop canvas from dragging too
         d3.event.sourceEvent.stopPropagation();
@@ -654,14 +617,13 @@ graph.Graph = app.createClass(EventAware, {
             node: this
         };
 
-        // console.log("stopping graph force");
         graph.force.stop();
     },
 
     handleNodeDragEnd: function (graph, data) {
 
         // use d3 event?
-        $(graph).trigger('drag-end', [this, data]);
+        $(graph).trigger(DragEvent.END, [this, data]);
 
         if (graph.dragDistance !== 0) {
             graph.force.resume();
@@ -691,8 +653,7 @@ graph.Graph = app.createClass(EventAware, {
     handleTick: function () {
 
         var link = this.link,
-            node = this.node,
-            self = this;
+            node = this.node;
                 
         node.attr('transform', function (data) {
 

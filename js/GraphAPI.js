@@ -6,6 +6,7 @@ var graph       = window.setNamespace('app.graph'),
     transformer = window.use('app.transformer'),
     app         = window.use('app'),
     NodeEvent   = window.use('app.event.NodeEvent'),
+    EdgeEvent   = window.use('app.event.EdgeEvent'),
     _defaults   = {
         host: 'localhost',
         port: 7474,
@@ -63,14 +64,10 @@ graph.API = app.createClass({
     },
 
     initialize: function () {
-        var createNode = window.curry(this.handleNodeCreated, this);
-        $(this.kernel).on(NodeEvent.CREATED, createNode);
-        var deleteNode = window.curry(this.handleNodeDeleted, this);
-        $(this.kernel).on(NodeEvent.DESTROYED, deleteNode);
-        var createEdge = window.curry(this.handleEdgeCreated, this);
-        $(this.kernel).on('edge-created', createEdge);
-        var deleteEdge = window.curry(this.handleEdgeDeleted, this);
-        $(this.kernel).on('edge-deleted', deleteEdge);
+        $(this.kernel).on(NodeEvent.CREATED, this.handleNodeCreated.bind(this));
+        $(this.kernel).on(NodeEvent.DESTROYED, this.handleNodeDeleted.bind(this));
+        $(this.kernel).on(EdgeEvent.CREATED, this.handleEdgeCreated.bind(this));
+        $(this.kernel).on(EdgeEvent.DESTROYED, this.handleEdgeDeleted.bind(this));
         $(this.kernel).on(NodeEvent.UPDATED, this.handleNodeUpdated.bind(this));
         $(this.kernel).on(NodeEvent.UPDATEDLABEL, this.handleNodeLabelUpdated.bind(this));
     },
@@ -78,13 +75,13 @@ graph.API = app.createClass({
     get: function (callback) {
 
         var nodeQuery = {
-          "query" : "START n=node(*) RETURN n, labels(n)",
-          // query: 'START n=node(*) RETURN n',
-          "params" : {}
+            query: 'START n=node(*) RETURN n, labels(n)',
+            // query: 'START n=node(*) RETURN n',
+            params: {}
         };
         var edgeQuery = {
-          "query" : "START r=relationship(*) RETURN r",
-          "params" : {}
+            query: 'START r=relationship(*) RETURN r',
+            params: {}
         };
         var url = this.cypherUrl();
         var graph;
@@ -109,18 +106,17 @@ graph.API = app.createClass({
      */
     handleNodeCreated: function (event, data) {
 
-        var url = this.nodeUrl();
-            props = transformer.neo4j.to([data]).nodes[0],
+        var url = this.nodeUrl(),
+            props = transformer.neo4j.toNode(data);
 
-        // $.post(url, props)
         $.ajax({
             url: url,
             data: props,
             type: 'POST',
             async: false
         }).done(function (result) {
-            data._id = transformer.neo4j.result.self;
-         });
+            data._id = transformer.neo4j.idFromSelf(result.self);
+        });
     },
 
     /**
@@ -129,9 +125,7 @@ graph.API = app.createClass({
      */
     handleNodeDeleted: function (event, data) {
 
-        var nodeId,
-            index,
-            query,
+        var query,
             url = this.cypherUrl();
 
         // TODO this query should work, but can't find parameter nodeId
@@ -147,9 +141,7 @@ graph.API = app.createClass({
             "params" : {}
         };
 
-        $.post(url, query)
-         .done(function (result) {
-        });
+        $.post(url, query);
     },
 
     handleEdgeCreated: function (event, data, source, target) {
@@ -173,8 +165,6 @@ graph.API = app.createClass({
         $.ajax({
             url: url,
             type: 'DELETE'
-        })
-        .done(function (result) {
         });
     },
 
@@ -190,8 +180,6 @@ graph.API = app.createClass({
             url: url,
             type: 'PUT',
             data: obj
-        })
-        .done(function (result) {
         });
     },
 
@@ -211,8 +199,6 @@ graph.API = app.createClass({
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(data._labels)
-        })
-        .done(function (result) {
         });
     }
 });
