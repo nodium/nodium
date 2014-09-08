@@ -105,7 +105,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         ])
         .register(this.api)
         .register(new modules.Storable({
-			key: '__nodestyle',
 			styles: {
 				pinnable: ['fixed', 'x', 'y', 'px', 'py']
 			}

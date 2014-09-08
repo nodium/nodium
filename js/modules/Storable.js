@@ -16,8 +16,8 @@ modules.Storable = app.createClass({
     construct: function (options) {
 
         var _defaults = {
-            key: '__nodestyle',
-            styles: {}
+            path: '_style',
+            storables: {}
         };
 
         this.options = $.extend({}, _defaults, options);
@@ -44,12 +44,12 @@ modules.Storable = app.createClass({
 
     /**
      * Generate a style string from this node
-     * so we only need to store waste one field in the database
+     * so we only need to waste one field in the database
      */
     getStyleString: function (node, data) {
 
         // completely (re)build the object for now
-        var styles = this.options.styles,
+        var storables = this.options.storables,
             style,
             properties,
             i,
@@ -59,9 +59,9 @@ modules.Storable = app.createClass({
             objString,
             parameters;
 
-        for (style in styles) {
+        for (style in storables) {
             parameters = {};
-            properties = styles[style];
+            properties = storables[style];
 
             for (i = 0; i < properties.length; i++) {
 
@@ -86,22 +86,23 @@ modules.Storable = app.createClass({
 	 */
 	parseStyleString: function (data) {
 
-		var styles = this.options.styles,
+		var storables = this.options.storables,
+            path = this.options.path,
 			style,
 			obj,
 			properties,
 			property,
 			value;
 
-		if (!data.hasOwnProperty('_style')) {
+		if (!data.hasOwnProperty(path)) {
 			return;
 		}
 
-		obj = this.objectFromString(data._style);
+		obj = this.objectFromString(data[path]);
 
 		for (style in obj) {
 			// check if this style was configured to be used
-			if (!styles.hasOwnProperty(style)) {
+			if (!storables.hasOwnProperty(style)) {
 				continue;
 			}
 
@@ -133,9 +134,11 @@ modules.Storable = app.createClass({
     handleNodeStyled: function (event, node, data) {
 
         var styleString = this.getStyleString(node, data);
-        data._style = styleString;
+        data[this.options.path] = styleString;
 
         $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
+
+        // $(this.kernel).trigger(NodeEvent.UPDATE, [node, data, path, value])
     }
 });
 
