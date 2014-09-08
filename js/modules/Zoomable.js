@@ -7,7 +7,7 @@ var modules   = window.setNamespace('app.modules'),
     _defaults;
 
 /**
- * Zoomable trait
+ * Zoomable module
  *
  * Adds standard d3 zooming and panning functionality to the graph
  */

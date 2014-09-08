@@ -6,7 +6,7 @@ var modules = window.setNamespace('app.modules'),
     app   = window.use('app');
 
 /**
- * Filterable trait
+ * Filterable module
  *
  * Adds functionality to click and hold a node or the canvas
  */

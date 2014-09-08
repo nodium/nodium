@@ -6,10 +6,6 @@ var graph       = window.setNamespace('app.graph'),
     graphics    = window.setNamespace('app.graph.graphics'),
     NodeStatus  = window.use('app.constants.NodeStatus');
 
-/*
- * Functions here are probably executed in scope of the trait
- */
-
 graphics.scaleNode = function (scale, node, graph) {
 
     console.log("scaling node");

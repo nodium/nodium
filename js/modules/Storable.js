@@ -7,11 +7,11 @@ var modules       = window.setNamespace('app.modules'),
     NodeEvent   = window.use('app.event.NodeEvent');
 
 /**
- * Stylable trait
+ * Storable module
  *
  * Adds functionality to store node style in the database
  */
-modules.Stylable = app.createClass({
+modules.Storable = app.createClass({
 
     construct: function (options) {
 

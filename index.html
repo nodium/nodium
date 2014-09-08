@@ -83,13 +83,14 @@
 	<script src="js/snippet/Super.js"></script>
 	<script src="js/constants/NodeStatus.js"></script>
 	<script src="js/constants/ColorStrategy.js"></script>
+	<script src="js/event/EventAware.js"></script>
 	<script src="js/event/Event.js"></script>
+	<script src="js/event/Kernel.js"></script>
 	<script src="js/event/KeyboardEvent.js"></script>
 	<script src="js/event/NodeEvent.js"></script>
 	<script src="js/event/EdgeEvent.js"></script>
 	<script src="js/event/HoldEvent.js"></script>
 	<script src="js/event/DragEvent.js"></script>
-	<script src="js/event/EventAware.js"></script>
 	<script src="js/transformer/AbstractDataTransformer.js"></script>
 	<script src="js/transformer/Neo4jTransformer.js"></script>
 	<script src="js/ui/UIElement.js"></script>
@@ -114,22 +115,25 @@
 	<script src="js/modules/Pinnable.js"></script>
 	<script src="js/modules/Colorable.js"></script>
 	<script src="js/modules/Classable.js"></script>
-	<script src="js/modules/Stylable.js"></script>
+	<script src="js/modules/Storable.js"></script>
 	<script type="text/javascript">
 
 		var graph = window.setNamespace('app.graph'),
+			app   = window.setNamespace('app'),
 			ui    = window.setNamespace('app.ui');
 
 		$(document).on('ready', function () {
 
-			var g 		= new graph.Neo4jGUI('#graph'),
-				menu 	= new ui.PanelContainer('#inspector', {}),
-				kernel  = g;
+			var kernel  = new app.event.Kernel(),
+				g 		= new graph.Neo4jGUI('#graph', kernel),
+				menu 	= new ui.PanelContainer('#inspector', {});
 
 			menu
 				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, kernel))
 				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, kernel))
 				.addPanel(new ui.NodeExplorerPanel('#ui-node-explorer', {}, kernel));
+
+			kernel.register(new ui.EdgeModePanel({}, '#edit-mode'));
 
 		});
 	</script>

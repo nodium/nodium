@@ -20,10 +20,6 @@ ui.EdgeModePanel = app.createClass({
         $('input[value=LINK]').click();
     },
 
-    initialize: function () {
-
-    },
-
     /**
      * set the edge mode variable
      */

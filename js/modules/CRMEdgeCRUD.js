@@ -8,7 +8,7 @@ var modules   = window.setNamespace('app.modules'),
     _defaults;
 
 /**
- * EdgeCD trait
+ * EdgeCRUD module
  *
  * Adds functionality to link nodes by hovering them on top of each other
  */

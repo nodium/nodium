@@ -9,7 +9,7 @@ var graph     = window.setNamespace('app.graph'),
     _defaults;
 
 /**
- * EdgeCD trait
+ * EdgeCRUD module
  *
  * Adds functionality to link nodes by hovering them on top of each other
  */

@@ -9,9 +9,9 @@ var modules       = window.setNamespace('app.modules'),
     EdgeEvent   = window.use('app.event.EdgeEvent');
 
 /**
- * NodeEditor trait
+ * NodeCRUD module
  *
- * Adds functionality to create new nodes
+ * Adds CRUD functionality to nodes
  */
 modules.NodeCRUD = app.createClass({
 

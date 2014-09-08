@@ -3,74 +3,47 @@
 'use strict';
 
 var graph       = window.setNamespace('app.graph'),
+    event       = window.use('app.event'),
     app         = window.use('app'),
-    EventAware  = window.use('app.event.EventAware'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     DragEvent   = window.use('app.event.DragEvent'),
     HoldEvent   = window.use('app.event.HoldEvent'),
     self;
 
-graph.Graph = app.createClass(EventAware, {
+graph.Graph = app.createClass({
 
-    construct: function (selector) {
+    construct: function (selector, kernel) {
 
-        // the base graph svg
-        // contains a .graph-viewport and a .graph-content
-        this.selector = selector || this.selector;
+        if (!selector) throw 'No selector passed to graph';
+        this.selector = selector;
+
+        this.kernel = kernel || new event.Kernel();
 
         // to distinguish between node and canvas drags e.a.
+        // TODO to Draggable module
         this.draggedNode = null;
         this.dragging = false;
         this.dragDirection = 0;
 
         // the node that is being hovered
         // needed for drag starts
+        // TODO try to move to hoverable?
         this.hoveredNode = null;
-
-        // set during initialization
-        this.nodeCount;
-        this.edgeCount;
 
         self = this;
     },
 
-    attachModuleEvents: function (events, module) {
+    /**
+     * Register a module to this graph and its kernel
+     */
+    register: function (module, events) {
 
-        var e,
-            key,
-            value,
-            func,
-            args = [];
+        module.graph = this;
 
-        for (var i = 0; i < events.length; i++) {
-            e = events[i];
-            key = e[0];
+        this.kernel.register(module, events);
 
-            if (!key) {
-                continue;
-            }
-
-            value = e.slice(1);
-            args = value.slice(1);
-            value = value[0];
-
-            if (!value) {
-                continue;
-            }
-
-            // try to either get the function from the module or from the full name
-            if (module[value] && typeof(module[value]) === "function") {
-                func = module[value];
-            } else {
-                func = window.getFunction(value);
-            }
-
-            if (func) {
-                $(this).on(key, window.partial(func, module, args));
-            }
-        }
+        return this;
     },
-
 
     /*
      * Graph initialization and utility functions
@@ -110,7 +83,7 @@ graph.Graph = app.createClass(EventAware, {
 
         this.handleWindowResize();
 
-        $(this).trigger(NodeEvent.LOADED, [this.nodes, this.edges]);
+        $(this.kernel).trigger(NodeEvent.LOADED, [this.nodes, this.edges]);
     },
 
     createForce: function () {
@@ -146,27 +119,6 @@ graph.Graph = app.createClass(EventAware, {
         this.initializeViewport();
 
         this.getGraphData();
-    },
-
-    /**
-     * Register a module to the graph
-     */
-    register: function (module, events) {
-
-        module.graph = this;
-
-        // kernel should have its own class instead of this
-        module.kernel = this;
-
-        if (events) {
-            this.attachModuleEvents(events, module);
-        }
-
-        if (typeof(module.initialize) === "function") {
-            module.initialize();
-        }
-
-        return this;
     },
 
     initializeViewport: function () {
@@ -319,7 +271,7 @@ graph.Graph = app.createClass(EventAware, {
             })
             .attr('class', 'top-circle');
 
-        $(this).trigger(NodeEvent.DRAWN, [nodeEnter]);
+        $(this.kernel).trigger(NodeEvent.DRAWN, [nodeEnter]);
     },
 
     drawNodeExit: function (nodeExit) {
@@ -444,7 +396,10 @@ graph.Graph = app.createClass(EventAware, {
         // in case you only want to draw a subset
         var links = this.getVisibleLinks(),
             link = d3.select(this.selector + ' .links').selectAll('.link')
-                .data(links),
+                .data(links, function (data) {
+                    // compute a unique hash to bind the data
+                    return data.source.index + '#' + data.target.index + '#' + data.type;
+                }),
                 linkEnter = link.enter().append('polyline');
             
         this.drawLinkExit(link.exit());
@@ -456,7 +411,6 @@ graph.Graph = app.createClass(EventAware, {
     },
 
     drawLinkEnter: function (linkEnter) {
-
         linkEnter.attr('class', function (data) {
             return self.getLinkClassValue(data);
         });
@@ -526,17 +480,17 @@ graph.Graph = app.createClass(EventAware, {
             return;
         }
 
-        $(graph).trigger('node-clicked', [this, data]);
+        $(graph.kernel).trigger('node-clicked', [this, data]);
     },
 
     handleMouseDown: function (graph, data) {
 
-        $(graph).trigger('mouse-down', [this, data]);
+        $(graph.kernel).trigger('mouse-down', [this, data]);
     },  
 
     handleMouseUp: function (graph, data) {
 
-        $(graph).trigger('mouse-up');
+        $(graph.kernel).trigger('mouse-up');
     },  
 
     /*
@@ -578,7 +532,7 @@ graph.Graph = app.createClass(EventAware, {
         // update the distance and direction of the drag
         graph.updateDragData(d3.event.dx, d3.event.dy);
 
-        $(graph).trigger(d3.event, [this, data]);
+        $(graph.kernel).trigger(d3.event, [this, data]);
 
         // if (graph.dragging && !d3.event.sourceEvent.defaultPrevented) {
         if (graph.dragDistance != 0 && !graph.holding /* && !d3.event.sourceEvent.defaultPrevented*/) {
@@ -603,7 +557,7 @@ graph.Graph = app.createClass(EventAware, {
     handleNodeDragStart: function (graph, data) {
 
         // use d3 event?
-        $(graph).trigger(DragEvent.START, [this, data]);
+        $(graph.kernel).trigger(DragEvent.START, [this, data]);
 
         // used to stop canvas from dragging too
         d3.event.sourceEvent.stopPropagation();
@@ -623,7 +577,7 @@ graph.Graph = app.createClass(EventAware, {
     handleNodeDragEnd: function (graph, data) {
 
         // use d3 event?
-        $(graph).trigger(DragEvent.END, [this, data]);
+        $(graph.kernel).trigger(DragEvent.END, [this, data]);
 
         if (graph.dragDistance !== 0) {
             graph.force.resume();

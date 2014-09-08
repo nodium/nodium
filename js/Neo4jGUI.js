@@ -18,20 +18,14 @@ var app           = window.setNamespace('app'),
  */
 graph.Neo4jGUI = app.createClass(graph.Graph, {
 
-    construct: function (selector) {
+    construct: function (selector, kernel) {
 
         var self = this;
         this.mode = '';
-        this.kernel = this;
 
-        this.api = new graph.API({
-			special: {
-				__nodestyle: '_style'
-			}
-		});
+        this.api = new graph.API();
 
-        // here we put the actual linking of traits to events
-        // so that the traits contain only the logic and are kept generic
+        // centralized module initialization and configuration
 
         this
         .register(new modules.Zoomable({
@@ -110,7 +104,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.UPDATED, 'handleClassNodes']
         ])
         .register(this.api)
-        .register(new modules.Stylable({
+        .register(new modules.Storable({
 			key: '__nodestyle',
 			styles: {
 				pinnable: ['fixed', 'x', 'y', 'px', 'py']
@@ -126,10 +120,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
                 __nodestyle: '_style'
             }
         });
-
-        // ui
-        this
-        .register(new ui.EdgeModePanel({}, '#edit-mode'));
 
         // UI handlers that initiate an action event
         var keyDownHandler = window.curry(this.handleKeyDown, this);

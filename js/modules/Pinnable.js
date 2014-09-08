@@ -6,7 +6,7 @@ var modules = window.setNamespace('app.modules'),
 	app   = window.use('app');
 
 /**
- * Pinnable trait
+ * Pinnable module
  *
  * Adds functionality to fix node placement
  */
