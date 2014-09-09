@@ -4,7 +4,11 @@
 
 var modules       = window.setNamespace('app.modules'),
     app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent');
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    _defaults = {
+        path: '_style',
+        storables: {}
+    };
 
 /**
  * Storable module
@@ -14,11 +18,6 @@ var modules       = window.setNamespace('app.modules'),
 modules.Storable = app.createClass({
 
     construct: function (options) {
-
-        var _defaults = {
-            path: '_style',
-            storables: {}
-        };
 
         this.options = $.extend({}, _defaults, options);
     },
@@ -38,15 +37,15 @@ modules.Storable = app.createClass({
     /**
 	 * parse the style string
 	 */
-    objectFromString: function (styleString) {
-		return JSON.parse(styleString);
+    objectFromString: function (storableString) {
+		return JSON.parse(storableString);
 	},
 
     /**
      * Generate a style string from this node
      * so we only need to waste one field in the database
      */
-    getStyleString: function (node, data) {
+    getStorableString: function (node, data) {
 
         // completely (re)build the object for now
         var storables = this.options.storables,
@@ -68,7 +67,7 @@ modules.Storable = app.createClass({
                 property = properties[i];
 
 				// get the value of the property
-				value = window.getObjectValueByString(data, property);
+				value = window.getObjectValueByPath(data, property);
 
                 parameters[property] = value;
             }
@@ -84,7 +83,7 @@ modules.Storable = app.createClass({
 	/**
 	 * Parse a style string into an object with node style properties
 	 */
-	parseStyleString: function (data) {
+	parseStorableString: function (data) {
 
 		var storables = this.options.storables,
             path = this.options.path,
@@ -108,16 +107,16 @@ modules.Storable = app.createClass({
 
 			properties = obj[style];
 
-            // TODO this only works if properties are in data
-            // each style should have its own parser
+            // TODO each style should have its own parser
 			for (property in properties) {
-				data[property] = properties[property];
+				// data[property] = properties[property];
+                window.setObjectValueByPath(data, property, properties[property]);
 			}
 		}
 	},
 
 	/**
-	 * Translate the style strings inside nodes to node data and style
+	 * Translate the storable strings inside nodes to node data
 	 */
 	handleGraphLoaded: function (event, nodes, edges) {
 
@@ -127,18 +126,20 @@ modules.Storable = app.createClass({
 		for (i = 0; i < nodes.length; i++) {
 			node = nodes[i];
 
-			this.parseStyleString(node);
+			this.parseStorableString(node);
 		}
 	},
 
     handleNodeStyled: function (event, node, data) {
 
-        var styleString = this.getStyleString(node, data);
-        data[this.options.path] = styleString;
+        var storableString = this.getStorableString(node, data),
+            update = {
+                set: [
+                    [this.options.path, storableString]
+                ]
+            };
 
-        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
-
-        // $(this.kernel).trigger(NodeEvent.UPDATE, [node, data, path, value])
+        $(this.kernel).trigger(NodeEvent.UPDATE, [node, data, update]);
     }
 });
 

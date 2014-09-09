@@ -4,6 +4,7 @@
 
 var ui          = window.setNamespace('app.ui'),
     app         = window.use('app'),
+    model       = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     Event       = window.use('app.event.Event'),
     _defaults;
@@ -121,30 +122,32 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         }
     },
 
-    destroyProperty: function (deleteButton) {
+    destroyListElement: function (deleteButton, type) {
 
 
-        var field = $(deleteButton).closest('.node-field'),
-            property = $('input', field).val();
+        var element = $(deleteButton).closest('li'),
+            key = $('.node-key', element).val(),
+            update = {};
 
-        delete this.nodeData[property];
-
-        field.remove();
-
-        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData]);
-    },
-
-    destroyListElement: function (deleteButton, event) {
-
-
-        var element = $(deleteButton).closest('li');
-        //     property = $('input', field).val();
-
-        // delete this.nodeData[property];
+        console.log("destroying element");
+        console.log(key);
 
         element.remove();
 
-        $(this.kernel).trigger(event, [null, this.nodeData]);
+        if (type === 'label') {
+
+            // set complete labels array
+            // TODO is it safe to use the index??
+            var labels = this.getLabels();
+            model.Node.setLabelsForUpdate(update, labels);
+
+        } else if (type === 'property') {
+
+            // unset single property
+            model.Node.unsetPropertyForUpdate(update, key);
+        }
+
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },
 
     /**
@@ -219,7 +222,8 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     updateLabels: function () {
 
-        var labels;
+        var labels,
+            update = {};
 
         // we don't have an object to update
         if (!this.nodeData) {
@@ -228,12 +232,16 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         labels = this.getLabels();
 
-        $(this.kernel).trigger(NodeEvent.UPDATELABEL, [null, this.nodeData, labels]);
+        // TODO panel shouldn't know about model?
+        model.Node.setLabelsForUpdate(update, labels);
+
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },
 
     updateProperties: function () {
 
-        var properties;
+        var properties,
+            update = {};
 
         // we don't have an object to update
         if (!this.nodeData) {
@@ -242,7 +250,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         properties = this.getProperties();
 
-        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, properties]);
+        // TODO panel shouldn't know about model?
+        model.Node.setPropertiesForUpdate(update, properties);
+
+        $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },
 
     setData: function (data) {
@@ -309,12 +320,12 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     handleDeletePropertyButtonClick: function (event) {
 
-        this.destroyProperty(event.currentTarget);
+        this.destroyListElement(event.currentTarget, 'property');
     },
 
     handleDeleteLabelButtonClick: function (event) {
 
-        this.destroyListElement(event.currentTarget, NodeEvent.UPDATELABEL);
+        this.destroyListElement(event.currentTarget, 'label');
     },
 
     handleDeleteNodeButtonClick: function (event) {

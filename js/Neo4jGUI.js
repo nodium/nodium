@@ -104,8 +104,11 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.UPDATED, 'handleClassNodes']
         ])
         .register(this.api)
+        // TODO event flow:
+        // - handleNodeStyled should be able to check if one of the values was changed
+        // - pinnable storable should check if fixed == true before updating
         .register(new modules.Storable({
-			styles: {
+			storables: {
 				pinnable: ['fixed', 'x', 'y', 'px', 'py']
 			}
 		}), [

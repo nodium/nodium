@@ -5,6 +5,7 @@
 var graph       = window.setNamespace('app.graph'),
     transformer = window.use('app.transformer'),
     app         = window.use('app'),
+    model       = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     EdgeEvent   = window.use('app.event.EdgeEvent'),
     _defaults   = {
@@ -69,7 +70,7 @@ graph.API = app.createClass({
         $(this.kernel).on(EdgeEvent.CREATED, this.handleEdgeCreated.bind(this));
         $(this.kernel).on(EdgeEvent.DESTROYED, this.handleEdgeDeleted.bind(this));
         $(this.kernel).on(NodeEvent.UPDATED, this.handleNodeUpdated.bind(this));
-        $(this.kernel).on(NodeEvent.UPDATEDLABEL, this.handleNodeLabelUpdated.bind(this));
+        $(this.kernel).on(NodeEvent.UPDATED, this.handleNodeLabelUpdated.bind(this));
     },
 
     get: function (callback) {
@@ -168,10 +169,16 @@ graph.API = app.createClass({
         });
     },
 
-    handleNodeUpdated: function (event, node, data) {
+    handleNodeUpdated: function (event, node, data, diff) {
+
+        // check if a property was updated
+        if (!model.Node.pathInDifference(diff, model.Node.getPropertiesPath())) {
+            return;
+        }
 
         console.log("handling node update");
         console.log(data._id);
+        console.log(diff);
 
         var obj = transformer.neo4j.toNode(data),
             url = this.nodeUrl(data._id) + '/properties';
@@ -187,10 +194,17 @@ graph.API = app.createClass({
      * Removes all labels from the node and replaces them with the ones in data
      * @param data string or array<string>
      */
-    handleNodeLabelUpdated: function (event, node, data) {
+    handleNodeLabelUpdated: function (event, node, data, diff) {
+
+        // check if a label was added or removed
+        // TODO syntax needs some work...
+        if (!model.Node.pathInDifference(diff, model.Node.getLabelsPath())) {
+            return;
+        }
 
         console.log("handling node label update");
         console.log(data._id);
+        console.log(diff);
 
         var url = this.nodeUrl(data._id) + '/labels';
 

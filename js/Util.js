@@ -206,19 +206,97 @@ window.getFunction = function (functionPath) {
     }
 }
 
-window.getObjectValueByString = function(obj, s) {
-    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    s = s.replace(/^\./, '');           // strip a leading dot
-    var a = s.split('.');
-    while (a.length) {
-        var n = a.shift();
-        if (n in obj) {
-            obj = obj[n];
+/**
+ * Note: if an array is passed, this returns a reference to this same array
+ */
+window.getPathArray = function (path) {
+
+    var array;
+
+    if (typeof path === 'string') {
+        // convert indexes to properties
+        path = path.replace(/\[(\w+)\]/g, '.$1');
+
+        // strip a leading dot
+        path = path.replace(/^\./, '');
+
+        array = path.split('.');
+    } else {
+        array = path;
+    }
+
+    return array;
+}
+
+window.getObjectValueByPath = function (obj, path) {
+    // s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    // s = s.replace(/^\./, '');           // strip a leading dot
+    // var a = s.split('.');
+
+    var array = window.getPathArray(path),
+        key;
+
+    while (array.length) {
+        key = array.shift();
+        if (key in obj) {
+            obj = obj[key];
         } else {
             return;
         }
     }
     return obj;
+}
+
+/**
+ * Path can be an array or a string
+ * Array indices are expected as integers
+ * If an index is given but the array doesn't exist, a subobject will be created
+ */
+window.setObjectValueByPath = function (obj, path, value) {
+
+    var array = window.getPathArray(path),
+        key,
+        newKey = false;
+
+    while (array.length - 1) {
+        key = array.shift();
+        if (!(key in obj)) {
+            newKey = true;
+            obj[key] = {};
+        }
+        obj = obj[key];
+    }
+
+    key = array.shift();
+    if (!(key in obj)) {
+        newKey = true;
+    }
+    obj[key] = value;
+
+    return newKey;
+}
+
+window.removeObjectKeyByPath = function (obj, path) {
+
+    var array = window.getPathArray(path),
+        key;
+
+    while (array.length - 1) {
+        key = array.shift();
+        if (key in obj) {
+            obj = obj[key];
+        } else {
+            return false;
+        }
+    }
+
+    key = array.shift();
+    if (!(key in obj)) {
+        return false;
+    }
+
+    delete obj[key];
+    return true;
 }
 
 /**

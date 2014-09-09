@@ -18,7 +18,7 @@ modules.NodeCRUD = app.createClass({
 
     construct: function () {
 
-        this.labels = [];
+        // this.labels = [];
     },
 
     /**
@@ -28,10 +28,11 @@ modules.NodeCRUD = app.createClass({
 
         $(this.kernel)
             .on(NodeEvent.CREATE, this.handleNodeCreate.bind(this))
+            .on(NodeEvent.UPDATE, this.handleUpdate.bind(this))
             .on(NodeEvent.DESTROY, this.handleNodeDestroy.bind(this))
-            .on(NodeEvent.UPDATE, this.handleNodeUpdate.bind(this))
-            .on(NodeEvent.UPDATELABEL, this.handleNodeLabelUpdate.bind(this))
-            .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
+            // .on(NodeEvent.UPDATEPROPERTY, this.handleUpdateProperty.bind(this))
+            // .on(NodeEvent.UPDATELABEL, this.handleUpdateLabel.bind(this))
+            // .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
     },
 
     /**
@@ -103,35 +104,65 @@ modules.NodeCRUD = app.createClass({
         $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
     },
 
-    updateDataWithLabels: function (data, labels) {
+    /**
+     * Updates the data with the update directives
+     * The reason we use directives is that it allows for more
+     * control in some cases. E.g. when you want to set a whole
+     * sub-object at once.
+     */
+    processUpdate: function (data, update) {
 
-        // return false if data wasn't updated
-        if (_.isEqual(data._labels, labels)) {
-            return false;
+        var set = update.set,
+            unset = update.unset,
+            i,
+            directive,
+            clone = $.extend({}, data),
+            difference;
+
+        // we always process unset first, so that
+        // at least every property in set will be set
+
+        if (unset) {
+
+            for (i = 0; i < unset.length; i++) {
+                directive = unset[i];
+                window.removeObjectKeyByPath(data, directive[0])
+            }
         }
 
-        data._labels = labels;
+        if (set) {
 
-        return true;
-    },
-
-    updateDataWithProperties: function (data, properties) {
-
-        // return false if data wasn't updated
-        if (_.isEqual(data._properties, properties)) {
-            return false;
+            for (i = 0; i < set.length; i++) {
+                directive = set[i];
+                window.setObjectValueByPath(data, directive[0], directive[1])
+            }
         }
 
-        data._properties = properties;
+        // return the diff
+        difference = DeepDiff.diff(clone, data);
+        difference = difference || [];
+        console.log("difference");
+        console.log(difference);
 
-        return true;
+        return difference;
     },
 
-    updateProperty: function (node, data, property, value) {
+    updateNode: function (node, data, update) {
 
-        data[property] = value;
+        var difference;
 
-        $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
+        node = this.graph.resolveNode(node, data);
+        data = this.graph.resolveData(node, data);
+
+        difference = this.processUpdate(data, update);
+
+        if (difference.length) {
+
+            // TODO this should be a response (in graphics?) to NodeEvent.UPDATED
+            this.graph.setNodeText(node, data);
+
+            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data, difference]);
+        }
     },
 
     /**
@@ -147,13 +178,9 @@ modules.NodeCRUD = app.createClass({
         // passing newNode to trigger select doesn't work, because the nodes
         // are redrawn in the create edge trigger
 
-        newData.fixed = true;
-
         $(this.kernel)
             .trigger(EdgeEvent.CREATE, [data, newData])
             .trigger(NodeEvent.SELECT, [null, newData]);
-        
-        newData.fixed = false;
     },
 
     handleNodeCreate: function (event, properties, position) {
@@ -177,54 +204,21 @@ modules.NodeCRUD = app.createClass({
     },
 
     /**
-     * Handles the update of properties
+     * Generic update function
      */
-    handleNodeUpdate: function (event, node, data, properties) {
+    handleUpdate: function (event, node, data, update) {
 
         event.preventDefault();
         event.stopPropagation();
 
-        console.log("handling node properties update");
+        console.log("handling node update");
 
-        if (!properties) {
-            console.log("no properties passed");
+        if (!update) {
+            console.log("no update passed");
             return;
         }
 
-        node = this.graph.resolveNode(node, data);
-        data = this.graph.resolveData(node, data);
-
-        if (this.updateDataWithProperties(data, properties)) {
-
-            // TODO this should be a response (in graphics?) to NodeEvent.UPDATED
-            this.graph.setNodeText(node, data);
-
-            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
-        }
-    },
-
-    /**
-     * Handles the update of properties
-     */
-    handleNodeLabelUpdate: function (event, node, data, labels) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        console.log("handling node labels update");
-
-        if (!labels) {
-            console.log("no labels passed");
-            return;
-        }
-
-        node = this.graph.resolveNode(node, data);
-        data = this.graph.resolveData(node, data);
-
-        if (this.updateDataWithLabels(data, labels)) {
-
-            $(this.kernel).trigger(NodeEvent.UPDATEDLABEL, [node, data]);
-        }
+        this.updateNode(node, data, update);
     },
 
     handleNodeDestroy: function (event, node, data) {
@@ -232,30 +226,25 @@ modules.NodeCRUD = app.createClass({
         this.destroyNode(data);
     },
 
-    handlePropertyUpdate: function (event, node, data, property, value) {
+    // handleGraphLoaded: function (event, nodes, edges) {
 
-        this.updateProperty(node, data, property, value);
-    },
+    //     var i,
+    //         node,
+    //         label;
 
-    handleGraphLoaded: function (event, nodes, edges) {
+    //     var labels = [];
 
-        var i,
-            node,
-            label;
+    //     // inventarize the labels
+    //     for (i = 0; i < nodes.length; i++) {
+    //         node = nodes[i];
 
-        var labels = [];
+    //         if (node._labels) {
+    //             labels = _.union(labels, node._labels);
+    //         }
+    //     }
 
-        // inventarize the labels
-        for (i = 0; i < nodes.length; i++) {
-            node = nodes[i];
-
-            if (node._labels) {
-                labels = _.union(labels, node._labels);
-            }
-        }
-
-        this.labels = labels;
-    }
+    //     this.labels = labels;
+    // }
 });
 
 }(window, jQuery, d3, _));
