@@ -172,7 +172,9 @@ graph.API = app.createClass({
     handleNodeUpdated: function (event, node, data, diff) {
 
         // check if a property was updated
-        if (!model.Node.pathInDifference(diff, model.Node.getPropertiesPath())) {
+        if (!model.Node.pathInDifference(diff, model.Node.getPropertiesPath()) &&
+            !model.Node.pathInDifference(diff, '_style')) {
+            
             return;
         }
 
