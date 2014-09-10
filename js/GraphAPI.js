@@ -169,18 +169,17 @@ graph.API = app.createClass({
         });
     },
 
-    handleNodeUpdated: function (event, node, data, diff) {
+    handleNodeUpdated: function (event, node, data, update) {
 
         // check if a property was updated
-        if (!model.Node.pathInDifference(diff, model.Node.getPropertiesPath()) &&
-            !model.Node.pathInDifference(diff, '_style')) {
+        if (!update.changed(model.Node.getPropertiesPath()) &&
+            !update.changed('_style')) {
             
             return;
         }
 
-        console.log("handling node update");
+        console.log("api: handling node update");
         console.log(data._id);
-        console.log(diff);
 
         var obj = transformer.neo4j.toNode(data),
             url = this.nodeUrl(data._id) + '/properties';
@@ -196,17 +195,15 @@ graph.API = app.createClass({
      * Removes all labels from the node and replaces them with the ones in data
      * @param data string or array<string>
      */
-    handleNodeLabelUpdated: function (event, node, data, diff) {
+    handleNodeLabelUpdated: function (event, node, data, update) {
 
         // check if a label was added or removed
-        // TODO syntax needs some work...
-        if (!model.Node.pathInDifference(diff, model.Node.getLabelsPath())) {
+        if (!update.changed(model.Node.getLabelsPath())) {
             return;
         }
 
-        console.log("handling node label update");
+        console.log("api: handling node label update");
         console.log(data._id);
-        console.log(diff);
 
         var url = this.nodeUrl(data._id) + '/labels';
 

@@ -229,9 +229,6 @@ window.getPathArray = function (path) {
 }
 
 window.getObjectValueByPath = function (obj, path) {
-    // s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    // s = s.replace(/^\./, '');           // strip a leading dot
-    // var a = s.split('.');
 
     var array = window.getPathArray(path),
         key;
@@ -251,8 +248,9 @@ window.getObjectValueByPath = function (obj, path) {
  * Path can be an array or a string
  * Array indices are expected as integers
  * If an index is given but the array doesn't exist, a subobject will be created
+ * If the found subobject is an array, the value will be pushed onto it
  */
-window.setObjectValueByPath = function (obj, path, value) {
+window.setByPath = function (obj, path, value) {
 
     var array = window.getPathArray(path),
         key,
@@ -271,17 +269,48 @@ window.setObjectValueByPath = function (obj, path, value) {
     if (!(key in obj)) {
         newKey = true;
     }
-    obj[key] = value;
+
+    if (Array.isArray(obj)) {
+        key = parseInt(key);
+        if (isNaN(key)) {
+            return false;
+        }
+
+        if (key === -1) {
+            obj.push(value);
+        } else {
+            obj.splice(key, 0, value);
+        }
+    } else if (typeof obj === 'object') {
+        obj[key] = value;
+    } else {
+        throw 'Cannot remove value from this type';
+        return false;
+    }
 
     return newKey;
 }
 
-window.removeObjectKeyByPath = function (obj, path) {
+/**
+ * there are several options:
+ *   value is passed or undefined
+ *   path points to an array or object
+ *
+ * If value is defined
+ *   array: find the value in the array and splice
+ *   object: ??? // throws error for now, maybe some sort of key-value check?
+ *
+ * If value is undefined
+ *   array: path should end in an index; remove the element at index
+ *   object: path should end in a key; delete the key
+ */
+window.removeByPath = function (obj, path, value) {
 
     var array = window.getPathArray(path),
-        key;
+        key,
+        depth = value === undefined ? array.length - 1 : array.length;
 
-    while (array.length - 1) {
+    for (;depth;depth--) {
         key = array.shift();
         if (key in obj) {
             obj = obj[key];
@@ -290,13 +319,47 @@ window.removeObjectKeyByPath = function (obj, path) {
         }
     }
 
-    key = array.shift();
-    if (!(key in obj)) {
-        return false;
+    if (value === undefined) {
+
+        // array contains final key
+        key = array.shift();
+
+        if (Array.isArray(obj)) {
+
+            // we need an int
+            key = parseInt(key);
+            if (isNaN(key)) {
+                return false;
+            }
+
+            obj.splice(key, 1);
+            return true;
+        } else if (typeof obj === 'object') {
+            delete obj[key];
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (Array.isArray(obj)) {
+            key = obj.indexOf(value);
+
+            if (key === -1) {
+                return false;
+            } else {
+                obj.splice(key, 1);
+                return true;
+            }
+        } else if (typeof obj === 'object') {
+            throw 'Cannot remove value from object';
+            return false;
+        } else {
+            throw 'Cannot remove value from this type';
+            return false;
+        }
     }
 
-    delete obj[key];
-    return true;
+    
 }
 
 /**

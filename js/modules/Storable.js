@@ -4,6 +4,7 @@
 
 var modules       = window.setNamespace('app.modules'),
     app         = window.use('app'),
+    model         = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     _defaults = {
         path: '_style',
@@ -109,8 +110,7 @@ modules.Storable = app.createClass({
 
             // TODO each style should have its own parser
 			for (property in properties) {
-				// data[property] = properties[property];
-                window.setObjectValueByPath(data, property, properties[property]);
+                window.setByPath(data, property, properties[property]);
 			}
 		}
 	},
@@ -133,11 +133,9 @@ modules.Storable = app.createClass({
     handleNodeStyled: function (event, node, data) {
 
         var storableString = this.getStorableString(node, data),
-            update = {
-                set: [
-                    [this.options.path, storableString]
-                ]
-            };
+            update = new model.Update();
+        
+        update.set(this.options.path, storableString);
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [node, data, update]);
     }

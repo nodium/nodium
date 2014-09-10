@@ -29,11 +29,13 @@
 	    	return path;
 	    },
 
-	    getLabelsPath: function (label) {
+	    getLabelsPath: function (index) {
 
 	    	var path = labelsPath;
 
-	    	// find the label index if given??
+	    	if (index) {
+	    		path += '.' + index;
+	    	}
 
 	    	return path;
 	    },
@@ -41,88 +43,7 @@
 	    getIdPath: function () {
 
 	    	return idPath;
-	    },
-
-
-	    /*
-	     * Move these to a better place (maybe a separate update class?)
-	     */
-
-
-	    /**
-	     * Checks the update object for a path
-	     */
-	    pathInDifference: function (difference, path) {
-
-	    	var i,
-	    		diff;
-
-	    	for (i = 0; i < difference.length; i++) {
-
-	    		diff = difference[i];
-
-	    		if (!diff.path) {
-	    			continue;
-	    		}
-
-	    		if (diff.path.join('.') === path) {
-	    			return true;
-	    		}
-	    	}
-
-	    	return false;
-	    },
-
-
-	    setPropertiesForUpdate: function (update, properties, value) {
-
-	    	var path;
-
-	    	if (update.set === undefined) {
-	    		update.set = [];
-	    	}
-
-	    	// if we're passing a value, set one property
-	    	if (value === undefined) {
-	    		path = model.Node.getPropertiesPath();
-	    		value = properties;
-	    	} else {
-	    		path = model.Node.getPropertiesPath(property);
-	    	}
-
-	    	update.set.push([path, value]);
-	    },
-
-	    unsetPropertyForUpdate: function (update, property) {
-
-	    	if (update.unset === undefined) {
-	    		update.unset = [];
-	    	}
-
-	    	update.unset.push([model.Node.getPropertiesPath(property)]);
-	    },
-
-	    setLabelsForUpdate: function (update, labels) {
-
-	    	var path = model.Node.getLabelsPath();
-
-	    	if (update.set === undefined) {
-	    		update.set = [];
-	    	}
-
-	    	update.set.push([path, labels]);
 	    }
-
-	    /* we're updating the labels with set for now
-	    unsetLabelForUpdate: function (update, label) {
-
-	    	if (update.unset === undefined) {
-	    		update.unset = [];
-	    	}
-
-	    	update.unset.push([model.Node.getLabelsPath(label)]);
-	    }
-	    */
 	};
 
 }(window));

@@ -4,6 +4,7 @@
 
 var modules     = window.setNamespace('app.modules'),
     app         = window.use('app'),
+    model       = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
     NodeStatus  = window.use('app.constants.NodeStatus'),
     _defaults;
@@ -17,11 +18,14 @@ modules.Validatable = app.createClass({
 
     setNodeStatus: function (node, data, status) {
 
+        var update;
+
         if (!data._properties.hasOwnProperty('status') || data._properties.status !== status) {
 
-            data._properties.status = status;
+            update = new model.Update();
+            update.setProperty('status', status);
 
-            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data]);
+            $(this.kernel).trigger(NodeEvent.UPDATE, [node, data, update]);
         }
     },
 

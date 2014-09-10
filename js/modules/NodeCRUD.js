@@ -18,7 +18,6 @@ modules.NodeCRUD = app.createClass({
 
     construct: function () {
 
-        // this.labels = [];
     },
 
     /**
@@ -30,9 +29,6 @@ modules.NodeCRUD = app.createClass({
             .on(NodeEvent.CREATE, this.handleNodeCreate.bind(this))
             .on(NodeEvent.UPDATE, this.handleUpdate.bind(this))
             .on(NodeEvent.DESTROY, this.handleNodeDestroy.bind(this))
-            // .on(NodeEvent.UPDATEPROPERTY, this.handleUpdateProperty.bind(this))
-            // .on(NodeEvent.UPDATELABEL, this.handleUpdateLabel.bind(this))
-            // .on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
     },
 
     /**
@@ -104,64 +100,19 @@ modules.NodeCRUD = app.createClass({
         $(this.kernel).trigger(NodeEvent.DESTROYED, [data]);
     },
 
-    /**
-     * Updates the data with the update directives
-     * The reason we use directives is that it allows for more
-     * control in some cases. E.g. when you want to set a whole
-     * sub-object at once.
-     */
-    processUpdate: function (data, update) {
-
-        var set = update.set,
-            unset = update.unset,
-            i,
-            directive,
-            clone = $.extend({}, data),
-            difference;
-
-        // we always process unset first, so that
-        // at least every property in set will be set
-
-        if (unset) {
-
-            for (i = 0; i < unset.length; i++) {
-                directive = unset[i];
-                window.removeObjectKeyByPath(data, directive[0])
-            }
-        }
-
-        if (set) {
-
-            for (i = 0; i < set.length; i++) {
-                directive = set[i];
-                window.setObjectValueByPath(data, directive[0], directive[1])
-            }
-        }
-
-        // return the diff
-        difference = DeepDiff.diff(clone, data);
-        difference = difference || [];
-        console.log("difference");
-        console.log(difference);
-
-        return difference;
-    },
-
     updateNode: function (node, data, update) {
-
-        var difference;
 
         node = this.graph.resolveNode(node, data);
         data = this.graph.resolveData(node, data);
 
-        difference = this.processUpdate(data, update);
+        update.process(data);
 
-        if (difference.length) {
+        if (update.count) {
 
             // TODO this should be a response (in graphics?) to NodeEvent.UPDATED
             this.graph.setNodeText(node, data);
 
-            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data, difference]);
+            $(this.kernel).trigger(NodeEvent.UPDATED, [node, data, update]);
         }
     },
 
@@ -224,27 +175,7 @@ modules.NodeCRUD = app.createClass({
     handleNodeDestroy: function (event, node, data) {
 
         this.destroyNode(data);
-    },
-
-    // handleGraphLoaded: function (event, nodes, edges) {
-
-    //     var i,
-    //         node,
-    //         label;
-
-    //     var labels = [];
-
-    //     // inventarize the labels
-    //     for (i = 0; i < nodes.length; i++) {
-    //         node = nodes[i];
-
-    //         if (node._labels) {
-    //             labels = _.union(labels, node._labels);
-    //         }
-    //     }
-
-    //     this.labels = labels;
-    // }
+    }
 });
 
 }(window, jQuery, d3, _));
