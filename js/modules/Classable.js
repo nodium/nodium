@@ -4,6 +4,7 @@
 
 var modules       = window.setNamespace('app.modules'),
     app           = window.use('app'),
+    Node          = window.use('app.model.Node'),
     graphics      = window.use('app.graph.graphics'),
     ColorStrategy = window.use('app.constants.ColorStrategy'),
 
@@ -64,13 +65,22 @@ modules.Classable = app.createClass({
     /**
      * trigger the (re)coloring of nodes
      */
-    handleClassNodes: function (event, nodes, data) {
+    handleClassNodes: function (event, nodes, data, update) {
 
         var strategy = this.options.strategy;
 
-        // we use data to determine if we're dealing with a
-        // d3 nodeEnter set or a single node
-        if (data) {
+        // we use updated to determine if we're dealing with a
+        // d3 nodeEnter set or a single node update
+        if (update) {
+
+            // check if relevant data is updated
+            // TODO check should be based on used strategies
+            if (!update.changed(Node.getPropertiesPath()) &&
+                !update.changed(Node.getPropertiesPath())) {
+
+                return;
+            }
+
             nodes = d3.select(nodes);
         }
 
