@@ -220,9 +220,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         if (!this.nodeData) {
             return;
         }
-
-        // labels = this.getLabels();
-        // update.setLabels(labels);
+        
         update.setLabel(label);
         console.log(update);
 
