@@ -64,4 +64,4 @@ event.Kernel = app.createClass(EventAware, {
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));
