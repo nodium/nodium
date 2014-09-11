@@ -649,4 +649,4 @@ graph.Drag = {
 };
 
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));

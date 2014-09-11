@@ -24,4 +24,4 @@ ui.UIElement = app.createClass(EventAware, {
     }
 });
 
-}(window, jQuery));
+}(window, window.jQuery));

@@ -178,4 +178,4 @@ modules.NodeCRUD = app.createClass({
     }
 });
 
-}(window, jQuery, d3, _));
+}(window, window.jQuery, window.d3, window._));

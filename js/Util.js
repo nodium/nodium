@@ -487,4 +487,4 @@ window.bindAll = function (array, self) {
     }
 };
 
-}(window, jQuery));
+}(window, window.jQuery));

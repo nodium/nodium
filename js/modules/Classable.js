@@ -93,4 +93,4 @@ modules.Classable = app.createClass({
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));

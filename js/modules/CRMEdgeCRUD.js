@@ -54,4 +54,4 @@ modules.CRMEdgeCRUD = app.createClass(modules.EdgeCRUD, {
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));

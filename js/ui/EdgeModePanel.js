@@ -36,4 +36,4 @@ ui.EdgeModePanel = app.createClass({
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));

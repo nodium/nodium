@@ -216,4 +216,4 @@ graph.API = app.createClass({
     }
 });
 
-}(window, jQuery));
+}(window, window.jQuery));

@@ -42,19 +42,19 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             // [HoldEvent.DRAGUP, 'handleCreateChildNode'],
             [HoldEvent.CANVAS, 'handleNodeCreate']
         ])
-        // .register(new modules.EdgeCRUD(), [
-        //     [DragEvent.END, 'handleLinking']
-        // ])
-        // CRM
-        .register(new modules.CRMEdgeCRUD({
-            modes: {
-                LINK: 'LINK',
-                SYNONYM: 'SYNONYM',
-                INFLUENCE: 'INFLUENCE'
-            }
-        }), [
+        .register(new modules.EdgeCRUD(), [
             [DragEvent.END, 'handleLinking']
         ])
+        // // CRM
+        // .register(new modules.CRMEdgeCRUD({
+        //     modes: {
+        //         LINK: 'LINK',
+        //         SYNONYM: 'SYNONYM',
+        //         INFLUENCE: 'INFLUENCE'
+        //     }
+        // }), [
+        //     [DragEvent.END, 'handleLinking']
+        // ])
         .register(new modules.Holdable({
             'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
@@ -266,4 +266,4 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));

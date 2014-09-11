@@ -141,4 +141,4 @@ modules.Storable = app.createClass({
     }
 });
 
-}(window, jQuery, d3));
+}(window, window.jQuery, window.d3));
