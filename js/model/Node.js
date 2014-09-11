@@ -12,7 +12,7 @@
 			var node = {};
 
 			node[propertiesPath] = properties || {};
-			node[idPath] = id || null,
+			node[idPath] = id,
 			node[labelsPath] = labels || [];
 
 			return node;
