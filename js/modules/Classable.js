@@ -17,9 +17,9 @@ var modules       = window.setNamespace('app.modules'),
     };
 
 /**
- * Colorable extension
+ * Classable module
  *
- * Adds functionality to color nodes and edges
+ * Adds functionality to class nodes based on data
  */
 modules.Classable = app.createClass({
 
@@ -76,7 +76,7 @@ modules.Classable = app.createClass({
             // check if relevant data is updated
             // TODO check should be based on used strategies
             if (!update.changed(Node.getPropertiesPath()) &&
-                !update.changed(Node.getPropertiesPath())) {
+                !update.changed(Node.getLabelsPath())) {
 
                 return;
             }

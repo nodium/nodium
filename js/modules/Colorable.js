@@ -20,7 +20,7 @@ var modules         = window.setNamespace('app.modules'),
 /**
  * Colorable extension
  *
- * Adds functionality to color nodes and edges
+ * Adds functionality to color nodes
  */
 modules.Colorable = app.createClass({
 
@@ -114,18 +114,26 @@ modules.Colorable = app.createClass({
      * trigger the (re)coloring of nodes
      * Note: the nodes are alread d3 selections
      */
-    handleColorNodes: function (event, nodes, data) {
+    handleColorNodes: function (event, nodes, data, update) {
 
         var strategy = this.options.strategy,
-            duration;
+            duration = 0;
 
-        // we use data to determine if we're dealing with a
-        // d3 nodeEnter set or a single node
-        if (data) {
+        // we use updated to determine if we're dealing with a
+        // d3 nodeEnter set or a single node update
+        if (update) {
+
+            // check if relevant data is updated
+            // TODO check should be based on used strategies
+            if (!update.changed(Node.getPropertiesPath()) &&
+                !update.changed(Node.getLabelsPath())) {
+
+                return;
+            }
+
+            // d3 select if a single html node is passed
             nodes = d3.select(nodes);
             duration = 500;
-        } else {
-            duration = 0;
         }
 
         if (strategy === ColorStrategy.PROPERTY) {
