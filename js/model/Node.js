@@ -40,6 +40,21 @@
 	    	return path;
 	    },
 
+	    /**
+	     * Return the labels array
+	     */
+	    getLabels: function (data) {
+
+	    	return window.getObjectValueByPath(data, labelsPath);
+	    },
+
+	    hasLabel: function (label, data) {
+
+	    	var labels = model.Node.getLabels(data);
+
+	    	return labels.indexOf(label) !== -1;
+	    },
+
 	    getIdPath: function () {
 
 	    	return idPath;

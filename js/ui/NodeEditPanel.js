@@ -221,8 +221,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             return;
         }
         
-        update.setLabel(label);
-        console.log(update);
+        // update.setLabel(label);
+        // console.log(update);
+        labels = this.getLabels();
+        update.setLabels(labels);
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },

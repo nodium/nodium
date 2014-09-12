@@ -103,6 +103,15 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.DRAWN, 'handleClassNodes'],
             [NodeEvent.UPDATED, 'handleClassNodes']
         ])
+        .register(new modules.Shapable({
+            labels: {
+                square: 'square',
+                circle: 'circle'
+            }
+        }), [
+            [NodeEvent.DRAWN, 'handleShapeNodes'],
+            [NodeEvent.UPDATED, 'handleShapeNodes']
+        ])
         .register(this.api)
         // TODO event flow:
         // - handleNodeStyled should be able to check if one of the values was changed

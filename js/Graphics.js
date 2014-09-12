@@ -60,4 +60,13 @@ graphics.classNodes = function (nodes, classifier) {
     });
 };
 
+graphics.shapeNodes = function (nodes, shape, size) {
+    
+    nodes.selectAll('.top-circle')
+        .attr('d', d3.svg.symbol()
+            .type(shape)
+            .size(size)
+        )
+};
+
 })(window, window.jQuery, window.d3);

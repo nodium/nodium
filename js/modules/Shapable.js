@@ -2,15 +2,15 @@
 
 'use strict';
 
-var modules         = window.setNamespace('app.modules'),
+var modules       = window.setNamespace('app.modules'),
     app           = window.use('app'),
+    Node          = window.use('app.model.Node'),
     graphics      = window.use('app.graph.graphics'),
     ColorStrategy = window.use('app.constants.ColorStrategy'),
 
     _defaults = {
-        numColors: 10, // number of random colors
-        strategy: ColorStrategy.PROPERTY, // coloring strategy priority
-        defaultColor: '#d2d2d2', // default node color
+        strategy: ColorStrategy.LABEL, // coloring strategy priority
+        defaultShape: 'circle', // default node color
         labels: {}, // colors for specific labels
         labelPriority: [],
         properties: {}, // colors for properties (+ optionally values)
@@ -18,17 +18,13 @@ var modules         = window.setNamespace('app.modules'),
     };
 
 /**
- * Colorable extension
+ * Shapable module
  *
- * Adds functionality to color nodes
+ * Adds functionality to shape nodes
  */
-modules.Colorable = app.createClass({
+modules.Shapable = app.createClass({
 
     construct: function (options) {
-
-        this.colorMap = {};
-        this.colorCount = 0;
-        this.colors = d3.scale.category10();
 
         this.options = $.extend({}, _defaults, options);
     },
@@ -36,36 +32,47 @@ modules.Colorable = app.createClass({
     /**
      * Color all the nodes
      */
-    colorNodeByLabel: function (data) {
+    shapeNodeByLabel: function (data) {
 
-        var color = this.options.defaultColor,
+        var shape = this.options.defaultColor,
             labels = this.options.labels,
-            colorIndex,
-            label;
-        
-        if (data._labels && data._labels.length > 0) {
-            label = data._labels[0];
-            
-            if (!this.colorMap.hasOwnProperty(label)) {
+            label,
+            priority = this.options.labelPriority,
+            usePriority = priority.length !== 0,
+            rank,
+            value,
+            assignedRank = -1; // the rank of the assigned value
 
-                // check if we've defined the label color in the options
-                if (labels.hasOwnProperty(label)) {
-                    // stuff it in the colorMap
-                    this.colorMap[label] = labels[label];
-                } else {
-                    colorIndex = this.colorCount % this.options.numColors;
-                    this.colorMap[label] = this.colors(colorIndex);;
-                    this.colorCount++;
-                }
+        for (label in labels) {
+
+            // to shape the node with this label,
+            // - the node has to have the label
+            // - the label value has to have a shape assigned
+            if (!Node.hasLabel(label, data)) {
+                continue;
             }
 
-            color = this.colorMap[label];
-        }
+            value = labels[label];
 
-        return color;
+            rank = priority.indexOf(label);
+            if (usePriority && rank !== -1 && rank < assignedRank) {
+                shape = value;
+                assignedRank = rank;
+            } else {
+                // only shape if no ranked shape assigned yet
+                // all ranked values go first
+                if (assignedRank === -1) {
+                    shape = value;
+                }
+            }
+        }
+        console.log("calculating shape");
+        console.log(shape);
+
+        return shape;
     },
 
-    colorNodeByProperty: function (data) {
+    shapeNodeByProperty: function (data) {
 
         var color = this.options.defaultColor,
             properties = this.options.properties,
@@ -77,7 +84,6 @@ modules.Colorable = app.createClass({
             value,
             colorRank = -1; // the rank of the assigned color
 
-        // first try to color according to the priority list
         for (property in properties) {
 
             // to color the node with this property,
@@ -114,10 +120,10 @@ modules.Colorable = app.createClass({
      * trigger the (re)coloring of nodes
      * Note: the nodes are alread d3 selections
      */
-    handleColorNodes: function (event, nodes, data, update) {
+    handleShapeNodes: function (event, nodes, data, update) {
 
         var strategy = this.options.strategy,
-            duration = 0;
+            graph = this.graph;
 
         // we use updated to determine if we're dealing with a
         // d3 nodeEnter set or a single node update
@@ -125,7 +131,7 @@ modules.Colorable = app.createClass({
 
             // check if relevant data is updated
             // TODO check should be based on used strategies
-            if (!update.changed(Node.getPropertiesPath()) &&
+            if (/*!update.changed(Node.getPropertiesPath()) &&*/
                 !update.changed(Node.getLabelsPath())) {
 
                 return;
@@ -133,13 +139,19 @@ modules.Colorable = app.createClass({
 
             // d3 select if a single html node is passed
             nodes = d3.select(nodes);
-            duration = 500;
         }
 
         if (strategy === ColorStrategy.PROPERTY) {
-            graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this), duration);
+            graphics.shapeNodes(nodes, this.shapeNodeByProperty.bind(this));
         } else {
-            graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this), duration);
+            graphics.shapeNodes(
+                nodes,
+                this.shapeNodeByLabel.bind(this),
+                function (data) {
+                    // note: size is set in square pixels, hence the pow
+                    return Math.pow(graph.getNodeRadius(data)*3, 2);
+                }
+            );
         }
     }
 });
