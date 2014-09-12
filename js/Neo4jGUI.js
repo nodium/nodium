@@ -202,6 +202,33 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         return value;
     },
 
+    drawNodeEnter: function (nodeEnter) {
+
+        nodeEnter.attr('class', function (data) {
+            return self.getNodeClassValue(data);
+        });
+
+        nodeEnter.append('circle')
+            .attr('r', function(data) {
+                var radius = self.getNodeRadius(data) * 2;
+
+                return radius;
+            })
+            .attr('class', 'top-circle');
+
+        nodeEnter.append("path")
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .attr("d", d3.svg.symbol()
+                .size(function(d) { return d.size; })
+                .type(function(d) { return d.type; }))
+            .style("fill", "steelblue")
+            .style("stroke", "white")
+            .style("stroke-width", "1.5px")
+            .call(force.drag);
+
+        $(this.kernel).trigger(NodeEvent.DRAWN, [nodeEnter]);
+    },
+
     // CRM
     drawLinkEnter: function (linkEnter) {
 
