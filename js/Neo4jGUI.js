@@ -109,14 +109,15 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
                 tri: "M150 0 L75 200 L225 200 Z"
             },
             shapes: {
-                tri: ['square', 5, 5]
+                tri: ['star', 5, 5]
             },
             labels: {
                 square: 'square',
                 circle: 'circle',
                 diamond: 'diamond',
                 tri: 'tri',
-                hex: 'hexagon'
+                hex: 'hexagon',
+                star: 'star'
             }
         }), [
             [NodeEvent.DRAWN, 'handleShapeNodes'],
