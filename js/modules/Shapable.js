@@ -11,6 +11,8 @@ var modules       = window.setNamespace('app.modules'),
     _defaults = {
         strategy: ColorStrategy.LABEL, // coloring strategy priority
         defaultShape: 'circle', // default node color
+        paths: {}, // add custom paths
+        shapes: {}, // add custom shapes (pathname or default shape + scaling)
         labels: {}, // colors for specific labels
         labelPriority: [],
         properties: {}, // colors for properties (+ optionally values)
@@ -29,14 +31,71 @@ modules.Shapable = app.createClass({
         this.options = $.extend({}, _defaults, options);
     },
 
+    getShapeObject: function (shape, size) {
+
+        var shapes = this.options.shapes,
+            paths = this.options.paths,
+            shapeData,
+            pathName,
+            path,
+            scale;
+
+        // get the scaling that we should use as default
+        // first check shapes, then paths, then just use built-in symbol
+        if (shapes.hasOwnProperty(shape)) {
+            shapeData = shapes[shape];
+
+            pathName = shapeData[0];
+            scale = {
+                x: shapeData[1],
+                y: shapeData[2]
+            };
+
+        } else {
+            pathName = shape;
+            scale = {
+                x: 1,
+                y: 1
+            }
+        }
+
+        // use a path if provided, else generate with d3
+        if (paths.hasOwnProperty(pathName)) {
+            path = paths[pathName];
+        } else {
+            // path = d3.svg.symbol()
+            //     .type(pathName)
+            //     .size(size)
+            path = d3.superformula()
+                .type(pathName)
+                .size(size)
+                .segments(50)
+        }
+
+        return {
+            shape: shape,
+            path: path,
+            scale: scale
+        }
+    },
+
+    /**
+     * Just a dumb approximation for now
+     */
+    getSizeFromRadius: function (radius) {
+        return Math.pow(radius*3, 2);
+    },
+
     /**
      * Color all the nodes
      */
     shapeNodeByLabel: function (data) {
 
-        var shape = this.options.defaultColor,
+        var shape = this.options.defaultShape, // the shape for which we'll create the path
+            shapes = this.options.shapes,
             labels = this.options.labels,
             label,
+            size,
             priority = this.options.labelPriority,
             usePriority = priority.length !== 0,
             rank,
@@ -52,27 +111,23 @@ modules.Shapable = app.createClass({
                 continue;
             }
 
-            value = labels[label];
-
             rank = priority.indexOf(label);
             if (usePriority && rank !== -1 && rank < assignedRank) {
-                shape = value;
+                shape = labels[label];
                 assignedRank = rank;
             } else {
                 // only shape if no ranked shape assigned yet
                 // all ranked values go first
                 if (assignedRank === -1) {
-                    shape = value;
+                    shape = labels[label];
                 }
             }
         }
-        console.log("calculating shape");
-        console.log(shape);
 
-        // TODO not fond of doing this here
-        data._shape = shape;
+        size = this.getSizeFromRadius(this.graph.getNodeRadius(data));
+        data._shape = this.getShapeObject(shape, size);
 
-        return shape;
+        return data._shape;
     },
 
     shapeNodeByProperty: function (data) {

@@ -104,10 +104,19 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.UPDATED, 'handleClassNodes']
         ])
         .register(new modules.Shapable({
+            defaultShape: 'hexagon',
+            paths: {
+                tri: "M150 0 L75 200 L225 200 Z"
+            },
+            shapes: {
+                tri: ['square', 5, 5]
+            },
             labels: {
                 square: 'square',
                 circle: 'circle',
-                diamond: 'diamond'
+                diamond: 'diamond',
+                tri: 'tri',
+                hex: 'hexagon'
             }
         }), [
             [NodeEvent.DRAWN, 'handleShapeNodes'],

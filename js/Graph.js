@@ -273,12 +273,13 @@ graph.Graph = app.createClass({
 
         nodeEnter.append('path')
             // .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
-            .attr('d', d3.svg.symbol()
+            .attr('d', d3.superformula()
                 .type('circle')
                 .size(function (data) {
                     // note: size is set in square pixels, hence the pow
                     return Math.pow(self.getNodeRadius(data)*3, 2);
                 })
+                .segments(50)
             )
             .attr('class', 'top-circle');
 
