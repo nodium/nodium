@@ -69,6 +69,9 @@ modules.Shapable = app.createClass({
         console.log("calculating shape");
         console.log(shape);
 
+        // TODO not fond of doing this here
+        data._shape = shape;
+
         return shape;
     },
 

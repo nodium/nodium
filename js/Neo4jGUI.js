@@ -106,7 +106,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new modules.Shapable({
             labels: {
                 square: 'square',
-                circle: 'circle'
+                circle: 'circle',
+                diamond: 'diamond'
             }
         }), [
             [NodeEvent.DRAWN, 'handleShapeNodes'],
