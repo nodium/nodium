@@ -263,16 +263,7 @@ graph.Graph = app.createClass({
             return self.getNodeClassValue(data);
         });
 
-        // nodeEnter.append('circle')
-        //     .attr('r', function(data) {
-        //         var radius = self.getNodeRadius(data) * 2;
-
-        //         return radius;
-        //     })
-        //     .attr('class', 'top-circle');
-
         nodeEnter.append('path')
-            // .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
             .attr('d', d3.superformula()
                 .type('circle')
                 .size(function (data) {
@@ -451,6 +442,11 @@ graph.Graph = app.createClass({
     },
 
     getDataFromNode: function (node) {
+
+        if (node) {
+            return d3.select(node).datum();
+        }
+
         return null;
     },
 
@@ -460,7 +456,7 @@ graph.Graph = app.createClass({
             return data;
         }
 
-        return getDataFromNode(node);
+        return this.getDataFromNode(node);
     },
 
 

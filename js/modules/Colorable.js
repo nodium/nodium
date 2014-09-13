@@ -5,12 +5,12 @@
 var modules         = window.setNamespace('app.modules'),
     app           = window.use('app'),
     graphics      = window.use('app.graph.graphics'),
-    ColorStrategy = window.use('app.constants.ColorStrategy'),
+    EvaluationStrategy = window.use('app.constants.EvaluationStrategy'),
 
     _defaults = {
         numColors: 10, // number of random colors
-        strategy: ColorStrategy.PROPERTY, // coloring strategy priority
-        defaultColor: '#d2d2d2', // default node color
+        strategy: EvaluationStrategy.PROPERTY, // coloring strategy priority
+        defaultValue: '#d2d2d2', // default node color
         labels: {}, // colors for specific labels
         labelPriority: [],
         properties: {}, // colors for properties (+ optionally values)
@@ -136,7 +136,7 @@ modules.Colorable = app.createClass({
             duration = 500;
         }
 
-        if (strategy === ColorStrategy.PROPERTY) {
+        if (strategy === EvaluationStrategy.PROPERTY) {
             graphics.colorNodes(nodes, this.colorNodeByProperty.bind(this), duration);
         } else {
             graphics.colorNodes(nodes, this.colorNodeByLabel.bind(this), duration);

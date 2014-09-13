@@ -6,11 +6,12 @@ var modules       = window.setNamespace('app.modules'),
     app           = window.use('app'),
     Node          = window.use('app.model.Node'),
     graphics      = window.use('app.graph.graphics'),
-    ColorStrategy = window.use('app.constants.ColorStrategy'),
+    EvaluationStrategy = window.use('app.constants.EvaluationStrategy'),
 
     _defaults = {
-        strategy: ColorStrategy.LABEL, // coloring strategy priority
-        defaultShape: 'circle', // default node color
+        strategy: EvaluationStrategy.PROPERTY, // coloring strategy priority
+        defaultValue: 'circle', // default node color
+        directMapping: true, // if true, label names are directly used as shapes
         paths: {}, // add custom paths
         shapes: {}, // add custom shapes (pathname or default shape + scaling)
         labels: {}, // colors for specific labels
@@ -24,7 +25,7 @@ var modules       = window.setNamespace('app.modules'),
  *
  * Adds functionality to shape nodes
  */
-modules.Shapable = app.createClass({
+modules.Shapable = app.createClass(modules.Evaluable, {
 
     construct: function (options) {
 
@@ -69,14 +70,14 @@ modules.Shapable = app.createClass({
             path = d3.superformula()
                 .type(pathName)
                 .size(size)
-                .segments(50)
+                .segments(50);
         }
 
         return {
             shape: shape,
             path: path,
             scale: scale
-        }
+        };
     },
 
     /**
@@ -91,40 +92,12 @@ modules.Shapable = app.createClass({
      */
     shapeNodeByLabel: function (data) {
 
-        var shape = this.options.defaultShape, // the shape for which we'll create the path
-            shapes = this.options.shapes,
-            labels = this.options.labels,
-            label,
-            size,
-            priority = this.options.labelPriority,
-            usePriority = priority.length !== 0,
-            rank,
-            value,
-            assignedRank = -1; // the rank of the assigned value
+        var shape,
+            size;
 
-        for (label in labels) {
-
-            // to shape the node with this label,
-            // - the node has to have the label
-            // - the label value has to have a shape assigned
-            if (!Node.hasLabel(label, data)) {
-                continue;
-            }
-
-            rank = priority.indexOf(label);
-            if (usePriority && rank !== -1 && rank < assignedRank) {
-                shape = labels[label];
-                assignedRank = rank;
-            } else {
-                // only shape if no ranked shape assigned yet
-                // all ranked values go first
-                if (assignedRank === -1) {
-                    shape = labels[label];
-                }
-            }
-        }
-
+        shape = this.evaluateLabels(data);
         size = this.getSizeFromRadius(this.graph.getNodeRadius(data));
+
         data._shape = this.getShapeObject(shape, size);
 
         return data._shape;
@@ -132,51 +105,19 @@ modules.Shapable = app.createClass({
 
     shapeNodeByProperty: function (data) {
 
-        var color = this.options.defaultColor,
-            properties = this.options.properties,
-            property,
-            priority = this.options.propertyPriority,
-            usePriority = priority.length !== 0,
-            rank,
-            values,
-            value,
-            colorRank = -1; // the rank of the assigned color
+        var shape,
+            size;
 
-        for (property in properties) {
+        shape = this.evaluateProperties(data);
+        size = this.getSizeFromRadius(this.graph.getNodeRadius(data));
 
-            // to color the node with this property,
-            // - the node has to have the property
-            // - the property value has to have a color
-            if (!data.hasOwnProperty(property)) {
-                continue;
-            }
+        data._shape = this.getShapeObject(shape, size);
 
-            value = data[property];
-            values = properties[property];
-
-            if (!values.hasOwnProperty(value)) {
-                continue;
-            }
-
-            rank = priority.indexOf(property);
-            if (usePriority && rank !== -1 && rank < colorRank) {
-                color = values[value];
-                colorRank = rank;
-            } else {
-                // only color if no ranked color assigned yet
-                // all ranked colors go first
-                if (colorRank === -1) {
-                    color = values[value];
-                }
-            }
-        }
-
-        return color;
+        return data._shape;
     },
 
     /**
-     * trigger the (re)coloring of nodes
-     * Note: the nodes are alread d3 selections
+     * trigger the shaping of nodes
      */
     handleShapeNodes: function (event, nodes, data, update) {
 
@@ -189,7 +130,7 @@ modules.Shapable = app.createClass({
 
             // check if relevant data is updated
             // TODO check should be based on used strategies
-            if (/*!update.changed(Node.getPropertiesPath()) &&*/
+            if (!update.changed(Node.getPropertiesPath()) &&
                 !update.changed(Node.getLabelsPath())) {
 
                 return;
@@ -199,16 +140,16 @@ modules.Shapable = app.createClass({
             nodes = d3.select(nodes);
         }
 
-        if (strategy === ColorStrategy.PROPERTY) {
-            graphics.shapeNodes(nodes, this.shapeNodeByProperty.bind(this));
+        if (strategy === EvaluationStrategy.PROPERTY) {
+            console.log('shaping by property');
+            graphics.shapeNodes(
+                nodes,
+                this.shapeNodeByProperty.bind(this)
+            );
         } else {
             graphics.shapeNodes(
                 nodes,
-                this.shapeNodeByLabel.bind(this),
-                function (data) {
-                    // note: size is set in square pixels, hence the pow
-                    return Math.pow(graph.getNodeRadius(data)*3, 2);
-                }
+                this.shapeNodeByLabel.bind(this)
             );
         }
     }

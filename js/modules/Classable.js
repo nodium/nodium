@@ -6,10 +6,10 @@ var modules       = window.setNamespace('app.modules'),
     app           = window.use('app'),
     Node          = window.use('app.model.Node'),
     graphics      = window.use('app.graph.graphics'),
-    ColorStrategy = window.use('app.constants.ColorStrategy'),
+    EvaluationStrategy = window.use('app.constants.EvaluationStrategy'),
 
     _defaults = {
-        strategy: ColorStrategy.PROPERTY, // coloring strategy priority
+        strategy: EvaluationStrategy.PROPERTY, // coloring strategy priority
         labels: {}, // classes for specific labels
         labelPriority: [],
         properties: {}, // classes for properties (+ optionally values)
@@ -84,7 +84,7 @@ modules.Classable = app.createClass({
             nodes = d3.select(nodes);
         }
 
-        if (strategy === ColorStrategy.PROPERTY) {
+        if (strategy === EvaluationStrategy.PROPERTY) {
             graphics.classNodes(nodes, this.classNodeByProperty.bind(this));
         }
         // else {

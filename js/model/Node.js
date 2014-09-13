@@ -18,15 +18,9 @@
 			return node;
 	    },
 
-	    getPropertiesPath: function (property) {
+	    getIdPath: function () {
 
-	    	var path = propertiesPath;
-
-	    	if (property) {
-	    		path += '.' + property;
-	    	}
-
-	    	return path;
+	    	return idPath;
 	    },
 
 	    getLabelsPath: function (index) {
@@ -40,6 +34,17 @@
 	    	return path;
 	    },
 
+	    getPropertiesPath: function (property) {
+
+	    	var path = propertiesPath;
+
+	    	if (property) {
+	    		path += '.' + property;
+	    	}
+
+	    	return path;
+	    },
+
 	    /**
 	     * Return the labels array
 	     */
@@ -48,16 +53,41 @@
 	    	return window.getObjectValueByPath(data, labelsPath);
 	    },
 
-	    hasLabel: function (label, data) {
+	    /**
+	     * Return the properties object
+	     */
+	    getProperties: function (data) {
+
+	    	return window.getObjectValueByPath(data, propertiesPath);
+	    },
+
+		getPropertyValue: function (data, property) {
+
+	    	var path = this.getPropertiesPath(property);
+
+	    	return window.getObjectValueByPath(data, path);
+	    },
+
+	    hasProperty: function (data, property) {
+
+	    	var path = this.getPropertiesPath(property);
+
+	    	return window.getObjectValueByPath(data, path) !== undefined;
+	    },
+
+	    hasPropertyWithValue: function (data, property, value) {
+
+	    	var path = this.getPropertiesPath(property),
+	    		propertyValue = window.getObjectValueByPath(data, path);
+
+	    	return value === propertyValue;
+	    },
+
+	    hasLabel: function (data, label) {
 
 	    	var labels = model.Node.getLabels(data);
 
 	    	return labels.indexOf(label) !== -1;
-	    },
-
-	    getIdPath: function () {
-
-	    	return idPath;
 	    }
 	};
 

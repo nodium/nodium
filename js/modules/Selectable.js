@@ -27,8 +27,6 @@ modules.Selectable = app.createClass({
 
     handleNodeSelect: function (event, node, data) {
 
-        console.log('node select');
-
         var selectedNode = this.selectedNode;
 
         // do nothing if we're trying to reselect the selected node
@@ -57,8 +55,6 @@ modules.Selectable = app.createClass({
 
         // if node and data are null, unselect all nodes
         var selectedNode = this.selectedNode;
-
-        console.log('handling unselecting node');
 
         if (data) {
             $(this.kernel).trigger(

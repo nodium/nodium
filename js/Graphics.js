@@ -8,21 +8,28 @@ var graph       = window.setNamespace('app.graph'),
 
 graphics.scaleNode = function (scale, node, graph) {
 
-    d3.select(node).select('.top-circle').transition()
-        .duration(400)
-        .attrTween("transform", function(data, index, a) {
-            var baseScale = data._shape.scale,
-                scaleX = baseScale.x*scale,
-                scaleY = baseScale.y*scale;
+    //
+    // NOTE we may need the attrtween again later
+    //
+    // d3.select(node).select('.top-circle').transition()
+    //     .duration(400)
+    //     .attrTween("transform", function(data, index, a) {
+    //         var baseScale = data._shape.scale,
+    //             scaleX = baseScale.x*scale,
+    //             scaleY = baseScale.y*scale;
 
-            return d3.interpolateString(a, 'scale('+scaleX+','+scaleY+')');
-        });
-        // .attr('d', d3.svg.symbol()
-        //     .type(function (data) { return data._shape; })
-        //     .size(function (data) {
-        //         return Math.pow(graph.getNodeRadius(data)*3*scale, 2);
-        //     })
-        // )
+    //         return d3.interpolateString(a, 'scale('+scaleX+','+scaleY+')');
+    //     });
+
+    var data = graph.resolveData(node, undefined);
+
+    var baseScale = data._shape.scale,
+        scaleX = baseScale.x*scale,
+        scaleY = baseScale.y*scale;
+
+    d3.select(node).selectAll('.top-circle').transition().duration(500)
+        .attr('d', data._shape.path)
+        .attr('transform', 'scale('+scaleX+','+scaleY+')');
 };
 
 graphics.classNode = function (className, value, node, data, graph) {
@@ -68,7 +75,7 @@ graphics.classNodes = function (nodes, classifier) {
     });
 };
 
-graphics.shapeNodes = function (nodes, shape, size) {
+graphics.shapeNodes = function (nodes, shape) {
 
     var shapeData;
     
@@ -78,15 +85,6 @@ graphics.shapeNodes = function (nodes, shape, size) {
             .attr('d', shapeData.path)
             .attr('transform', 'scale('+shapeData.scale.x+','+shapeData.scale.y+')');
     });
-
-    // nodes.selectAll('.top-circle')
-    //     .attr('d', shape)
-
-    // nodes.selectAll('.top-circle')
-    //     .attr('d', d3.svg.symbol()
-    //         .type(shape)
-    //         .size(size)
-    //     )
 };
 
 })(window, window.jQuery, window.d3);

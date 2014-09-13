@@ -4,7 +4,7 @@
 
 var constants   = window.setNamespace('app.constants');
 
-constants.ColorStrategy = {
+constants.EvaluationStrategy = {
 	LABEL: 'label',
 	PROPERTY: 'property'
 };
