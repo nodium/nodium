@@ -39,7 +39,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.DESTROYED, 'handleNodeUnselect']
         ])
         .register(new modules.NodeCRUD(), [
-            [HoldEvent.DRAGDOWN, 'handleNodeDestroy'],
+            // [HoldEvent.DRAGDOWN, 'handleNodeDestroy'],
             // [HoldEvent.DRAGUP, 'handleCreateChildNode'],
             [HoldEvent.CANVAS, 'handleNodeCreate']
         ])
@@ -63,11 +63,14 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [DragEvent.END, 'handleHoldEnd'],
             ['mouse-up', 'handleHoldEnd'],
             [DragEvent.END, 'app.graph.graphics.handleNodeScale', 1],
-            [HoldEvent.NODE, 'app.graph.graphics.handleNodeScale', 1.3],
+            [HoldEvent.NODE, 'app.graph.graphics.handleNodeScale', 1.3]
             // [HoldEvent.NODE, 'app.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
         .register(new modules.Pinnable(), [
             [HoldEvent.DRAGUP, 'handleNodePinned']
+        ])
+        .register(new modules.Hyperlinkable(), [
+            [HoldEvent.DRAGDOWN, 'handleFollowLink']
         ])
         .register(new modules.Filterable(), [
             [NodeEvent.DRAWN, 'handleNodeDrawn'],
