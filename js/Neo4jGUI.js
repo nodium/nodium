@@ -180,6 +180,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             tickHandler;
 
         force = d3.layout.force()
+        .theta(0.1)
         .gravity(0.005)
         .charge(-2000)
         .chargeDistance(1500)
