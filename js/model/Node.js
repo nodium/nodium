@@ -1,19 +1,20 @@
 (function (window, undefined) {
 	var model = window.setNamespace('app.model');
 
+	const propertiesPath = '_properties';
 	const labelsPath	 = '_labels';
 	const idPath 		 = '_id';
-	const propertiesPath = '_properties';
 
 	model.Node = {
 
-		create: function (properties, id, labels) {
+		create: function (properties, labels, id) {
 
 			var node = {};
 
+			// TODO lol this makes no sense?
 			node[propertiesPath] = properties || {};
-			node[idPath] = id,
 			node[labelsPath] = labels || [];
+			node[idPath] = id;
 
 			return node;
 	    },

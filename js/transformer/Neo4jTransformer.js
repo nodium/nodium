@@ -75,8 +75,8 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 
 			node = model.Node.create(
 				properties,
-				this.idFromSelf(nodeData.self),
-				nodeLabels
+				nodeLabels,
+				this.idFromSelf(nodeData.self)
 			);
 
 			$.extend(node, mappedProperties);
@@ -99,6 +99,9 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
                 type: edge.type
 	 		});
 	 	}
+
+	 	console.log("nodes");
+	 	console.log(nodes);
 
 	 	return {
 	 		nodes: nodes,

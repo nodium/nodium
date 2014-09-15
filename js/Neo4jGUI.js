@@ -24,7 +24,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         self = this;
         this.mode = '';
 
-        this.api = new graph.API();
+        this.api = new graph.Neo4jAPI();
 
         // centralized module initialization and configuration
 
@@ -38,7 +38,12 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
             [NodeEvent.DESTROYED, 'handleNodeUnselect']
         ])
-        .register(new modules.NodeCRUD(), [
+        .register(new modules.NodeCRUD({
+            properties: {
+                status: 'accepted'
+            },
+            labels: ['yo'] // TODO make api store label using new transactional cypher
+        }), [
             // [HoldEvent.DRAGDOWN, 'handleNodeDestroy'],
             // [HoldEvent.DRAGUP, 'handleCreateChildNode'],
             [HoldEvent.CANVAS, 'handleNodeCreate']

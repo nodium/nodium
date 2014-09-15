@@ -7,7 +7,12 @@ var modules     = window.setNamespace('app.modules'),
     app         = window.use('app'),
     model       = window.use('app.model'),
     NodeEvent   = window.use('app.event.NodeEvent'),
-    EdgeEvent   = window.use('app.event.EdgeEvent');
+    EdgeEvent   = window.use('app.event.EdgeEvent'),
+
+    _defaults = {
+        properties: {}, // default property values on node creation
+        labels: [] // default label values on node creation
+    }
 
 /**
  * NodeCRUD module
@@ -16,8 +21,9 @@ var modules     = window.setNamespace('app.modules'),
  */
 modules.NodeCRUD = app.createClass({
 
-    construct: function () {
+    construct: function (options) {
 
+        this.options = $.extend({}, _defaults, options);
     },
 
     /**
@@ -34,13 +40,39 @@ modules.NodeCRUD = app.createClass({
     /**
      * Create a node from a given set of key value pairs
      */
-    createNode: function (properties, x, y) {
+    createNode: function (properties, labels, x, y) {
 
         console.log("creating node, x: " + x + ", y: " + y);
 
         // then add node metadata
-        var node = model.Node.create(properties);
+        var defaultProperties = this.options.properties,
+            property,
+            defaultLabels = this.options.labels,
+            label,
+            node,
+            i;
 
+        // we should be careful not to overwrite property values
+        for (property in defaultProperties) {
+
+            if (!defaultProperties.hasOwnProperty(property)) {
+                continue;
+            }
+
+            if (!properties.hasOwnProperty(property)) {
+                properties[property] = defaultProperties[property];
+            }
+        }
+
+        for (i = 0; i < defaultLabels.length; i++) {
+            label = defaultLabels[i];
+
+            if (labels.indexOf(label) === -1) {
+                labels.push(label);
+            }   
+        }
+
+        node = model.Node.create(properties, labels);
         node.x = x || 0;
         node.y = y || 0;
 
@@ -123,7 +155,7 @@ modules.NodeCRUD = app.createClass({
     handleCreateChildNode: function (event, node, data) {
 
         var self = this,
-            newData = this.createNode({}, data.x, data.y);
+            newData = this.createNode({}, [], data.x, data.y);
             // newNode = d3.select('.node:nth-child(' + (newData.index+1) + ')', this.graph.selector);
 
         // passing newNode to trigger select doesn't work, because the nodes
@@ -148,7 +180,7 @@ modules.NodeCRUD = app.createClass({
             };
         }
 
-        data = this.createNode(properties, position.x, position.y);
+        data = this.createNode(properties, [], position.x, position.y);
 
         // TODO make event chaining configurable?
         $(this.kernel).trigger(NodeEvent.SELECT, [null, data]);

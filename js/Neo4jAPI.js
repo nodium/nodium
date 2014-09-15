@@ -15,7 +15,7 @@ var graph       = window.setNamespace('app.graph'),
     },
     self;
 
-graph.API = app.createClass({
+graph.Neo4jAPI = app.createClass({
 
     construct: function (options) {
 
