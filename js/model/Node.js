@@ -14,7 +14,7 @@
 			// TODO lol this makes no sense?
 			node[propertiesPath] = properties || {};
 			node[labelsPath] = labels || [];
-			node[idPath] = id;
+			node[idPath] = id === undefined ? window.uuid() : id; // force id usage
 
 			return node;
 	    },

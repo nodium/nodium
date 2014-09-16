@@ -8,6 +8,7 @@ var app           = window.setNamespace('app'),
     transformer   = window.setNamespace('app.transformer'),
     ui            = window.setNamespace('app.ui'),
     animations    = window.setNamespace('app.graph.animations'),
+    Node          = window.use('app.model.Node'),
     NodeEvent     = window.use('app.event.NodeEvent'),
     DragEvent     = window.use('app.event.DragEvent'),
     HoldEvent     = window.use('app.event.HoldEvent'),
@@ -185,24 +186,31 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             tickHandler;
 
         force = d3.layout.force()
-        .theta(0.1)
+        .theta(1)
         .gravity(0.005)
         .charge(-2000)
         .chargeDistance(1500)
+        // .linkDistance(function (data) {
+        //     return self.getLinkDistance(data);
+        // })
         .linkDistance(function (data) {
-            return self.getLinkDistance(data);
+            var mod = Math.sqrt((data.source.weight-1)*(data.target.weight-1));
+            var mod2 = Math.pow(mod, 2) / 40;
+            return self.getLinkDistance(data) * (1+mod2);
         })
         .size([10000, 10000])
         .nodes(this.nodes)
         .links(this.edges)
         .linkStrength(function (data) {
-            return 1;
+            var mod = Math.sqrt((data.source.weight-1)*(data.target.weight-1));
+            var mod2 = Math.pow(mod, 2) / 40;
+            return 1 / (1+mod2);
         })
 
         return force;
     },
 
-    getLinkDistance: function (linkData){
+    getLinkDistance: function (linkData) {
         var distance = 150,
             r1,
             r2;
@@ -221,6 +229,38 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
     getGraphData: function () {
         this.api.get(window.curry(this.handleGraphData, this));
+    },
+
+    getVisibleNodes: function () {
+        var nodes = [],
+            i,
+            node;
+
+        for (i = 0; i < this.nodes.length; i++) {
+            node = this.nodes[i];
+            if (!Node.hasPropertyWithValue(node, 'status', 'denied')) {
+                nodes.push(node);
+            }
+        }
+
+        return nodes;
+    },
+
+    getVisibleLinks: function () {
+        var edges = [],
+            i,
+            edge;
+
+        for (i = 0; i < this.edges.length; i++) {
+            edge = this.edges[i];
+            if (!Node.hasPropertyWithValue(edge.source, 'status', 'denied') &&
+                !Node.hasPropertyWithValue(edge.target, 'status', 'denied')) {
+                
+                edges.push(edge);
+            }
+        }
+
+        return edges;
     },
 
     // CRM

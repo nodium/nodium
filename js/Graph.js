@@ -30,6 +30,9 @@ graph.Graph = app.createClass({
         // TODO try to move to hoverable?
         this.hoveredNode = null;
 
+        this.visibleNodes = null;
+        this.visibleEdges = null;
+
         self = this;
     },
 
@@ -229,7 +232,7 @@ graph.Graph = app.createClass({
         // in case you only want to draw a subset
         var nodes = this.getVisibleNodes(),
             node = d3.select(this.selector + ' .nodes').selectAll('.node')
-                .data(nodes),
+                .data(nodes, function (d) { return d._id; }),
             nodeEnter = node.enter().append('g');
 
         this.drawNodeExit(node.exit());
