@@ -14,7 +14,7 @@ graph.Graph = app.createClass({
 
     construct: function (selector, kernel) {
 
-        if (!selector) throw 'No selector passed to graph';
+        // if (!selector) throw 'No selector passed to graph';
         this.selector = selector;
 
         this.kernel = kernel || new event.Kernel();
