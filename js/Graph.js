@@ -267,7 +267,8 @@ graph.Graph = app.createClass({
         });
 
         nodeEnter.append('path')
-            .attr('d', d3.superformula()
+            // .attr('d', d3.superformula()
+            .attr('d', d3.svg.symbol()
                 .type('circle')
                 .size(function (data) {
                     // note: size is set in square pixels, hence the pow
