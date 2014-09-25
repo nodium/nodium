@@ -274,7 +274,7 @@ graph.Graph = app.createClass({
                     // note: size is set in square pixels, hence the pow
                     return Math.pow(self.getNodeRadius(data)*3, 2);
                 })
-                .segments(50)
+                // .segments(50)
             )
             .attr('class', 'top-circle');
 
