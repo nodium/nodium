@@ -232,13 +232,18 @@ graph.Graph = app.createClass({
         // in case you only want to draw a subset
         var nodes = this.getVisibleNodes(),
             node = d3.select(this.selector + ' .nodes').selectAll('.node')
-                .data(nodes, function (d) { return d._id; }),
+                .data(nodes, function (d, i) { 
+                    if (d.hasOwnProperty('_id')) {
+                        return d._id;
+                    } else {
+                        return i;
+                    }
+                }),
             nodeEnter = node.enter().append('g');
 
         this.drawNodeExit(node.exit());
         this.attachNodeEvents(nodeEnter);
         this.drawNodeEnter(nodeEnter);
-        this.drawNodeTexts(nodeEnter);
 
         this.node = node;
 
@@ -260,6 +265,18 @@ graph.Graph = app.createClass({
                 .on('dragend', eventsObject['dragend']));
     },
 
+    drawNodeShape: function (data) {
+
+        // d3.superformula()
+        d3.svg.symbol()
+            .type('circle')
+            .size(function (data) {
+                // note: size is set in square pixels, hence the pow
+                return Math.pow(self.getNodeRadius(data)*3, 2);
+            })
+            // .segments(50)
+    },
+
     drawNodeEnter: function (nodeEnter) {
 
         nodeEnter.attr('class', function (data) {
@@ -267,16 +284,10 @@ graph.Graph = app.createClass({
         });
 
         nodeEnter.append('path')
-            // .attr('d', d3.superformula()
-            .attr('d', d3.svg.symbol()
-                .type('circle')
-                .size(function (data) {
-                    // note: size is set in square pixels, hence the pow
-                    return Math.pow(self.getNodeRadius(data)*3, 2);
-                })
-                // .segments(50)
-            )
+            .attr('d', self.drawNodeShape)
             .attr('class', 'top-circle');
+
+        this.drawNodeTexts(nodeEnter);
 
         $(this.kernel).trigger(NodeEvent.DRAWN, [nodeEnter]);
     },
@@ -345,11 +356,12 @@ graph.Graph = app.createClass({
         var textNode = nodeEnter.append('text')
             .attr('text-anchor', 'middle')
 
-        var textDrawer = window.currySelf(this.drawNodeText, this);
-        textNode.each(textDrawer);
+        // var textDrawer = window.currySelf(this.drawNodeText, this);
+        // textNode.each(textDrawer);
+        textNode.each(this.drawNodeText);
     },
 
-    drawNodeText: function (self, data) {
+    drawNodeText: function (data) {
 
         var text = self.getNodeText(data),
             textParts = [],
@@ -378,7 +390,7 @@ graph.Graph = app.createClass({
     setNodeText: function (node, data) {
 
         var text = $('text', node).get(0);
-        this.drawNodeText.apply(text, [this, data]);
+        this.drawNodeText.apply(text, [data]);
     },
 
     /*
@@ -428,9 +440,15 @@ graph.Graph = app.createClass({
     },
 
     getNodeFromData: function (data) {
+
+        var nodes;
         
         if (data) {
-            return $('.node').get(data.index);
+            // NOTE this won't work if not all nodes are drawn
+            // return $('.node').get(data.index);
+            return d3.selectAll('.node').filter(function (d) {
+                return d.index == data.index;
+            }).node();
         }
 
         return null;

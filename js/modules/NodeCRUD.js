@@ -49,7 +49,7 @@ modules.NodeCRUD = app.createClass({
             property,
             defaultLabels = this.options.labels,
             label,
-            node,
+            data,
             i;
 
         // we should be careful not to overwrite property values
@@ -72,20 +72,20 @@ modules.NodeCRUD = app.createClass({
             }   
         }
 
-        node = model.Node.create(properties, labels);
-        node.x = x || 0;
-        node.y = y || 0;
+        data = model.Node.create(properties, labels);
+        data.x = x || 0;
+        data.y = y || 0;
 
         // then let d3 add other properties
         // TODO do this after the trigger
-        this.graph.nodes.push(node);
+        this.graph.nodes.push(data);
         this.graph.drawNodes();
         this.graph.handleTick();
         this.graph.force.start();
 
-        $(this.kernel).trigger(NodeEvent.CREATED, [node]);
+        $(this.kernel).trigger(NodeEvent.CREATED, [null, data]);
 
-        return node;
+        return data;
     },
 
     deleteEdgesForNode: function (nodeIndex) {
@@ -181,9 +181,6 @@ modules.NodeCRUD = app.createClass({
         }
 
         data = this.createNode(properties, [], position.x, position.y);
-
-        // TODO make event chaining configurable?
-        $(this.kernel).trigger(NodeEvent.SELECT, [null, data]);
     },
 
     /**

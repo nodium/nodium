@@ -27,6 +27,10 @@ modules.Selectable = app.createClass({
 
     handleNodeSelect: function (event, node, data) {
 
+        console.log("selecting");
+        console.log(data);
+        console.log(node);
+
         var selectedNode = this.selectedNode;
 
         // do nothing if we're trying to reselect the selected node
@@ -42,6 +46,10 @@ modules.Selectable = app.createClass({
             	[selectedNode.node, selectedNode.data]
             );
         }
+
+        // resolve the node and data
+        node = this.graph.resolveNode(node, data);
+        data = this.graph.resolveData(node, data);
 
         this.selectedNode = {
             node: node,

@@ -35,6 +35,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         }))
         .register(new modules.Selectable(), [
             ['node-clicked', 'handleNodeSelect'],
+            [NodeEvent.CREATED, 'handleNodeSelect'],
             [NodeEvent.SELECTED, 'app.graph.graphics.handleClassNode', 'selected'],
             [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
             [NodeEvent.DESTROYED, 'handleNodeUnselect']
@@ -231,37 +232,37 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         this.api.get(window.curry(this.handleGraphData, this));
     },
 
-    getVisibleNodes: function () {
-        var nodes = [],
-            i,
-            node;
+    // getVisibleNodes: function () {
+    //     var nodes = [],
+    //         i,
+    //         node;
 
-        for (i = 0; i < this.nodes.length; i++) {
-            node = this.nodes[i];
-            if (!Node.hasPropertyWithValue(node, 'status', 'denied')) {
-                nodes.push(node);
-            }
-        }
+    //     for (i = 0; i < this.nodes.length; i++) {
+    //         node = this.nodes[i];
+    //         if (!Node.hasPropertyWithValue(node, 'status', 'denied')) {
+    //             nodes.push(node);
+    //         }
+    //     }
 
-        return nodes;
-    },
+    //     return nodes;
+    // },
 
-    getVisibleLinks: function () {
-        var edges = [],
-            i,
-            edge;
+    // getVisibleLinks: function () {
+    //     var edges = [],
+    //         i,
+    //         edge;
 
-        for (i = 0; i < this.edges.length; i++) {
-            edge = this.edges[i];
-            if (!Node.hasPropertyWithValue(edge.source, 'status', 'denied') &&
-                !Node.hasPropertyWithValue(edge.target, 'status', 'denied')) {
+    //     for (i = 0; i < this.edges.length; i++) {
+    //         edge = this.edges[i];
+    //         if (!Node.hasPropertyWithValue(edge.source, 'status', 'denied') &&
+    //             !Node.hasPropertyWithValue(edge.target, 'status', 'denied')) {
                 
-                edges.push(edge);
-            }
-        }
+    //             edges.push(edge);
+    //         }
+    //     }
 
-        return edges;
-    },
+    //     return edges;
+    // },
 
     // CRM
     getLinkClassValue: function (data) {

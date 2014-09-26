@@ -105,7 +105,7 @@ graph.Neo4jAPI = app.createClass({
      * Create a node in the neo4j database
      * Store the id to easily delete the node later
      */
-    handleNodeCreated: function (event, data) {
+    handleNodeCreated: function (event, node, data) {
 
         var url = this.nodeUrl(),
             props = transformer.neo4j.toNode(data);

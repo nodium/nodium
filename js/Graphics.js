@@ -36,7 +36,13 @@ graphics.classNode = function (className, value, node, data, graph) {
 
     // node = (node === undefined) ? d3.select($('.node').get(data.index)) : node;
     // doesn't work because node isn't a d3 selection?
-    node = d3.select($('.node').get(data.index));
+    // node = d3.select($('.node').get(data.index));
+    node = d3.select(node);
+
+    console.log("classing node");
+    console.log(data.index);
+    console.log(node);
+    console.log(node.datum())
 
     node.classed(className, value);
 };
