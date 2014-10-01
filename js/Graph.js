@@ -356,12 +356,12 @@ graph.Graph = app.createClass({
         var textNode = nodeEnter.append('text')
             .attr('text-anchor', 'middle')
 
-        // var textDrawer = window.currySelf(this.drawNodeText, this);
-        // textNode.each(textDrawer);
-        textNode.each(this.drawNodeText);
+        var textDrawer = window.currySelf(this.drawNodeText, this);
+        textNode.each(textDrawer);
+        // textNode.each(this.drawNodeText);
     },
 
-    drawNodeText: function (data) {
+    drawNodeText: function (self, data) {
 
         var text = self.getNodeText(data),
             textParts = [],
