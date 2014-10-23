@@ -33,6 +33,12 @@ graph.Graph = app.createClass({
         this.visibleNodes = null;
         this.visibleEdges = null;
 
+        this.options = {
+            shapes: {
+                generator: 'symbol'
+            }
+        }
+
         self = this;
     },
 
@@ -265,26 +271,51 @@ graph.Graph = app.createClass({
                 .on('dragend', eventsObject['dragend']));
     },
 
-    drawNodeShape: function (data) {
+    getNodeShapeGenerator: function () {
 
-        // d3.superformula()
-        d3.svg.symbol()
-            .type('circle')
-            .size(function (data) {
-                // note: size is set in square pixels, hence the pow
-                return Math.pow(self.getNodeRadius(data)*3, 2);
-            })
-            // .segments(50)
+        var generator = this.options.shapes.generator;
+
+        if (generator == 'symbol') {
+            return d3.svg.symbol()
+                .type('circle')
+                .size(function (data) {
+                    // note: size is set in square pixels, hence the pow
+                    // note2: yeah the formula is nonsense
+                    return Math.pow(self.getNodeRadius(data)*Math.PI, 2);
+                });
+        } else {
+            return d3.superformula()
+                .type('circle')
+                .size(function (data) {
+                    // note: size is set in square pixels, hence the pow
+                    return Math.pow(self.getNodeRadius(data)*Math.PI, 2);
+                })
+                .segments(50);
+        }
     },
 
     drawNodeEnter: function (nodeEnter) {
+
+        var shapeGenerator = this.getNodeShapeGenerator();
 
         nodeEnter.attr('class', function (data) {
             return self.getNodeClassValue(data);
         });
 
         nodeEnter.append('path')
-            .attr('d', self.drawNodeShape)
+            .attr('d', function (data, i) {
+                var path = shapeGenerator(data, i);
+
+                // store path data in the node for scaling
+                // or other transformations
+                data._shape = {
+                    path: path,
+                    scale: {x: 1, y: 1},
+                    shape: 'circle'
+                };
+
+                return path;
+            })
             .attr('class', 'top-circle');
 
         this.drawNodeTexts(nodeEnter);
@@ -353,19 +384,22 @@ graph.Graph = app.createClass({
 
     drawNodeTexts: function (nodeEnter) {
 
-        var textNode = nodeEnter.append('text')
-            .attr('text-anchor', 'middle')
+        var self = this,
+            textNode = nodeEnter.append('text')
+                .attr('text-anchor', 'middle');
 
         // var textDrawer = window.currySelf(this.drawNodeText, this);
         // textNode.each(textDrawer);
-        textNode.each(this.drawNodeText);
+        textNode.each(function (data) {
+            self.drawNodeText.apply(self, [this, data]);
+        });
     },
 
-    drawNodeText: function (data) {
+    drawNodeText: function (node, data) {
 
-        var text = self.getNodeText(data),
+        var text = this.getNodeText(data),
             textParts = [],
-            element = d3.select(this);
+            element = d3.select(node);
 
         if (!text) {
             return;
@@ -374,9 +408,9 @@ graph.Graph = app.createClass({
         // clear the element
         element.text('');
 
-        textParts = self.splitNodeText(text);
+        textParts = this.splitNodeText(text);
 
-        element.attr('dy', self.getNodeTextDY(data, textParts.length));
+        element.attr('dy', this.getNodeTextDY(data, textParts.length));
 
         // we have max. 2 text parts
         for (var i = 0; i < textParts.length; i++) {
@@ -390,7 +424,8 @@ graph.Graph = app.createClass({
     setNodeText: function (node, data) {
 
         var text = $('text', node).get(0);
-        this.drawNodeText.apply(text, [data]);
+        // this.drawNodeText.apply(text, [data]);
+        this.drawNodeText(text, data);
     },
 
     /*
