@@ -4,6 +4,7 @@
 	const propertiesPath = '_properties';
 	const labelsPath	 = '_labels';
 	const idPath 		 = '_id';
+	const shapePath      = '_shape';
 
 	model.Node = {
 
