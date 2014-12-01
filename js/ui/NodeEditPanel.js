@@ -4,9 +4,11 @@
 
 var ui          = window.setNamespace('app.ui'),
     app         = window.use('app'),
-    model       = window.use('app.model'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
     Event       = window.use('app.event.Event'),
+    EdgeEvent   = window.use('app.event.EdgeEvent'),
+    NodeEvent   = window.use('app.event.NodeEvent'),
+    model       = window.use('app.model'),
+    Node        = window.use('app.model.Node'),
     List        = window.use('app.ui.List'),
     _defaults;
 
@@ -24,22 +26,16 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         this.propertyList = new List('#node-fields', '#node-form', {
             new:    '#new-property', // new handle
             delete: '.delete-property', // delete handle
-            empty:  {
-                field: '',
-                value: '',
-                rows:  1
-            } // data needed to create empty item from prototype
+            empty:  { field: '', value: '', rows:  1 } // empty prototype data
         });
 
-        this.labelList    = new List('#node-labels', '#node-form', {
+        this.labelList = new List('#node-labels', '#node-form', {
             new:    '#new-label', // new handle
             delete: '.delete-label', // delete handle
-            empty:  {
-                label: ''
-            } // data needed to create empty item from prototype
+            empty:  { label: '' } // empty prototype data
         });
 
-        this.edgeList     = new List('#edges', '#node-form', {
+        this.edgeList = new List('#edges', '#node-form', {
             delete: '.delete-edge'
         });
 
@@ -49,11 +45,27 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             'node-title': 'name'
         };
 
-        // this.bloodhound = new Bloodhound({
-        //     name: 'labels',
-        //     local: this.kernel
-        // });
-        // this.bloodhound.initialize();
+        /*
+         * Typeahead using bloodhound
+         * Initialization is done when the graph is loaded
+         */
+        this.bloodhound = new Bloodhound({
+            name: 'edges',
+            local: this.getTypeaheadNodes.bind(this),
+            datumTokenizer: function (node) {
+                return Bloodhound.tokenizers.whitespace(
+                    Node.getPropertyValue(node, 'name')
+                );
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace
+        });
+
+        $('#new-edge').typeahead(null, {
+            source:     this.bloodhound.ttAdapter(),
+            displayKey: function (node) {
+                return Node.getPropertyValue(node, 'name');
+            }
+        });
     },
 
     init: function (container) {
@@ -66,16 +78,33 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             .on(this, NodeEvent.UPDATED);
         // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
+        $(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
+
         this
             .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
             .on(this, '#node-form', Event.FOCUS_OUT, 'input');
 
         $(this.labelList).on('list-delete', this.handleDeleteElement.bind(this, 'label'));
         $(this.propertyList).on('list-delete', this.handleDeleteElement.bind(this, 'property'));
+        $(this.edgeList).on('list-delete', this.handleDeleteEdge.bind(this));
+        $('#new-edge').on(Event.SUBMIT, function (e) { e.preventDefault; e.stopPropagation(); });
+        $('#new-edge').on('typeahead:selected', this.handleCreateEdge.bind(this));
 
         $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
 
         return this;
+    },
+
+    getTypeaheadNodes: function () {
+
+        // filter all nodes
+        if (this.nodes) {
+            return this.nodes.filter(function (node) {
+                return Node.hasProperty(node, 'name');
+            });
+        } else {
+            return [];
+        }
     },
 
     show: function () {
@@ -257,6 +286,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         var labelsList = $('#node-labels', this.view);
 
         $('#node-title', this.view).val('');
+        $('#new-edge').val('');
 
         // create the html form elements
         propertiesList.empty();
@@ -268,6 +298,19 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     /**
      * Event handlers
      */
+
+    handleCreateEdge: function (event, node) {
+
+        console.log('typeahead select');
+        console.log(node);
+
+        $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, node]);
+    },
+
+    handleDeleteEdge: function (event, data) {
+
+        
+    },
 
     handleDeleteElement: function (type, event, data) {
 
@@ -295,6 +338,15 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         } else {
             this.updateProperties();
         }
+    },
+
+    /**
+     * We have to know about the nodes in the graph for use in the typeahead
+     */
+    handleGraphLoaded: function (event, nodes) {
+
+        this.nodes = nodes;
+        this.bloodhound.initialize();
     },
 
     handleNewEdgeSubmit: function (event) {
