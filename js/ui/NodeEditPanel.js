@@ -41,13 +41,14 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         // mapping of node fields to ui field id
         // generalize this with options
-        this.exceptions = {
+        this.explicits = {
             'node-title': 'name'
         };
 
         /*
          * Typeahead using bloodhound
          * Initialization is done when the graph is loaded
+         * and reinitialization when a node is updated
          */
         this.bloodhound = new Bloodhound({
             name: 'edges',
@@ -71,12 +72,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     init: function (container) {
 
         $(container).on('menu-collapse', this.handleMenuCollapse.bind(this));
-        // $(this.kernel).on(NodeEvent.SELECTED, nodeSelectedHandler);
         this.kernel
             .on(this, NodeEvent.SELECTED)
             .on(this, NodeEvent.UNSELECTED)
             .on(this, NodeEvent.UPDATED);
-        // $(this.kernel).on(NodeEvent.UNSELECTED, nodeUnselectedHandler);
 
         $(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
 
@@ -131,8 +130,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         } else if (type === 'property') {
             // data is the property name
             update.unsetProperty(data);
-        } else if (type === 'edge') {
-            // ???
         }
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
@@ -202,8 +199,8 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             value,
             properties;
 
-        // handle the special fields
-        properties = _.chain(this.exceptions)
+        // get properties from the explicit fields first
+        properties = _.chain(this.explicits)
             .invert() // put property names as keys
             .mapValues(function (selector) { return $('#' + selector).val() })
             .pick(_.identity) // filter where value is empty
@@ -221,36 +218,18 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         return properties;
     },
 
-    updateLabels: function (label) {
+    updateLabels: function () {
 
-        var labels,
-            update = new model.Update();
-
-        // we don't have an object to update
-        if (!this.nodeData) {
-            return;
-        }
-        
-        // update.setLabel(label);
-        // console.log(update);
-        labels = this.getLabels();
-        update.setLabels(labels);
+        var update = new model.Update();
+        update.setLabels(this.getLabels());
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },
 
     updateProperties: function () {
 
-        var properties,
-            update = new model.Update();
-
-        // we don't have an object to update
-        if (!this.nodeData) {
-            return;
-        }
-
-        properties = this.getProperties();
-        update.setProperties(properties);
+        var update = new model.Update();
+        update.setProperties(this.getProperties());
 
         $(this.kernel).trigger(NodeEvent.UPDATE, [null, this.nodeData, update]);
     },
@@ -264,15 +243,15 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         this.nodeData  = data || {};
         this.nodeEdges = Node.filterEdges(data, this.edges);
 
-        // set the fields that aren't in a list
-        _.forOwn(this.exceptions, function (property, selector) {
+        // set the explicit fields first
+        _.forOwn(this.explicits, function (property, selector) {
             var value = Node.getPropertyValue(data, property) || '';
             $('#'+selector, this.view).val(value);
         }, this);
 
         propertyData = _.map(data._properties, this.parseProperty)
                         .filter(function (element) {
-                            return !_.contains(_.values(this.exceptions), element.field);
+                            return !_.contains(_.values(this.explicits), element.field);
                         }, this);
         labelData    = _.map(data._labels, this.parseLabel);
         edgeData     = _.map(this.nodeEdges, this.parseEdge, this);
@@ -285,7 +264,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     unsetData: function (data) {
 
         // clear the values that are not in a list
-        _.forOwn(this.exceptions, function (property, selector) {
+        _.forOwn(this.explicits, function (property, selector) {
             $('#'+selector, this.view).val('');
         }, this);
 
@@ -333,6 +312,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     handleFocusout: function (event) {
 
+        if (!this.nodeData) {
+            return;
+        }
+
         // check if we're updating property or label
         if ($(event.currentTarget).hasClass('node-label-value')) {
             var label = $(event.currentTarget).val();
@@ -350,19 +333,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         this.nodes = nodes;
         this.edges = edges;
         this.bloodhound.initialize();
-    },
-
-    handleNewEdgeSubmit: function (event) {
-
-        var value = $('#new-edge').val();
-
-        if (value && value !== '') {
-            this.edgeList.add({
-                name: value
-            });
-
-            // update the node's edge data
-        }
     },
 
     handleNodeSelected: function (event, node, data) {
