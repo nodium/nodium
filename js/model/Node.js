@@ -20,6 +20,11 @@
 			return node;
 	    },
 
+	    getId: function (data) {
+
+	    	return window.getObjectValueByPath(data, idPath);
+	    },
+
 	    getIdPath: function () {
 
 	    	return idPath;
@@ -68,6 +73,20 @@
 	    	var path = this.getPropertiesPath(property);
 
 	    	return window.getObjectValueByPath(data, path);
+	    },
+
+	    /**
+	     * Filters this node's edges from the given array
+	     */
+	    filterEdges: function (data, edges) {
+
+	    	var id = this.getId(data);
+
+	    	return edges.filter(function (edge) {
+	    		var sourceId = this.getId(edge.source);
+	    		var targetId = this.getId(edge.target);
+	    		return sourceId === id || targetId === id;
+	    	}, this);
 	    },
 
 	    hasProperty: function (data, property) {

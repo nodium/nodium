@@ -35,7 +35,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             empty:  { label: '' } // empty prototype data
         });
 
-        this.edgeList = new List('#edges', '#node-form', {
+        this.edgeList = new List('#node-edges', '#node-form', {
             delete: '.delete-edge'
         });
 
@@ -160,6 +160,24 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         };
     },
 
+    parseEdge: function (edge) {
+
+        var id = Node.getId(this.nodeData),
+            name,
+            source = edge.source,
+            target = edge.target;
+
+        if (Node.getId(source) !== id) {
+            name = Node.getPropertyValue(source, 'name');
+        } else {
+            name = Node.getPropertyValue(target, 'name');
+        }
+
+        return {
+            name: name || ''
+        };
+    },
+
     /**
      * Gets the labels from the html fields
      */
@@ -170,7 +188,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         return _.chain(data)
             .map(_.first) // every item has one element
             .pluck('value')
-            .filter(function (value) {return value != '';})
+            .filter(function (value) {return value !== '';})
             .valueOf();
     },
 
@@ -179,30 +197,17 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
      */
     getProperties: function () {
 
-        // TODO generalize field selectors
-        // var fields = $('#node-fields').children(),
         var data = this.propertyList.get(),
-            selector,
             key,
             value,
-            properties = {};
+            properties;
 
         // handle the special fields
-        for (selector in this.exceptions) {
-
-            if (!this.exceptions.hasOwnProperty(selector)) {
-                continue;
-            }
-
-            key = this.exceptions[selector];
-            value = $('#' + selector).val();
-
-            if (key == '' || value == '') {
-                continue;
-            }
-
-            properties[key] = value;
-        }
+        properties = _.chain(this.exceptions)
+            .invert() // put property names as keys
+            .mapValues(function (selector) { return $('#' + selector).val() })
+            .pick(_.identity) // filter where value is empty
+            .valueOf();
 
         // handle the regular property fields
         _.forEach(data, function (row) {
@@ -252,46 +257,46 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     setData: function (data) {
 
-        var propertiesList = $('#node-fields', this.view),
-            fieldHTML,
-            fieldName,
-            titleField = 'name', // TODO use this.exceptions
-            propertyData,
+        var propertyData,
             labelData,
-            value,
-            i;
+            edgeData;
 
-        this.nodeData = data || {};
+        this.nodeData  = data || {};
+        this.nodeEdges = Node.filterEdges(data, this.edges);
 
-        // set the title field
-        value = data._properties[titleField] || '';
+        // set the fields that aren't in a list
+        _.forOwn(this.exceptions, function (property, selector) {
+            var value = Node.getPropertyValue(data, property) || '';
+            $('#'+selector, this.view).val(value);
+        }, this);
 
-        $('#node-title', this.view).val(value);
-
-        // TODO use exceptions thing for title
         propertyData = _.map(data._properties, this.parseProperty)
                         .filter(function (element) {
-                            return element.field !== titleField;
-                        });
-
+                            return !_.contains(_.values(this.exceptions), element.field);
+                        }, this);
         labelData    = _.map(data._labels, this.parseLabel);
+        edgeData     = _.map(this.nodeEdges, this.parseEdge, this);
 
         this.propertyList.set(propertyData);
         this.labelList.set(labelData);
+        this.edgeList.set(edgeData);
     },
 
     unsetData: function (data) {
 
-        var propertiesList = $('#node-fields', this.view);
-        var labelsList = $('#node-labels', this.view);
+        // clear the values that are not in a list
+        _.forOwn(this.exceptions, function (property, selector) {
+            $('#'+selector, this.view).val('');
+        }, this);
 
-        $('#node-title', this.view).val('');
         $('#new-edge').val('');
 
-        // create the html form elements
-        propertiesList.empty();
-        labelsList.empty();
+        this.propertyList.clear();
+        this.labelList.clear();
+        this.edgeList.clear();
+
         this.nodeData = null;
+        this.nodeEdges = null;
     },
 
 
@@ -300,9 +305,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
      */
 
     handleCreateEdge: function (event, node) {
-
-        console.log('typeahead select');
-        console.log(node);
 
         $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, node]);
     },
@@ -343,9 +345,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     /**
      * We have to know about the nodes in the graph for use in the typeahead
      */
-    handleGraphLoaded: function (event, nodes) {
+    handleGraphLoaded: function (event, nodes, edges) {
 
         this.nodes = nodes;
+        this.edges = edges;
         this.bloodhound.initialize();
     },
 
@@ -377,7 +380,6 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleNodeUpdated: function (event, node, data, update) {
 
         if (this.isVisible && this.nodeData.index === data.index) {
-
             this.setData(data);
         }
     }
