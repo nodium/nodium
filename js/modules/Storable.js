@@ -132,6 +132,11 @@ modules.Storable = app.createClass({
 
     handleNodeStyled: function (event, node, data) {
 
+        // move this to a per-storable check
+        if (!data.fixed) {
+            return;
+        }
+
         var storableString = this.getStorableString(node, data),
             update = new model.Update();
         

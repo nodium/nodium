@@ -27,7 +27,8 @@ modules.EdgeCRUD = app.createClass({
 
         // non-customizable events
         $(this.kernel)
-            .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this));
+            .on(EdgeEvent.CREATE, this.handleCreateEdge.bind(this))
+            .on(EdgeEvent.DESTROY, this.handleDestroyEdge.bind(this));
     },
 
     /**
@@ -51,7 +52,14 @@ modules.EdgeCRUD = app.createClass({
 
         console.log('handling edge creation');
 
-        this.updateLink(source, target);
+        this.updateLink(source, target, undefined, 2);
+    },
+
+    handleDestroyEdge: function (event, source, target) {
+
+        console.log('handling edge deletion');
+
+        this.updateLink(source, target, undefined, 1);
     },
 
     /**
@@ -62,56 +70,91 @@ modules.EdgeCRUD = app.createClass({
     },
 
     /**
+     * Returns the index of the edge
+     *
+     * @param string type If not given, returns index of the first edge between nodes
+     */
+    indexOfEdge: function (source, target, type) {
+
+        var index = -1;
+
+        this.graph.edges.forEach(function (edge, i) {
+
+            if (type && edge.type !== type) {
+                return;
+            }
+
+            if ((edge.source.index == source.index && edge.target.index == target.index) ||
+                (edge.source.index == target.index && edge.target.index == source.index)) {
+
+                index = i;
+            }
+        });
+
+        return index;
+    },
+
+    /**
      * Creates a edge from source to target of type type if it does not exist yet.
      * Deletes the edge if it exists.
+     *
+     * @param integer action falsy if toggle, 1 if destroy, 2 if create
      */
-    updateLink: function (source, target, type) {
-        var edges = this.graph.edges,
-            edge,
-            i,
-            toDelete,
-            deletered = false;
+    updateLink: function (source, target, type, action) {
+        var edgeIndex = this.indexOfEdge(source, target, type),
+            edge;
 
         type = type === undefined ? this.resolveEdgeType(source, target) : type;
 
         if (source.index == target.index) {
             return;
         }
-        console.log("updating link");
-        console.log(type);
+        // console.log("updating link");
+        // console.log(type);
 
-        // check if there's already an edge between source and target
-        for (i = edges.length-1; i >= 0; i--) {
-            edge = edges[i];
+        // // check if there's already an edge between source and target
+        // for (i = edges.length-1; i >= 0; i--) {
+        //     edge = edges[i];
 
-            // if (edge.type != type) {
-            //  continue;
-            // }
+        //     // if (edge.type != type) {
+        //     //  continue;
+        //     // }
 
-            if ((edge.source.index == source.index && edge.target.index == target.index) ||
-                (edge.source.index == target.index && edge.target.index == source.index)) {
+        //     if ((edge.source.index == source.index && edge.target.index == target.index) ||
+        //         (edge.source.index == target.index && edge.target.index == source.index)) {
 
-                edges.splice(i, 1);
-                deletered = true;
-                toDelete = edge;
-            }
+        //         edges.splice(i, 1);
+        //         deletered = true;
+        //         toDelete = edge;
+        //     }
+        // }
+
+        // determine action
+        console.log('ACTION: ' + action);
+        if (!action) {
+            action = edgeIndex === -1 ? 2 : 1;
         }
+        console.log('ACTION: ' + action);
 
-        // delete or remove edge
-        if (!deletered) {
+        // create or destroy edge
+        if (edgeIndex === -1 && action === 2) {
 
-            // add new edge
             edge = {
                 source: source.index,
                 target: target.index,
                 type: type
             };
 
-            edges.push(edge);
+            this.graph.edges.push(edge);
 
             $(this.kernel).trigger(EdgeEvent.CREATED, [edge, source, target]);
-        } else {
-            $(this.kernel).trigger(EdgeEvent.DESTROYED, [toDelete]);
+
+        } else if (edgeIndex >= 0 && action === 1) {
+
+            edge = this.graph.edges[edgeIndex];
+            this.graph.edges.splice(edgeIndex, 1);
+
+            $(this.kernel).trigger(EdgeEvent.DESTROYED, [edge]);
         }
 
         // TODO move this to some edge deleted/created handlers somewhere else

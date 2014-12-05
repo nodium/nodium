@@ -131,7 +131,8 @@ ui.List = app.createClass({
         return {
             class: $element.attr('class'),
             id:    $element.attr('id'),
-            value: $element.val()
+            value: $element.val(),
+            data:  $element.data()
         };
     },
 

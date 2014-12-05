@@ -78,6 +78,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             .on(this, NodeEvent.UPDATED);
 
         $(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
+        $(this.kernel).on(EdgeEvent.CREATED, this.handleEdgeCreated.bind(this));
 
         this
             .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
@@ -160,18 +161,23 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     parseEdge: function (edge) {
 
         var id = Node.getId(this.nodeData),
+            otherId,
             name,
             source = edge.source,
             target = edge.target;
 
         if (Node.getId(source) !== id) {
+            otherId = Node.getId(source);
             name = Node.getPropertyValue(source, 'name');
         } else {
+            otherId = Node.getId(target);
             name = Node.getPropertyValue(target, 'name');
         }
 
         return {
-            name: name || ''
+            edgeId: edge._id,
+            nodeId: otherId,
+            name:   name || ''
         };
     },
 
@@ -279,7 +285,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     },
 
 
-    /**
+    /*
      * Event handlers
      */
 
@@ -290,7 +296,31 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     handleDeleteEdge: function (event, data) {
 
-        
+        var sourceId,
+            targetId,
+            nodeId = Node.getId(this.nodeData),
+            otherId = data[0].data.nodeid;
+
+        console.log('trying delete edge');
+        console.log(data);
+
+        // delete the edge from the nodeEdges
+        this.nodeEdges.forEach(function (edge, i) {
+
+            console.log(edge);
+
+            sourceId = Node.getId(edge.source);
+            targetId = Node.getId(edge.target);
+
+            if (nodeId == sourceId && otherId == targetId ||
+                nodeId == targetId && otherId == sourceId) {
+
+                console.log('edge');
+                console.log(edge);
+                this.nodeEdges.splice(i, 1);
+                $(this.kernel).trigger(EdgeEvent.DESTROY, [edge.source, edge.target]);
+            }
+        }, this);
     },
 
     handleDeleteElement: function (type, event, data) {
@@ -308,6 +338,31 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         event.stopPropagation();
 
         $(this.kernel).trigger(NodeEvent.DESTROY, [null, this.nodeData]);
+    },
+
+    /**
+     * Show the edge in the list
+     */
+    handleEdgeCreated: function (event, edge, source, target) {
+
+        this.edgeList.add(this.parseEdge({
+            _id:    edge._id,
+            source: source,
+            target: target
+        }));
+
+        this.nodeEdges.push(edge);
+    },
+
+    /**
+     * Show the edge in the list
+     */
+    handleEdgeDeleted: function (event, edge, source, target) {
+
+        this.edgeList.add(this.parseEdge({
+            source: source,
+            target: target
+        }));
     },
 
     handleFocusout: function (event) {
