@@ -62,6 +62,33 @@ modules.EdgeCRUD = app.createClass({
         this.updateLink(source, target, undefined, 1);
     },
 
+    handleUpdateEdge: function (event, edge, update) {
+
+        var recreate = false,
+            source,
+            target,
+            type,
+            index;
+
+        // direction is relative to source
+        if (update.hasOwnProperty('direction')) {
+            recreate = true;
+            source = edge.target;
+            target = edge.source;
+        }
+
+        if (recreate) {
+            // index = edge.index; // does it have this??
+            index = this.indexOfEdge(edge.source, edge.target, edge.type);
+
+            this.replace(index, {
+                source || edge.source,
+                target || edge.target,
+                type || edge.type
+            });
+        }
+    },
+
     /**
      * returns the type of edge that should be used for this source and target
      */
@@ -93,6 +120,32 @@ modules.EdgeCRUD = app.createClass({
 
         return index;
     },
+
+    create: function (edge, properties) {
+
+        // edge should at least have a source, target and type
+        if (!edge.hasOwnProperty('source')
+            || !edge.hasOwnProperty('target')
+            || !edge.hasOwnProperty('type')) {
+
+            return null;
+        }
+
+        this.graph.edges.push(edge);
+
+        $(this.kernel).trigger(EdgeEvent.CREATED, [edge, source, target]);
+    },
+
+    replace: function (index, edge) {
+
+        var replacedEdge = this.graph.edges[index];
+
+        this.graph.edges[index] = edge;
+
+        $(this.kernel).trigger(EdgeEvent.REPLACED, [edge, replacedEdge]);
+    },
+
+
 
     /**
      * Creates a edge from source to target of type type if it does not exist yet.

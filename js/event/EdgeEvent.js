@@ -4,11 +4,13 @@
 
 	EdgeEvent = {
 		CREATE: 'edge-create',
+		REPLACE: 'edge-replace',
 		UPDATE: 'edge-update',
 		DESTROY: 'edge-delete',
 		SELECT: 'edge-select',
 		UNSELECT: 'edge-unselect',
 		CREATED: 'edge-created',
+		REPLACED: 'edge-replaced',
 		UPDATED: 'edge-updated',
 		DESTROYED: 'edge-destroyed',
 		SELECTED: 'edge-selected',

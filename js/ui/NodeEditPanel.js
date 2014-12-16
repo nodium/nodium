@@ -87,7 +87,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         $(this.labelList).on('list-delete', this.handleDeleteElement.bind(this, 'label'));
         $(this.propertyList).on('list-delete', this.handleDeleteElement.bind(this, 'property'));
         $(this.edgeList).on('list-delete', this.handleDeleteEdge.bind(this));
-        $('#new-edge').on(Event.SUBMIT, function (e) { e.preventDefault; e.stopPropagation(); });
+        $(this.edgeList).on('list-click', this.handleEdgeElementClicked.bind(this));
         $('#new-edge').on('typeahead:selected', this.handleCreateEdge.bind(this));
 
         $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
@@ -105,6 +105,43 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         } else {
             return [];
         }
+    },
+
+    keyEdgesByNode: function () {
+
+        var sourceId,
+            targetId,
+            currentId = Node.getId(this.nodeData),
+            otherId,
+            edges = {};
+
+        // delete the edge from the nodeEdges
+        this.nodeEdges.forEach(function (edge, i) {
+
+            sourceId = Node.getId(edge.source);
+            targetId = Node.getId(edge.target);
+
+            if (currentId == sourceId) {
+                direction = 'from';
+                otherId = targetId;
+            } else if (currentId == targetId) {
+                direction = 'to';
+                otherId = sourceId;
+            }
+
+            if (!edges.hasOwnProperty(nodeId)) {
+                edges[nodeId] = [];
+            }
+
+            edges[nodeId].push({
+                direction: direction,
+                edge:      edge,
+                other:     otherId
+            });
+        }, this);
+
+        console.log('keyed edges');
+        console.log(edges);
     },
 
     show: function () {
@@ -160,24 +197,29 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     parseEdge: function (edge) {
 
+        console.log('parsing edge');
+        console.log(edge);
+
         var id = Node.getId(this.nodeData),
             otherId,
             name,
             source = edge.source,
-            target = edge.target;
+            target = edge.target,
+            from   = Node.getId(source) == id;
 
-        if (Node.getId(source) !== id) {
-            otherId = Node.getId(source);
-            name = Node.getPropertyValue(source, 'name');
-        } else {
+        if (from) {
             otherId = Node.getId(target);
             name = Node.getPropertyValue(target, 'name');
+        } else {
+            otherId = Node.getId(source);
+            name = Node.getPropertyValue(source, 'name');
         }
 
         return {
-            edgeId: edge._id,
-            nodeId: otherId,
-            name:   name || ''
+            edgeId:    edge._id,
+            nodeId:    otherId,
+            name:      name || '',
+            direction: from ? '-->' : '<--'
         };
     },
 
@@ -274,7 +316,9 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             $('#'+selector, this.view).val('');
         }, this);
 
-        $('#new-edge').val('');
+        // clear typeahead in the undocumented typeahead way...
+        $('#new-edge').typeahead('val', '');
+        // $('#new-edge').val('');
 
         this.propertyList.clear();
         this.labelList.clear();
@@ -291,7 +335,16 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
     handleCreateEdge: function (event, node) {
 
+        if (!this.nodeData) {
+            return;
+        }
+
         $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, node]);
+
+        console.log('typeahead:selected');
+        console.log(event);
+
+        $('#new-edge').typeahead('val', '');
     },
 
     handleDeleteEdge: function (event, data) {
@@ -363,6 +416,28 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             source: source,
             target: target
         }));
+    },
+
+    handleEdgeElementClicked: function (event, element, item) {
+
+        console.log('Node edit edge element clicked');
+        console.log(element);
+        console.log(item);
+
+        // TODO use actual Update class here
+        var edges = this.keyEdgesByNode(),
+            update = {},
+
+
+        if (element.class === 'edge-direction') {
+            if (element.value === '<--') {
+                update['direction'] = 'from';
+            } else if (element.value === '-->') {
+                update['direction'] = 'to';
+            }
+        }
+
+        $(this.kernel).trigger(EdgeEvent.UPDATE, [edge, update]);
     },
 
     handleFocusout: function (event) {

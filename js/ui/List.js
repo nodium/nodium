@@ -24,6 +24,11 @@ ui.List = app.createClass({
         /** the actual list */
         this.$list = $(this.selector, this.view);
 
+        /** bind the event handlers */
+
+        // gives off an event whenever an element is clicked
+        $(this.selector).on(Event.CLICK, this.handleElementClick.bind(this));
+
         if (options && options.delete) {
             $(this.selector, this.view).on(
                 Event.CLICK,
@@ -69,15 +74,9 @@ ui.List = app.createClass({
         return $element;
     },
 
-    /**
-     * Recreates the complete list from the data
-     */
-    set: function (data) {
+    clear: function () {
 
         this.$list.empty();
-        data.forEach(this.add, this);
-
-        return this;
     },
 
     /**
@@ -136,9 +135,15 @@ ui.List = app.createClass({
         };
     },
 
-    clear: function () {
+    /**
+     * Recreates the complete list from the data
+     */
+    set: function (data) {
 
         this.$list.empty();
+        data.forEach(this.add, this);
+
+        return this;
     },
 
 
@@ -160,6 +165,16 @@ ui.List = app.createClass({
 
         this.addAndFocus(empty, 'input');
     },
+
+    handleElementClick: function (event) {
+
+        var element     = event.target,
+            item        = $(element).closest('li'),
+            elementData = this.getFieldData(element),
+            itemData    = this.getItemData(item);
+
+        $(this).trigger('list-click', [elementData, itemData]);
+    }
 });
 
 }(window, window.jQuery));
