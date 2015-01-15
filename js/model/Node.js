@@ -12,10 +12,13 @@
 
 			var node = {};
 
-			// TODO lol this makes no sense?
+			// TODO use setters from util for this
 			node[propertiesPath] = properties || {};
 			node[labelsPath] = labels || [];
 			node[idPath] = id === undefined ? window.uuid() : id; // force id usage
+
+			console.log('CREATING NODE');
+			console.log(node);
 
 			return node;
 	    },

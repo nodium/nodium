@@ -199,6 +199,11 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         console.log('parsing edge');
         console.log(edge);
+        console.log(this.nodeData);
+
+        if (!this.nodeData) {
+            return;
+        }
 
         var id = Node.getId(this.nodeData),
             otherId,
@@ -398,6 +403,11 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
      */
     handleEdgeCreated: function (event, edge, source, target) {
 
+        // TODO make nice check or remove event handlers
+        if (!this.nodeData) {
+            return;
+        }
+
         this.edgeList.add(this.parseEdge({
             _id:    edge._id,
             source: source,
@@ -424,9 +434,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         console.log(element);
         console.log(item);
 
+        /* doesn't work yet
         // TODO use actual Update class here
         var edges = this.keyEdgesByNode(),
-            update = {},
+            update = {};
 
 
         if (element.class === 'edge-direction') {
@@ -438,6 +449,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         }
 
         $(this.kernel).trigger(EdgeEvent.UPDATE, [edge, update]);
+        */
     },
 
     handleFocusout: function (event) {

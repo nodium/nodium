@@ -70,6 +70,8 @@ modules.EdgeCRUD = app.createClass({
             type,
             index;
 
+        /* doesn't work yet
+
         // direction is relative to source
         if (update.hasOwnProperty('direction')) {
             recreate = true;
@@ -87,6 +89,7 @@ modules.EdgeCRUD = app.createClass({
                 type || edge.type
             });
         }
+        */
     },
 
     /**

@@ -53,16 +53,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new modules.EdgeCRUD(), [
             [DragEvent.END, 'handleLinking']
         ])
-        // // CRM
-        // .register(new modules.CRMEdgeCRUD({
-        //     modes: {
-        //         LINK: 'LINK',
-        //         SYNONYM: 'SYNONYM',
-        //         INFLUENCE: 'INFLUENCE'
-        //     }
-        // }), [
-        //     [DragEvent.END, 'handleLinking']
-        // ])
         .register(new modules.Holdable({
             'duration': 500
         }),[['mouse-down', 'handleHoldStart'],
@@ -264,7 +254,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     //     return edges;
     // },
 
-    // CRM
     getLinkClassValue: function (data) {
 
         var value = 'link';
@@ -276,7 +265,6 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         return value;
     },
 
-    // CRM
     drawLinkEnter: function (linkEnter) {
 
         var proto = Object.getPrototypeOf(Object.getPrototypeOf(this));
