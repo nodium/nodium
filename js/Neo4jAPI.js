@@ -76,8 +76,8 @@ graph.Neo4jAPI = app.createClass({
     get: function (callback) {
 
         var nodeQuery = {
-            query: 'START n=node(*) RETURN n, labels(n)',
-            // query: 'START n=node(*) RETURN n',
+            // query: 'START n=node(*) RETURN n, labels(n)',
+            query: 'START n=node(*) RETURN n',
             params: {}
         };
         var edgeQuery = {

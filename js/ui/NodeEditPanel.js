@@ -36,7 +36,9 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         });
 
         this.edgeList = new List('#node-edges', '#node-form', {
-            delete: '.delete-edge'
+            new:    '#new-edge',
+            delete: '.delete-edge',
+            empty:  { name: '' }
         });
 
         // mapping of node fields to ui field id
@@ -50,23 +52,23 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
          * Initialization is done when the graph is loaded
          * and reinitialization when a node is updated
          */
-        this.bloodhound = new Bloodhound({
-            name: 'edges',
-            local: this.getTypeaheadNodes.bind(this),
-            datumTokenizer: function (node) {
-                return Bloodhound.tokenizers.whitespace(
-                    Node.getPropertyValue(node, 'name')
-                );
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace
-        });
+        // this.bloodhound = new Bloodhound({
+        //     name: 'edges',
+        //     local: this.getTypeaheadNodes.bind(this),
+        //     datumTokenizer: function (node) {
+        //         return Bloodhound.tokenizers.whitespace(
+        //             Node.getPropertyValue(node, 'name')
+        //         );
+        //     },
+        //     queryTokenizer: Bloodhound.tokenizers.whitespace
+        // });
 
-        $('#new-edge').typeahead(null, {
-            source:     this.bloodhound.ttAdapter(),
-            displayKey: function (node) {
-                return Node.getPropertyValue(node, 'name');
-            }
-        });
+        // $('#new-edge').typeahead(null, {
+        //     source:     this.bloodhound.ttAdapter(),
+        //     displayKey: function (node) {
+        //         return Node.getPropertyValue(node, 'name');
+        //     }
+        // });
     },
 
     init: function (container) {
@@ -224,7 +226,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
             edgeId:    edge._id,
             nodeId:    otherId,
             name:      name || '',
-            direction: from ? '-->' : '<--'
+            direction: from ? 'right' : 'left'
         };
     },
 
@@ -322,7 +324,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         }, this);
 
         // clear typeahead in the undocumented typeahead way...
-        $('#new-edge').typeahead('val', '');
+        // $('#new-edge').typeahead('val', '');
         // $('#new-edge').val('');
 
         this.propertyList.clear();
@@ -349,7 +351,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
         console.log('typeahead:selected');
         console.log(event);
 
-        $('#new-edge').typeahead('val', '');
+        // $('#new-edge').typeahead('val', '');
     },
 
     handleDeleteEdge: function (event, data) {
@@ -474,7 +476,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         this.nodes = nodes;
         this.edges = edges;
-        this.bloodhound.initialize();
+        // this.bloodhound.initialize();
     },
 
     handleNodeSelected: function (event, node, data) {

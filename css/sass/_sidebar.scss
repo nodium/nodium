@@ -117,14 +117,22 @@ aside {
 .node-field button {
 	position: absolute;
 	top: 0;
-	left: 0;
 	bottom: 0;
 	color: #b3b3b3;
+
+	&.right {
+		right: 0;
+	}
+
+	&:not(.right) {
+		left: 0;
+	}
 }
 
 .node-field button,
 #new-property,
-#new-label {
+#new-label,
+#new-edge {
 	text-align: center;
 	font-size: 10px;
 	font-size: 1.0rem;
@@ -134,7 +142,8 @@ aside {
 }
 
 #new-property,
-#new-label {
+#new-label,
+#new-edge {
 	color: $color-light;
 	height: 35px;
 }
@@ -194,6 +203,16 @@ aside {
 
 #node-labels::before {
 	content: 'Labels';
+}
+
+#node-edges::before {
+	content: 'Relations';
+}
+
+#node-edges div {
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
 }
 
 #node-filter-result::before {
