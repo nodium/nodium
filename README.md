@@ -18,7 +18,9 @@ You are now able to directly modify the contents of your Neo4j database.
 A short guide of the default actions
 
 To create a node, press and hold the left mouse button anywhere on the canvas.
+
 To select (and modify) a node, click it. The edit panel will open on the right.
+
 To link nodes, drag them over each other.
 
 ## Project structure
