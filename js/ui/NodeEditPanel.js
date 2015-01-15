@@ -79,6 +79,7 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
 
         $(this.kernel).on(NodeEvent.LOADED, this.handleGraphLoaded.bind(this));
         $(this.kernel).on(EdgeEvent.CREATED, this.handleEdgeCreated.bind(this));
+        $(this.kernel).on(EdgeEvent.DESTROYED, this.handleEdgeDestroyed.bind(this));
 
         this
             .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
@@ -420,12 +421,20 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     /**
      * Show the edge in the list
      */
-    handleEdgeDeleted: function (event, edge, source, target) {
+    handleEdgeDestroyed: function (event, edge) {
 
-        this.edgeList.add(this.parseEdge({
-            source: source,
-            target: target
-        }));
+        var source = edge.source,
+            target = edge.target,
+            edgeData;
+
+        this.nodeEdges = _.reject(this.nodeEdges, function (e) {
+            return e.source._id === source._id && e.target._id === target._id;
+        });
+
+        // very nasty stuff here
+        this.edgeList.clear();
+        edgeData = _.map(this.nodeEdges, this.parseEdge, this);
+        this.edgeList.set(edgeData);
     },
 
     handleEdgeElementClicked: function (event, element, item) {
