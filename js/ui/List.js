@@ -67,6 +67,8 @@ ui.List = app.createClass({
      */
     addAndFocus: function (data, input) {
 
+        console.log(data);
+
         var $element = this.add(data);
 
         $(input, $element).focus();

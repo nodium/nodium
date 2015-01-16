@@ -290,6 +290,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
         if (event.keyCode === 27) {
             $(this).trigger(KeyboardEvent.ESCAPE);
+        } else if (event.keyCode === 13) {
+            // event.preventDefault();
         } else if (event.keyCode === 70 && (event.ctrlKey || event.metaKey)) {
             console.log('ctrl+f');
         } else if (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) {

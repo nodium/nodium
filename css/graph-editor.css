@@ -4,24 +4,24 @@
  */
 /* line 1, sass/_dom-overrides.scss */
 * {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 /* line 6, sass/_dom-overrides.scss */
 *::before {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 /* line 12, sass/_dom-overrides.scss */
 *::after {
-  -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -38,7 +38,7 @@ body {
   padding: 0;
   margin: 0;
   overflow: hidden;
-  background: white;
+  background: #FFF;
   font-size: 1.6rem;
 }
 
@@ -64,17 +64,17 @@ button:focus, input:focus, textarea:focus, select:focus, label:focus {
 /* line 51, sass/_dom-overrides.scss */
 textarea, input, select {
   background: #c2b9c2;
-  color: white;
+  color: #FFF;
 }
 
-/* line 58, sass/_dom-overrides.scss */
+/* line 56, sass/_dom-overrides.scss */
 aside textarea,
 aside input,
 aside select {
   color: #331833;
 }
 
-/* line 64, sass/_dom-overrides.scss */
+/* line 62, sass/_dom-overrides.scss */
 aside button,
 aside input[type=button],
 aside input[type=submit] {
@@ -195,14 +195,14 @@ aside {
   margin: 0;
   display: block;
   background: transparent;
-  color: white;
+  color: #FFF;
 }
 /* line 92, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 98, sass/_sidebar.scss */
+/* line 97, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -229,15 +229,23 @@ aside {
 .node-field button {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
   color: #b3b3b3;
 }
-
+/* line 123, sass/_sidebar.scss */
+.node-field button.right {
+  right: 0;
+}
 /* line 127, sass/_sidebar.scss */
+.node-field button:not(.right) {
+  left: 0;
+}
+
+/* line 132, sass/_sidebar.scss */
 .node-field button,
 #new-property,
-#new-label {
+#new-label,
+#new-edge {
   text-align: center;
   font-size: 10px;
   font-size: 1.0rem;
@@ -246,34 +254,35 @@ aside {
   background: transparent;
 }
 
-/* line 137, sass/_sidebar.scss */
+/* line 144, sass/_sidebar.scss */
 #new-property,
-#new-label {
-  color: white;
+#new-label,
+#new-edge {
+  color: #FFF;
   height: 35px;
 }
 
-/* line 142, sass/_sidebar.scss */
+/* line 151, sass/_sidebar.scss */
 #delete-node-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 148, sass/_sidebar.scss */
+/* line 156, sass/_sidebar.scss */
 .node-field input,
 .node-field textarea {
   background: transparent;
-  color: white;
+  color: #FFF;
 }
 
-/* line 153, sass/_sidebar.scss */
+/* line 162, sass/_sidebar.scss */
 .node-label.node-field div {
   width: 100%;
   min-width: 100%;
   max-width: 100%;
 }
 
-/* line 161, sass/_sidebar.scss */
+/* line 170, sass/_sidebar.scss */
 #inspector ul::before {
   width: 100%;
   padding: 6px 0 6px 38px;
@@ -287,47 +296,59 @@ aside {
   border-bottom: 1px solid #b3b3b3;
 }
 
-/* line 176, sass/_sidebar.scss */
+/* line 185, sass/_sidebar.scss */
 #inspector li {
   color: #b3b3b3;
   cursor: pointer;
   transition: color 0.08s linear;
 }
-/* line 182, sass/_sidebar.scss */
+/* line 191, sass/_sidebar.scss */
 #inspector li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 186, sass/_sidebar.scss */
+/* line 195, sass/_sidebar.scss */
 #inspector li:hover {
-  color: white;
+  color: #FFF;
 }
 
-/* line 191, sass/_sidebar.scss */
+/* line 200, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
 }
 
-/* line 195, sass/_sidebar.scss */
+/* line 204, sass/_sidebar.scss */
 #node-labels::before {
   content: 'Labels';
 }
 
-/* line 199, sass/_sidebar.scss */
+/* line 208, sass/_sidebar.scss */
+#node-edges::before {
+  content: 'Relations';
+}
+
+/* line 212, sass/_sidebar.scss */
+#node-edges div {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+/* line 218, sass/_sidebar.scss */
 #node-filter-result::before {
   content: 'Result';
 }
 
-/* line 203, sass/_sidebar.scss */
+/* line 222, sass/_sidebar.scss */
 #node-filter-result {
   overflow-y: auto;
   height: calc(100vh - 35px - 16px);
 }
 
-/* line 209, sass/_sidebar.scss */
+/* line 228, sass/_sidebar.scss */
 .list-item {
   width: 100%;
   height: 38px;
-  color: white;
+  color: #FFF;
   padding: 1px 10px 0 38px;
   display: -webkit-box;
   /* OLD: Safari,  iOS, Android browser, older WebKit browsers.  */
