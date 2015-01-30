@@ -5,11 +5,11 @@ const
 
 gulp.task('build', function () {
 	Builder.build({
-		srcDir: '../js'
+		srcDir: '../js',
 		output: '../dist/nodium.js',
 		fixedOrder: [
 			'Util.js',
 			'snippet/Super.js'
-		];
+		]
 	});
 });

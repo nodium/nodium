@@ -1,6 +1,7 @@
 module.exports = (function (undefined) {
 
     const
+        fs      = require('fs'),
         mkdirp  = require('mkdirp');
 
     var Builder,
@@ -20,7 +21,7 @@ module.exports = (function (undefined) {
             if (fixedOrder && fixedOrder.length) {
 
                 fixedOrder.forEach(function (path) {
-                    traverse(options.srcDir + path);
+                    traverse(options.srcDir + '/' + path);
                 });
             }
 
@@ -39,7 +40,7 @@ module.exports = (function (undefined) {
      */
     function getFileContents (path) {
 
-        return fs.readFileSync(path, String);
+        return fs.readFileSync(path);
     }
 
     /**
@@ -124,7 +125,7 @@ module.exports = (function (undefined) {
         // create the directory structure if it doesn't exist
         mkdirp.sync(filePath.split('/').slice(0, -1).join('/'));
 
-        fs.writeFileSync(filePath, content, { flag: '+w' });
+        fs.writeFileSync(filePath, content, { flag: 'w+' });
     }
 
     return Builder;
