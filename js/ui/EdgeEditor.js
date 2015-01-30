@@ -5,6 +5,7 @@
 var ui          = context.setNamespace('app.ui'),
     app         = context.use('app'),
     model       = context.use('app.model'),
+    util        = context.use('app.util'),
     NodeEvent   = context.use('app.event.NodeEvent'),
     Event       = context.use('app.event.Event'),
     _defaults;
@@ -69,7 +70,7 @@ ui.EdgeEditor = app.createClass({
         var fieldHTML,
             propertiesList = $('#node-fields', this.view);
 
-        fieldHTML = context.createFromPrototype(propertiesList, {
+        fieldHTML = util.createFromPrototype(propertiesList, {
             field: '',
             value: '',
             rows: 1
@@ -83,7 +84,7 @@ ui.EdgeEditor = app.createClass({
         var fieldHTML,
             elementList = $(selector, this.view);
 
-        fieldHTML = context.createFromPrototype(elementList, data);
+        fieldHTML = util.createFromPrototype(elementList, data);
 
         $('input', $(fieldHTML).appendTo(elementList)).focus();
     },
@@ -101,7 +102,7 @@ ui.EdgeEditor = app.createClass({
         for (i = 0; i < data.length; i++) {
 
             // make object creation generic
-            elementHTML = context.createFromPrototype(elementList, {
+            elementHTML = util.createFromPrototype(elementList, {
                 label: data[i]
             });
 
@@ -263,7 +264,7 @@ ui.EdgeEditor = app.createClass({
                 continue;
             }
 
-            fieldHTML = context.createFromPrototype(propertiesList, {
+            fieldHTML = util.createFromPrototype(propertiesList, {
                 field: fieldName,
                 value: data._properties[fieldName],
                 rows: 1

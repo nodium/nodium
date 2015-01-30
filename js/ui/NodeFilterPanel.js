@@ -3,6 +3,7 @@
 
 var ui          = context.setNamespace('app.ui'),
     app         = context.use('app'),
+    util        = context.use('app.util'),
     NodeEvent   = context.use('app.event.NodeEvent'),
     Event       = context.use('app.event.Event'),
     _defaults;
@@ -72,7 +73,7 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
 
             nodeName = nodesData[i - 1]._properties[titleField];
 
-            listItemHTML = context.createFromPrototype(nodesList, {
+            listItemHTML = util.createFromPrototype(nodesList, {
                 name: nodeName,
             });
 

@@ -5,6 +5,7 @@
 var ui          = context.setNamespace('app.ui'),
     app         = context.use('app'),
     model       = context.use('app.model'),
+    util        = context.use('app.util'),
     Event       = context.use('app.event.Event'),
     _defaults;
 
@@ -56,7 +57,7 @@ ui.List = app.createClass({
      */
     add: function (data) {
 
-        var element = context.createFromPrototype(this.$list, data);
+        var element = util.createFromPrototype(this.$list, data);
 
         return $(element).appendTo(this.$list);
     },

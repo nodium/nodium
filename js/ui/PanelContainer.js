@@ -4,6 +4,7 @@
 
 var ui      = context.setNamespace('app.ui'),
     app     = context.use('app'),
+    util    = context.use('app.util'),
     _defaults = {
         expanded: false
     };
@@ -86,7 +87,7 @@ ui.PanelContainer = app.createClass({
         var menu = $('.panel-navigation', this.view),
             menuItem;
 
-        menuItem = window.createFromPrototype(menu, {
+        menuItem = util.createFromPrototype(menu, {
             icon: icon
         });
 

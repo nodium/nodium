@@ -1,5 +1,6 @@
 (function (context, undefined) {
-	var model = context.setNamespace('app.model');
+	var model = context.setNamespace('app.model'),
+		uuid  = context.use('app.util.uuid');
 
 	const
 		idPath 		 	= '_id',
@@ -16,7 +17,7 @@
 			// TODO use setters from util for this
 			node[propertiesPath] = properties || {};
 			node[labelsPath] = labels || [];
-			node[idPath] = id === undefined ? context.uuid() : id; // force id usage
+			node[idPath] = id === undefined ? uuid() : id; // force id usage
 
 			console.log('CREATING NODE');
 			console.log(node);
