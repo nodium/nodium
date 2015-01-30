@@ -1,11 +1,11 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules       = window.setNamespace('app.modules'),
-    app         = window.use('app'),
-    model         = window.use('app.model'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
+var modules       = context.setNamespace('app.modules'),
+    app         = context.use('app'),
+    model         = context.use('app.model'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
     _defaults = {
         path: '_style',
         storables: {}
@@ -68,7 +68,7 @@ modules.Storable = app.createClass({
                 property = properties[i];
 
 				// get the value of the property
-				value = window.getObjectValueByPath(data, property);
+				value = context.getObjectValueByPath(data, property);
 
                 parameters[property] = value;
             }
@@ -110,7 +110,7 @@ modules.Storable = app.createClass({
 
             // TODO each style should have its own parser
 			for (property in properties) {
-                window.setByPath(data, property, properties[property]);
+                context.setByPath(data, property, properties[property]);
 			}
 		}
 	},
@@ -146,4 +146,4 @@ modules.Storable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

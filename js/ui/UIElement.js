@@ -1,10 +1,10 @@
-(function (window, $, undefined){
+(function (context, $, undefined){
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    EventAware  = window.use('app.event.EventAware');
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    EventAware  = context.use('app.event.EventAware');
 
 ui.UIElement = app.createClass(EventAware, {
 
@@ -24,4 +24,4 @@ ui.UIElement = app.createClass(EventAware, {
     }
 });
 
-}(window, window.jQuery));
+}(this, jQuery));

@@ -1,8 +1,8 @@
-(function (use, undefined) {
+(function (context, undefined) {
 
     // 'use strict';
 
-    var event = window.setNamespace('app.event');
+    var event = context.setNamespace('app.event');
 
     const Event = {
         CHANGE:     'change',
@@ -23,4 +23,4 @@
 
     event.Event = Event;
 
-}(window));
+}(this));

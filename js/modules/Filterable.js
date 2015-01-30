@@ -1,9 +1,9 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules = window.setNamespace('app.modules'),
-    app   = window.use('app');
+var modules = context.setNamespace('app.modules'),
+    app   = context.use('app');
 
 /**
  * Filterable module
@@ -85,4 +85,4 @@ modules.Filterable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

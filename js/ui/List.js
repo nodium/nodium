@@ -1,11 +1,11 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    model       = window.use('app.model'),
-    Event       = window.use('app.event.Event'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    model       = context.use('app.model'),
+    Event       = context.use('app.event.Event'),
     _defaults;
 
 ui.List = app.createClass({
@@ -56,7 +56,7 @@ ui.List = app.createClass({
      */
     add: function (data) {
 
-        var element = window.createFromPrototype(this.$list, data);
+        var element = context.createFromPrototype(this.$list, data);
 
         return $(element).appendTo(this.$list);
     },
@@ -179,4 +179,4 @@ ui.List = app.createClass({
     }
 });
 
-}(window, window.jQuery));
+}(this, jQuery));

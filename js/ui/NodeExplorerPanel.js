@@ -1,11 +1,11 @@
-(function (window, $, _, undefined) {
+(function (context, $, _, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    Event       = window.use('app.event.Event'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    Event       = context.use('app.event.Event'),
     _defaults;
 
 ui.NodeExplorerPanel = app.createClass(ui.UIPanel, {
@@ -33,4 +33,4 @@ ui.NodeExplorerPanel = app.createClass(ui.UIPanel, {
     }
 });
 
-}(window, window.$, window._));
+}(this, jQuery, _));

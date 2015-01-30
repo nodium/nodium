@@ -1,9 +1,9 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var ui      = window.setNamespace('app.ui'),
-    app     = window.use('app'),
+var ui      = context.setNamespace('app.ui'),
+    app     = context.use('app'),
     _defaults = {
         expanded: false
     };
@@ -130,4 +130,4 @@ ui.PanelContainer = app.createClass({
     }
 });
 
-}(window, window.jQuery));
+}(this, jQuery));

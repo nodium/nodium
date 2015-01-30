@@ -1,10 +1,10 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var event       = window.setNamespace('app.event'),
-    EventAware  = window.use('app.event.EventAware'),
-    app         = window.use('app');
+var event       = context.setNamespace('app.event'),
+    EventAware  = context.use('app.event.EventAware'),
+    app         = context.use('app');
 
 event.Kernel = app.createClass(EventAware, {
 
@@ -54,14 +54,14 @@ event.Kernel = app.createClass(EventAware, {
             if (module[value] && typeof(module[value]) === "function") {
                 func = module[value];
             } else {
-                func = window.getFunction(value);
+                func = context.getFunction(value);
             }
 
             if (func) {
-                $(this).on(key, window.partial(func, module, args));
+                $(this).on(key, context.partial(func, module, args));
             }
         }
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

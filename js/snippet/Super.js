@@ -1,8 +1,8 @@
-(function (window, undefined) {
+(function (context, undefined) {
 
     // 'use strict';
 
-    var snippet = window.setNamespace('app.snippet');
+    var snippet = context.setNamespace('app.snippet');
 
     /**
      * snippet.super
@@ -20,4 +20,4 @@
             return prototype[functionName].apply(this, args);
         }
     };
-}(window));
+}(this));

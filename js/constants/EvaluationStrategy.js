@@ -1,12 +1,12 @@
-(function (window, undefined) {
+(function (context, undefined) {
 
 'use strict';
 
-var constants   = window.setNamespace('app.constants');
+var constants   = context.setNamespace('app.constants');
 
 constants.EvaluationStrategy = {
 	LABEL: 'label',
 	PROPERTY: 'property'
 };
 
-}(window));
+}(this));

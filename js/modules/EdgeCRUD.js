@@ -1,11 +1,11 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var graph     = window.setNamespace('app.graph'),
-    modules   = window.setNamespace('app.modules'),
-    app       = window.use('app'),
-    EdgeEvent = window.use('app.event.EdgeEvent'),
+var graph     = context.setNamespace('app.graph'),
+    modules   = context.setNamespace('app.modules'),
+    app       = context.use('app'),
+    EdgeEvent = context.use('app.event.EdgeEvent'),
     _defaults;
 
 /**
@@ -219,4 +219,4 @@ modules.EdgeCRUD = app.createClass({
     }
 });
 
-}(window, jQuery, d3));
+}(this, jQuery, d3));

@@ -1,10 +1,11 @@
-(function (window, undefined) {
-	var model = window.setNamespace('app.model');
+(function (context, undefined) {
+	var model = context.setNamespace('app.model');
 
-	const propertiesPath = '_properties';
-	const labelsPath	 = '_labels';
-	const idPath 		 = '_id';
-	const shapePath      = '_shape';
+	const
+		idPath 		 	= '_id',
+		labelsPath	 	= '_labels',
+		propertiesPath 	= '_properties',
+		shapePath      	= '_shape';
 
 	model.Node = {
 
@@ -15,7 +16,7 @@
 			// TODO use setters from util for this
 			node[propertiesPath] = properties || {};
 			node[labelsPath] = labels || [];
-			node[idPath] = id === undefined ? window.uuid() : id; // force id usage
+			node[idPath] = id === undefined ? context.uuid() : id; // force id usage
 
 			console.log('CREATING NODE');
 			console.log(node);
@@ -25,7 +26,7 @@
 
 	    getId: function (data) {
 
-	    	return window.getObjectValueByPath(data, idPath);
+	    	return context.getObjectValueByPath(data, idPath);
 	    },
 
 	    getIdPath: function () {
@@ -60,7 +61,7 @@
 	     */
 	    getLabels: function (data) {
 
-	    	return window.getObjectValueByPath(data, labelsPath);
+	    	return context.getObjectValueByPath(data, labelsPath);
 	    },
 
 	    /**
@@ -68,14 +69,14 @@
 	     */
 	    getProperties: function (data) {
 
-	    	return window.getObjectValueByPath(data, propertiesPath);
+	    	return context.getObjectValueByPath(data, propertiesPath);
 	    },
 
 		getPropertyValue: function (data, property) {
 
 	    	var path = this.getPropertiesPath(property);
 
-	    	return window.getObjectValueByPath(data, path);
+	    	return context.getObjectValueByPath(data, path);
 	    },
 
 	    /**
@@ -96,13 +97,13 @@
 
 	    	var path = this.getPropertiesPath(property);
 
-	    	return window.getObjectValueByPath(data, path) !== undefined;
+	    	return context.getObjectValueByPath(data, path) !== undefined;
 	    },
 
 	    hasPropertyWithValue: function (data, property, value) {
 
 	    	var path = this.getPropertiesPath(property),
-	    		propertyValue = window.getObjectValueByPath(data, path);
+	    		propertyValue = context.getObjectValueByPath(data, path);
 
 	    	return value === propertyValue;
 	    },
@@ -115,4 +116,4 @@
 	    }
 	};
 
-}(window));
+}(this));

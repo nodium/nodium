@@ -1,10 +1,10 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules     = window.setNamespace('app.modules'),
-    app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent');
+var modules     = context.setNamespace('app.modules'),
+    app         = context.use('app'),
+    NodeEvent   = context.use('app.event.NodeEvent');
 
 /**
  * Selectable module
@@ -83,4 +83,4 @@ modules.Selectable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

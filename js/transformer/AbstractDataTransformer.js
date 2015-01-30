@@ -1,9 +1,9 @@
-(function (window, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var transformer = window.setNamespace('app.transformer'),
-    app         = window.use('app'),
+var transformer = context.setNamespace('app.transformer'),
+    app         = context.use('app'),
     _defaults   = {
     	map: {} // the non property values
     };
@@ -57,4 +57,4 @@ transformer.AbstractDataTransformer = app.createClass({
     }
 });
 
-}(window));
+}(this, jQuery));

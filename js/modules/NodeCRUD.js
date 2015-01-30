@@ -1,13 +1,13 @@
-(function (window, $, d3, _, undefined) {
+(function (context, $, d3, _, undefined) {
 
 'use strict';
 
-var modules     = window.setNamespace('app.modules'),
-    transformer = window.setNamespace('app.transformer'),
-    app         = window.use('app'),
-    model       = window.use('app.model'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    EdgeEvent   = window.use('app.event.EdgeEvent'),
+var modules     = context.setNamespace('app.modules'),
+    transformer = context.setNamespace('app.transformer'),
+    app         = context.use('app'),
+    model       = context.use('app.model'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    EdgeEvent   = context.use('app.event.EdgeEvent'),
 
     _defaults = {
         properties: {}, // default property values on node creation
@@ -207,4 +207,4 @@ modules.NodeCRUD = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3, window._));
+}(this, jQuery, d3, _));

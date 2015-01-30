@@ -1,8 +1,8 @@
-(function (window, undefined) {
+(function (context, undefined) {
 
 // 'use strict';
 
-var constants   = window.setNamespace('app.constants');
+var constants   = context.setNamespace('app.constants');
 
 const NodeStatus = {
 	ACCEPTED: 'accepted',
@@ -12,4 +12,4 @@ const NodeStatus = {
 
 constants.NodeStatus = NodeStatus;
 
-}(window));
+}(this));

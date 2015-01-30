@@ -1,10 +1,10 @@
-(function (window, $, _, undefined) {
+(function (context, $, _, undefined) {
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    Event       = window.use('app.event.Event'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    Event       = context.use('app.event.Event'),
     _defaults;
 
 ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
@@ -20,10 +20,10 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
 
     init: function (container) {
 
-        var filterUnsetHandler = window.curry(this.handleFilterUnset, this),
-            filterChangeHandler = window.curry(this.handleFilterChange, this),
-            nodeFilteredHandler = window.curry(this.handleNodeFiltered, this),
-            listItemClickHandler = window.curry(this.handleListItemClicked, this);
+        var filterUnsetHandler   = _.bind(this.handleFilterUnset, this),
+            filterChangeHandler  = _.bind(this.handleFilterChange, this),
+            nodeFilteredHandler  = _.bind(this.handleNodeFiltered, this),
+            listItemClickHandler = _.bind(this.handleListItemClicked, this);
 
         $(container).on('menu-collapse', this.handleMenuCollapse.bind(this));
         $(this.kernel)
@@ -32,7 +32,7 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
         $('#node-query', this.view).on([
                 Event.INPUT,
                 Event.PASTE,
-            ].join(' '), this.handleQueryChange.bind(this));
+            ].join(' '), _.bind(this.handleQueryChange, this));
 
         $(this.view).on(Event.CLICK, 'li', listItemClickHandler);
 
@@ -72,7 +72,7 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
 
             nodeName = nodesData[i - 1]._properties[titleField];
 
-            listItemHTML = window.createFromPrototype(nodesList, {
+            listItemHTML = context.createFromPrototype(nodesList, {
                 name: nodeName,
             });
 
@@ -131,4 +131,4 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
     }
 });
 
-}(window, window.jQuery, window._));
+}(this, jQuery, _));

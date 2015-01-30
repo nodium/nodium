@@ -1,9 +1,9 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules   = window.setNamespace('app.modules'),
-    app       = window.use('app'),
+var modules   = context.setNamespace('app.modules'),
+    app       = context.use('app'),
     _defaults;
 
 /**
@@ -20,9 +20,9 @@ modules.Zoomable = app.createClass({
 
     initialize: function () {
 
-        var zoomHandler = window.curry(this.handleZoom, this);
-        var zoomStartHandler = window.curry(this.handleZoomStart, this);
-        var zoomEndHandler = window.curry(this.handleZoomEnd, this);
+        var zoomHandler = context.curry(this.handleZoom, this);
+        var zoomStartHandler = context.curry(this.handleZoomStart, this);
+        var zoomEndHandler = context.curry(this.handleZoomEnd, this);
         d3.select(this.graph.selector + ' .graph-viewport')
           .call(d3.behavior.zoom()
             .on('zoom', zoomHandler)
@@ -68,4 +68,4 @@ modules.Zoomable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

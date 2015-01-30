@@ -2,13 +2,11 @@
 
 'use strict';
 
-// define namespace
-// context.app = context.app || {};
+var app       = context.app,
+    superflag = false;;
 
 app.debug = false;
 app.registeredNamespaces = [];
-
-var superflag = false;
 
 // move to snippet
 app.createClass = function () {
@@ -407,14 +405,6 @@ context.createFromPrototype = function (view, parameters) {
     }
 
     return instance;
-};
-
-context.bindAll = function (array, self) {
-    var i;
-
-    for (i = array.length; i > 0; i--) {
-        array[i] = context.curry(array[i], self);
-    }
 };
 
 context.uuid = function () {

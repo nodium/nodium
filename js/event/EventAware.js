@@ -1,7 +1,7 @@
-(function (window, $, undefined){
+(function (context, $, undefined){
 
-var event   = window.setNamespace('app.event'),
-    app     = window.use('app'),
+var event   = context.setNamespace('app.event'),
+    app     = context.use('app'),
     toCamelCase = function (dashedString) {
         return dashedString.replace(/-([a-z])/g, function (g) {
             return g[1].toUpperCase();
@@ -93,4 +93,4 @@ event.EventAware = app.createClass({
     }
 });
 
-}(window, window.jQuery));
+}(context, jQuery));

@@ -1,10 +1,10 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules       = window.setNamespace('app.modules'),
-    app           = window.use('app'),
-    Node          = window.use('app.model.Node'),
+var modules       = context.setNamespace('app.modules'),
+    app           = context.use('app'),
+    Node          = context.use('app.model.Node'),
 
     _defaults = {
         link: ['link'] // the properties to be checked for uris
@@ -58,4 +58,4 @@ modules.Hyperlinkable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

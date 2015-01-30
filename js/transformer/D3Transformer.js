@@ -1,9 +1,9 @@
-(function (window, undefined) {
+(function (context, undefined) {
 
 'use strict';
 
-var transformer = window.setNamespace('app.transformer'),
-    app         = window.use('app');
+var transformer = context.setNamespace('app.transformer'),
+    app         = context.use('app');
 
 /**
  * An interface between d3 data structure and the data structure
@@ -20,4 +20,4 @@ transformer.D3Transformer = app.createClass(transformer.AbstractDataTransformer,
 	}
 });
 
-}(window));
+}(this));

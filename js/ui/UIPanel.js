@@ -1,9 +1,9 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app');
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app');
 
 ui.UIPanel = app.createClass(ui.UIElement, {
 
@@ -22,7 +22,7 @@ ui.UIPanel = app.createClass(ui.UIElement, {
         this.view.addClass('active');
     },
 
-    super: window.use('app.snippet.super'),
+    super: context.use('app.snippet.super'),
 
     /**
      * Event handlers
@@ -32,7 +32,7 @@ ui.UIPanel = app.createClass(ui.UIElement, {
         if (this.isVisible) {
             this.hide();
         }
-    },
+    }
 });
 
-}(window, window.jQuery));
+}(this, jQuery));

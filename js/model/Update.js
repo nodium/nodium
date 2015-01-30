@@ -1,9 +1,9 @@
-(function (window, _, undefined) {
+(function (context, _, undefined) {
 
 'use strict';
 
-var model = window.setNamespace('app.model'),
-	Node = window.use('app.model.Node');
+var model = context.setNamespace('app.model'),
+	Node  = context.use('app.model.Node');
 
 model.Update = app.createClass({
 
@@ -107,7 +107,7 @@ model.Update = app.createClass({
 
             for (i = 0; i < unset.length; i++) {
                 directive = unset[i];
-                window.removeByPath(data, directive[0], directive[1]);
+                context.removeByPath(data, directive[0], directive[1]);
             }
         }
 
@@ -115,7 +115,7 @@ model.Update = app.createClass({
 
             for (i = 0; i < set.length; i++) {
                 directive = set[i];
-                window.setByPath(data, directive[0], directive[1]);
+                context.setByPath(data, directive[0], directive[1]);
             }
         }
 
@@ -181,4 +181,4 @@ model.Update = app.createClass({
 
 });
 
-}(window, window._));
+}(context, _));

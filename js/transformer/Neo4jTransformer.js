@@ -1,10 +1,10 @@
-(function (window, undefined) {
+(function (context, jQuery, undefined) {
 
 'use strict';
 
-var transformer = window.setNamespace('app.transformer'),
-    app         = window.use('app'),
-    model       = window.use('app.model');
+var transformer = context.setNamespace('app.transformer'),
+    app         = context.use('app'),
+    model       = context.use('app.model');
 
 /**
  * An interface between the Neo4j data structure and the data structure
@@ -152,4 +152,4 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 	}
 });
 
-}(window));
+}(this, jQuery));

@@ -1,15 +1,15 @@
-(function (window, $, _, undefined) {
+(function (context, $, _, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    Event       = window.use('app.event.Event'),
-    EdgeEvent   = window.use('app.event.EdgeEvent'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    model       = window.use('app.model'),
-    Node        = window.use('app.model.Node'),
-    List        = window.use('app.ui.List'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    Event       = context.use('app.event.Event'),
+    EdgeEvent   = context.use('app.event.EdgeEvent'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    model       = context.use('app.model'),
+    Node        = context.use('app.model.Node'),
+    List        = context.use('app.ui.List'),
     _defaults;
 
 ui.NodeEditPanel = app.createClass(ui.UIPanel, {
@@ -508,4 +508,4 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     }
 });
 
-}(window, window.jQuery, window._));
+}(this, jQuery, _));

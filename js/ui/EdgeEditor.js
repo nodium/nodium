@@ -1,12 +1,12 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    model       = window.use('app.model'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    Event       = window.use('app.event.Event'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    model       = context.use('app.model'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    Event       = context.use('app.event.Event'),
     _defaults;
 
 ui.EdgeEditor = app.createClass({
@@ -22,8 +22,8 @@ ui.EdgeEditor = app.createClass({
     init: function (container) {
 
         var // nodeCreatedHandler = this.handleNodeCreated.bind(this),
-            // nodeSelectedHandler = window.curry(this.handleNodeSelected, this),
-            // nodeUnselectedHandler = window.curry(this.handleNodeUnselected, this),
+            // nodeSelectedHandler = context.curry(this.handleNodeSelected, this),
+            // nodeUnselectedHandler = context.curry(this.handleNodeUnselected, this),
             newPropertyButtonClickHandler = this.handleNewPropertyButtonClick.bind(this),
             deletePropertyButtonClickHandler = this.handleDeletePropertyButtonClick.bind(this),
             newLabelButtonClickHandler = this.handleNewLabelButtonClick.bind(this),
@@ -69,7 +69,7 @@ ui.EdgeEditor = app.createClass({
         var fieldHTML,
             propertiesList = $('#node-fields', this.view);
 
-        fieldHTML = window.createFromPrototype(propertiesList, {
+        fieldHTML = context.createFromPrototype(propertiesList, {
             field: '',
             value: '',
             rows: 1
@@ -83,7 +83,7 @@ ui.EdgeEditor = app.createClass({
         var fieldHTML,
             elementList = $(selector, this.view);
 
-        fieldHTML = window.createFromPrototype(elementList, data);
+        fieldHTML = context.createFromPrototype(elementList, data);
 
         $('input', $(fieldHTML).appendTo(elementList)).focus();
     },
@@ -101,7 +101,7 @@ ui.EdgeEditor = app.createClass({
         for (i = 0; i < data.length; i++) {
 
             // make object creation generic
-            elementHTML = window.createFromPrototype(elementList, {
+            elementHTML = context.createFromPrototype(elementList, {
                 label: data[i]
             });
 
@@ -263,7 +263,7 @@ ui.EdgeEditor = app.createClass({
                 continue;
             }
 
-            fieldHTML = window.createFromPrototype(propertiesList, {
+            fieldHTML = context.createFromPrototype(propertiesList, {
                 field: fieldName,
                 value: data._properties[fieldName],
                 rows: 1
@@ -367,4 +367,4 @@ ui.EdgeEditor = app.createClass({
     }
 });
 
-}(window, window.jQuery));
+}(this, jQuery));

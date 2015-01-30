@@ -1,5 +1,5 @@
-(function (window, undefined) {
-	var event = window.setNamespace('app.event'),
+(function (context, undefined) {
+	var event = context.setNamespace('app.event'),
 		EdgeEvent;
 
 	EdgeEvent = {
@@ -21,4 +21,4 @@
 	};
 
 	event.EdgeEvent = EdgeEvent;
-}(window));
+}(this));

@@ -1,10 +1,10 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules   = window.setNamespace('app.modules'),
-    app       = window.use('app'),
-    HoldEvent = window.use('app.event.HoldEvent'),
+var modules   = context.setNamespace('app.modules'),
+    app       = context.use('app'),
+    HoldEvent = context.use('app.event.HoldEvent'),
 
     _defaults = {
         'duration': 500
@@ -111,4 +111,4 @@ modules.Holdable = app.createClass({
     },
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

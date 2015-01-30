@@ -1,11 +1,11 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
-var ui          = window.setNamespace('app.ui'),
-    app         = window.use('app'),
-    EdgeEvent   = window.use('app.event.EdgeEvent'),
-    Event       = window.use('app.event.Event'),
+var ui          = context.setNamespace('app.ui'),
+    app         = context.use('app'),
+    EdgeEvent   = context.use('app.event.EdgeEvent'),
+    Event       = context.use('app.event.Event'),
     _defaults;
 
 ui.EdgeModePanel = app.createClass({
@@ -36,4 +36,4 @@ ui.EdgeModePanel = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery));

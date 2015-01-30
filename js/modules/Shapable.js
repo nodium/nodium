@@ -1,12 +1,12 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules       = window.setNamespace('app.modules'),
-    app           = window.use('app'),
-    Node          = window.use('app.model.Node'),
-    graphics      = window.use('app.graph.graphics'),
-    EvaluationStrategy = window.use('app.constants.EvaluationStrategy'),
+var modules       = context.setNamespace('app.modules'),
+    app           = context.use('app'),
+    Node          = context.use('app.model.Node'),
+    graphics      = context.use('app.graph.graphics'),
+    EvaluationStrategy = context.use('app.constants.EvaluationStrategy'),
 
     _defaults = {
         strategy: EvaluationStrategy.PROPERTY, // coloring strategy priority
@@ -155,4 +155,4 @@ modules.Shapable = app.createClass(modules.Evaluable, {
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

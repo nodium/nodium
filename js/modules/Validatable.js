@@ -1,12 +1,12 @@
-(function (window, $, _, undefined) {
+(function (context, $, _, undefined) {
 
 'use strict';
 
-var modules     = window.setNamespace('app.modules'),
-    app         = window.use('app'),
-    model       = window.use('app.model'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    NodeStatus  = window.use('app.constants.NodeStatus'),
+var modules     = context.setNamespace('app.modules'),
+    app         = context.use('app'),
+    model       = context.use('app.model'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    NodeStatus  = context.use('app.constants.NodeStatus'),
     _defaults;
 
 modules.Validatable = app.createClass({
@@ -51,4 +51,4 @@ modules.Validatable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window._));
+}(this, jQuery, _));

@@ -1,11 +1,11 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var modules         = window.setNamespace('app.modules'),
-    app           = window.use('app'),
-    graphics      = window.use('app.graph.graphics'),
-    EvaluationStrategy = window.use('app.constants.EvaluationStrategy'),
+var modules         = context.setNamespace('app.modules'),
+    app           = context.use('app'),
+    graphics      = context.use('app.graph.graphics'),
+    EvaluationStrategy = context.use('app.constants.EvaluationStrategy'),
 
     _defaults = {
         numColors: 10, // number of random colors
@@ -144,4 +144,4 @@ modules.Colorable = app.createClass({
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));
