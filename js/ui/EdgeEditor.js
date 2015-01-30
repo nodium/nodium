@@ -1,4 +1,4 @@
-(function (context, $, undefined) {
+(function (context, $, _, undefined) {
 
 'use strict';
 
@@ -22,8 +22,8 @@ ui.EdgeEditor = app.createClass({
     init: function (container) {
 
         var // nodeCreatedHandler = this.handleNodeCreated.bind(this),
-            // nodeSelectedHandler = context.curry(this.handleNodeSelected, this),
-            // nodeUnselectedHandler = context.curry(this.handleNodeUnselected, this),
+            // nodeSelectedHandler = _.bind(this.handleNodeSelected, this),
+            // nodeUnselectedHandler = _.bind(this.handleNodeUnselected, this),
             newPropertyButtonClickHandler = this.handleNewPropertyButtonClick.bind(this),
             deletePropertyButtonClickHandler = this.handleDeletePropertyButtonClick.bind(this),
             newLabelButtonClickHandler = this.handleNewLabelButtonClick.bind(this),
@@ -367,4 +367,4 @@ ui.EdgeEditor = app.createClass({
     }
 });
 
-}(this, jQuery));
+}(this, jQuery, _));

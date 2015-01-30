@@ -1,4 +1,4 @@
-(function (context, $, d3, undefined) {
+(function (context, $, d3, _, undefined) {
 
 'use strict';
 
@@ -148,7 +148,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         });
 
         // UI handlers that initiate an action event
-        var keyDownHandler = context.curry(this.handleKeyDown, this);
+        var keyDownHandler = _.bind(this.handleKeyDown, this);
         $(context).on('keydown', keyDownHandler);
 
         $(this)
@@ -219,7 +219,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     },
 
     getGraphData: function () {
-        this.api.get(context.curry(this.handleGraphData, this));
+        this.api.get(_.bind(this.handleGraphData, this));
     },
 
     // getVisibleNodes: function () {
@@ -328,4 +328,4 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     }
 });
 
-}(this, jQuery, d3));
+}(this, jQuery, d3, _));

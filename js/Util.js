@@ -65,51 +65,6 @@ app.createClass = function () {
     return Constructor;
 };
 
-/**
- * Creates a function calling fn
- * @param function fn
- * @param object scope
- * @return function
- */
-context.curry = function (fn, scope) {
-    scope = scope || context;
-
-    // return a function executing fn
-    return function () {
-        return fn.apply(scope, arguments);
-    };
-};
-
-/**
- * Creates a function calling fn, with optional arguments
- * @param function fn
- * @param object scope
- * @param ...
- * @return function
- */
-context.curryWithArguments = function (fn, scope) {
-
-    var args = arguments.slice(2);
-
-    scope = scope || context;
-
-    // return a function executing fn
-    return function () {
-        fn.apply(scope, args);
-    };
-};
-
-context.currySelf = function (fn, self) {
-
-    return function () {
-        for (var i = arguments.length; i > 0; i--) {
-            arguments[i] = arguments[i-1];
-        }
-        arguments[0] = self;
-        fn.apply(this, arguments);
-    };
-};
-
 context.partial = function (fn, scope) {
     var aps = Array.prototype.slice,
         apc = Array.prototype.concat,

@@ -1,4 +1,4 @@
-(function (context, $, d3, undefined) {
+(function (context, $, d3, _, undefined) {
 
 'use strict';
 
@@ -87,7 +87,7 @@ graph.Graph = app.createClass({
         this.drawNodes();
 
         // NOTE: handleTick currently is dependent on this.node initialized in drawNodes()
-        tickHandler = context.curry(this.handleTick, this);
+        tickHandler = _.bind(this.handleTick, this);
         this.force.on('tick', tickHandler);
 
         this.handleWindowResize();
@@ -121,7 +121,7 @@ graph.Graph = app.createClass({
     initialize: function () {
 
         // put in resizable module?
-        var windowResizeHandler = context.curry(this.handleWindowResize, this);
+        var windowResizeHandler = _.bind(this.handleWindowResize, this);
         $(context).on('resize', windowResizeHandler);
 
         // initialize the viewport translation and scale
@@ -173,14 +173,14 @@ graph.Graph = app.createClass({
     getEventsObject: function () {
 
         var eventsObject = {
-            'dragstart': context.currySelf(this.handleNodeDragStart, this),
-            'drag': context.currySelf(this.handleNodeDrag, this),
-            'dragend': context.currySelf(this.handleNodeDragEnd, this),
-            'mouseover': context.currySelf(this.handleMouseOver, this),
-            'mouseout': context.currySelf(this.handleMouseOut, this),
-            'click': context.currySelf(this.handleMouseClick, this),
-            'mouseup': context.currySelf(this.handleMouseUp, this),
-            'mousedown': context.currySelf(this.handleMouseDown, this)
+            'dragstart': _.bindSelf(this.handleNodeDragStart, this),
+            'drag': _.bindSelf(this.handleNodeDrag, this),
+            'dragend': _.bindSelf(this.handleNodeDragEnd, this),
+            'mouseover': _.bindSelf(this.handleMouseOver, this),
+            'mouseout': _.bindSelf(this.handleMouseOut, this),
+            'click': _.bindSelf(this.handleMouseClick, this),
+            'mouseup': _.bindSelf(this.handleMouseUp, this),
+            'mousedown': _.bindSelf(this.handleMouseDown, this)
         };
 
         return eventsObject;
@@ -388,7 +388,7 @@ graph.Graph = app.createClass({
             textNode = nodeEnter.append('text')
                 .attr('text-anchor', 'middle');
 
-        // var textDrawer = context.currySelf(this.drawNodeText, this);
+        // var textDrawer = _.bindSelf(this.drawNodeText, this);
         // textNode.each(textDrawer);
         textNode.each(function (data) {
             self.drawNodeText.apply(self, [this, data]);
@@ -714,4 +714,4 @@ graph.Drag = {
 };
 
 
-}(this, jQuery, d3));
+}(this, jQuery, _, d3));

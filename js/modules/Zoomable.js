@@ -1,4 +1,4 @@
-(function (context, $, d3, undefined) {
+(function (context, $, d3, _, undefined) {
 
 'use strict';
 
@@ -20,9 +20,9 @@ modules.Zoomable = app.createClass({
 
     initialize: function () {
 
-        var zoomHandler = context.curry(this.handleZoom, this);
-        var zoomStartHandler = context.curry(this.handleZoomStart, this);
-        var zoomEndHandler = context.curry(this.handleZoomEnd, this);
+        var zoomHandler = _.bind(this.handleZoom, this);
+        var zoomStartHandler = _.bind(this.handleZoomStart, this);
+        var zoomEndHandler = _.bind(this.handleZoomEnd, this);
         d3.select(this.graph.selector + ' .graph-viewport')
           .call(d3.behavior.zoom()
             .on('zoom', zoomHandler)
@@ -68,4 +68,4 @@ modules.Zoomable = app.createClass({
     }
 });
 
-}(this, jQuery, d3));
+}(this, jQuery, _, d3));
