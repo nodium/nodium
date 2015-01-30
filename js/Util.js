@@ -479,11 +479,11 @@ window.createFromPrototype = function (view, parameters) {
     return instance;
 };
 
-window.bindAll = function (array, self) {
+window.bindAll = function (array, context) {
     var i;
 
     for (i = array.length; i > 0; i--) {
-        array[i] = window.curry(array[i], self);
+        array[i] = window.curry(array[i], context);
     }
 };
 
