@@ -1,5 +1,5 @@
-(function (window, undefined) {
-	var event = window.setNamespace('app.event');
+(function (context, undefined) {
+	var event = context.setNamespace('app.event');
 
 	const NodeEvent = {
 		CREATE: 'node-create',
@@ -24,4 +24,4 @@
 	};
 
 	event.NodeEvent = NodeEvent;
-}(window));
+}(this));

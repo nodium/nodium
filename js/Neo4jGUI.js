@@ -1,18 +1,18 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var app           = window.setNamespace('app'),
-    graph         = window.setNamespace('app.graph'),
-    modules       = window.setNamespace('app.modules'),
-    transformer   = window.setNamespace('app.transformer'),
-    ui            = window.setNamespace('app.ui'),
-    animations    = window.setNamespace('app.graph.animations'),
-    Node          = window.use('app.model.Node'),
-    NodeEvent     = window.use('app.event.NodeEvent'),
-    DragEvent     = window.use('app.event.DragEvent'),
-    HoldEvent     = window.use('app.event.HoldEvent'),
-    KeyboardEvent = window.use('app.event.KeyboardEvent'),
+var app           = context.setNamespace('app'),
+    graph         = context.setNamespace('app.graph'),
+    modules       = context.setNamespace('app.modules'),
+    transformer   = context.setNamespace('app.transformer'),
+    ui            = context.setNamespace('app.ui'),
+    animations    = context.setNamespace('app.graph.animations'),
+    Node          = context.use('app.model.Node'),
+    NodeEvent     = context.use('app.event.NodeEvent'),
+    DragEvent     = context.use('app.event.DragEvent'),
+    HoldEvent     = context.use('app.event.HoldEvent'),
+    KeyboardEvent = context.use('app.event.KeyboardEvent'),
     self;
 
 /**
@@ -148,8 +148,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         });
 
         // UI handlers that initiate an action event
-        var keyDownHandler = window.curry(this.handleKeyDown, this);
-        $(window).on('keydown', keyDownHandler);
+        var keyDownHandler = context.curry(this.handleKeyDown, this);
+        $(context).on('keydown', keyDownHandler);
 
         $(this)
             .on('mode-change', this.handleModeChange.bind(this))
@@ -219,7 +219,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     },
 
     getGraphData: function () {
-        this.api.get(window.curry(this.handleGraphData, this));
+        this.api.get(context.curry(this.handleGraphData, this));
     },
 
     // getVisibleNodes: function () {
@@ -328,4 +328,4 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     }
 });
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));

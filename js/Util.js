@@ -1,15 +1,16 @@
-(function (window, $, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
 // define namespace
-window.app = window.app || {};
+// context.app = context.app || {};
 
 app.debug = false;
 app.registeredNamespaces = [];
 
 var superflag = false;
 
+// move to snippet
 app.createClass = function () {
 
     var Constructor,
@@ -72,8 +73,8 @@ app.createClass = function () {
  * @param object scope
  * @return function
  */
-window.curry = function (fn, scope) {
-    scope = scope || window;
+context.curry = function (fn, scope) {
+    scope = scope || context;
 
     // return a function executing fn
     return function () {
@@ -88,11 +89,11 @@ window.curry = function (fn, scope) {
  * @param ...
  * @return function
  */
-window.curryWithArguments = function (fn, scope) {
+context.curryWithArguments = function (fn, scope) {
 
     var args = arguments.slice(2);
 
-    scope = scope || window;
+    scope = scope || context;
 
     // return a function executing fn
     return function () {
@@ -100,7 +101,7 @@ window.curryWithArguments = function (fn, scope) {
     };
 };
 
-window.currySelf = function (fn, self) {
+context.currySelf = function (fn, self) {
 
     return function () {
         for (var i = arguments.length; i > 0; i--) {
@@ -111,7 +112,7 @@ window.currySelf = function (fn, self) {
     };
 };
 
-window.partial = function (fn, scope) {
+context.partial = function (fn, scope) {
     var aps = Array.prototype.slice,
         apc = Array.prototype.concat,
         args;
@@ -125,7 +126,7 @@ window.partial = function (fn, scope) {
     // flatten the arguments
     args = apc.apply([], args);
 
-    scope = scope || window;
+    scope = scope || context;
   
     return function () {
         return fn.apply(scope, args.concat(aps.call(arguments)));
@@ -137,11 +138,11 @@ window.partial = function (fn, scope) {
  * @param string namespace
  * @return object
  */
-window.setNamespace = function (namespace) {
+context.setNamespace = function (namespace) {
 
     // declare variables
     var namespaceCompenents = namespace.split("."),
-        parent = window,
+        parent = context,
         component,
         i,
         length;
@@ -162,10 +163,10 @@ window.setNamespace = function (namespace) {
  * @param string fullyQualifiedClassName
  * @return mixed
  */
-window.use = function (fullyQualifiedClassName) {
+context.use = function (fullyQualifiedClassName) {
 
     var components = fullyQualifiedClassName.split('.'),
-        parent = window,
+        parent = context,
         child;
 
     while (child = components.shift()) {
@@ -185,10 +186,10 @@ window.use = function (fullyQualifiedClassName) {
 /**
  * Try to get a function from a namespace
  */
-window.getFunction = function (functionPath) {
+context.getFunction = function (functionPath) {
 
     var components = functionPath.split('.'),
-        parent = window,
+        parent = context,
         child;
 
     while (child = components.shift()) {
@@ -209,7 +210,7 @@ window.getFunction = function (functionPath) {
 /**
  * Note: if an array is passed, this returns a reference to this same array
  */
-window.getPathArray = function (path) {
+context.getPathArray = function (path) {
 
     var array;
 
@@ -228,9 +229,9 @@ window.getPathArray = function (path) {
     return array;
 }
 
-window.getObjectValueByPath = function (obj, path) {
+context.getObjectValueByPath = function (obj, path) {
 
-    var array = window.getPathArray(path),
+    var array = context.getPathArray(path),
         key;
 
     while (array.length) {
@@ -250,9 +251,9 @@ window.getObjectValueByPath = function (obj, path) {
  * If an index is given but the array doesn't exist, a subobject will be created
  * If the found subobject is an array, the value will be pushed onto it
  */
-window.setByPath = function (obj, path, value) {
+context.setByPath = function (obj, path, value) {
 
-    var array = window.getPathArray(path),
+    var array = context.getPathArray(path),
         key,
         newKey = false;
 
@@ -271,7 +272,7 @@ window.setByPath = function (obj, path, value) {
     }
 
     if (Array.isArray(obj)) {
-        key = parseInt(key);
+        key = parseInt(key, 10);
         if (isNaN(key)) {
             return false;
         }
@@ -304,9 +305,9 @@ window.setByPath = function (obj, path, value) {
  *   array: path should end in an index; remove the element at index
  *   object: path should end in a key; delete the key
  */
-window.removeByPath = function (obj, path, value) {
+context.removeByPath = function (obj, path, value) {
 
-    var array = window.getPathArray(path),
+    var array = context.getPathArray(path),
         key,
         depth = value === undefined ? array.length - 1 : array.length;
 
@@ -327,7 +328,7 @@ window.removeByPath = function (obj, path, value) {
         if (Array.isArray(obj)) {
 
             // we need an int
-            key = parseInt(key);
+            key = parseInt(key, 10);
             if (isNaN(key)) {
                 return false;
             }
@@ -362,51 +363,11 @@ window.removeByPath = function (obj, path, value) {
     
 }
 
-/**
- * Dynamically loads a javascript file containing namespace
- * @param string namespace
- */
-window.loadNamespace = function (namespace) {
-
-    // declare variables
-    var namespaceLoadedHandler,
-        namespaceCompenents = namespace.split('.'),
-        prototype = 'http://__hostname__/js/__path__.min.js',
-        url;
-
-    if (app.debug) {
-        prototype = 'http://__hostname__/js/__path__.js';
-    }
-
-    // remove 'app' from namespaceComponents
-    namespaceCompenents = namespaceCompenents.splice(1, namespaceCompenents.length - 1);
-
-    // create the url to the javascript file
-    url = prototype
-        .replace(/__hostname__/g, window.location.hostname)
-        .replace(/__path__/g, namespaceCompenents.join('/'));
-    
-    namespaceLoadedHandler = window.curryWithArguments(window.constructializeNamespace, window, namespace);
-
-    // get the script
-    if (window.hasNamespace(namespace)) {
-        window.constructializeNamespace(namespace);
-
-    } else {
-        $.getScript(url)
-            .done(namespaceLoadedHandler)
-            .fail(function (jqxhr, settings, exception) {
-                console.log('script failed to load!');
-                console.log(exception);
-            });
-    }
-};
-
-window.hasNamespace = function (namespace) {
+context.hasNamespace = function (namespace) {
     // declare variables
     var namespaceCompenents = namespace.split("."),
         hasNamespace = true,
-        parent = window,
+        parent = context,
         component,
         i,
         length;
@@ -428,38 +389,7 @@ window.hasNamespace = function (namespace) {
     return hasNamespace;
 };
 
-window.constructializeNamespace = function (namespace) {
-
-    window.setNamespace(namespace).constructialize();
-};
-
-window.releaseNamespace = function (namespace) {
-
-    window.setNamespace(namespace).release();
-};
-
-window.isCrippleBrowser = function () {
-    var userAgent = navigator.userAgent,
-        crippleBrowsers = [
-            'MSIE 6',
-            'MSIE 7',
-            'MSIE 8',
-            'MSIE 9'
-        ],
-        i,
-        length;
-
-    for (i = 0, length = crippleBrowsers.length; i < length; i++) {
-
-        if (0 <= userAgent.indexOf(crippleBrowsers[i])) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-window.createFromPrototype = function (view, parameters) {
+context.createFromPrototype = function (view, parameters) {
     var prototype = view.data('prototype'),
         key,
         instance,
@@ -479,15 +409,15 @@ window.createFromPrototype = function (view, parameters) {
     return instance;
 };
 
-window.bindAll = function (array, context) {
+context.bindAll = function (array, self) {
     var i;
 
     for (i = array.length; i > 0; i--) {
-        array[i] = window.curry(array[i], context);
+        array[i] = context.curry(array[i], self);
     }
 };
 
-window.uuid = function () {
+context.uuid = function () {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random()*16|0,
             v = c == 'x' ? r : (r&0x3|0x8);
@@ -495,4 +425,4 @@ window.uuid = function () {
     });
 }
 
-}(window, window.jQuery));
+}(this, jQuery));

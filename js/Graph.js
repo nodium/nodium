@@ -1,13 +1,13 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var graph       = window.setNamespace('app.graph'),
-    event       = window.use('app.event'),
-    app         = window.use('app'),
-    NodeEvent   = window.use('app.event.NodeEvent'),
-    DragEvent   = window.use('app.event.DragEvent'),
-    HoldEvent   = window.use('app.event.HoldEvent'),
+var graph       = context.setNamespace('app.graph'),
+    event       = context.use('app.event'),
+    app         = context.use('app'),
+    NodeEvent   = context.use('app.event.NodeEvent'),
+    DragEvent   = context.use('app.event.DragEvent'),
+    HoldEvent   = context.use('app.event.HoldEvent'),
     self;
 
 graph.Graph = app.createClass({
@@ -87,7 +87,7 @@ graph.Graph = app.createClass({
         this.drawNodes();
 
         // NOTE: handleTick currently is dependent on this.node initialized in drawNodes()
-        tickHandler = window.curry(this.handleTick, this);
+        tickHandler = context.curry(this.handleTick, this);
         this.force.on('tick', tickHandler);
 
         this.handleWindowResize();
@@ -121,8 +121,8 @@ graph.Graph = app.createClass({
     initialize: function () {
 
         // put in resizable module?
-        var windowResizeHandler = window.curry(this.handleWindowResize, this);
-        $(window).on('resize', windowResizeHandler);
+        var windowResizeHandler = context.curry(this.handleWindowResize, this);
+        $(context).on('resize', windowResizeHandler);
 
         // initialize the viewport translation and scale
         this.initializeViewport();
@@ -173,14 +173,14 @@ graph.Graph = app.createClass({
     getEventsObject: function () {
 
         var eventsObject = {
-            'dragstart': window.currySelf(this.handleNodeDragStart, this),
-            'drag': window.currySelf(this.handleNodeDrag, this),
-            'dragend': window.currySelf(this.handleNodeDragEnd, this),
-            'mouseover': window.currySelf(this.handleMouseOver, this),
-            'mouseout': window.currySelf(this.handleMouseOut, this),
-            'click': window.currySelf(this.handleMouseClick, this),
-            'mouseup': window.currySelf(this.handleMouseUp, this),
-            'mousedown': window.currySelf(this.handleMouseDown, this)
+            'dragstart': context.currySelf(this.handleNodeDragStart, this),
+            'drag': context.currySelf(this.handleNodeDrag, this),
+            'dragend': context.currySelf(this.handleNodeDragEnd, this),
+            'mouseover': context.currySelf(this.handleMouseOver, this),
+            'mouseout': context.currySelf(this.handleMouseOut, this),
+            'click': context.currySelf(this.handleMouseClick, this),
+            'mouseup': context.currySelf(this.handleMouseUp, this),
+            'mousedown': context.currySelf(this.handleMouseDown, this)
         };
 
         return eventsObject;
@@ -388,7 +388,7 @@ graph.Graph = app.createClass({
             textNode = nodeEnter.append('text')
                 .attr('text-anchor', 'middle');
 
-        // var textDrawer = window.currySelf(this.drawNodeText, this);
+        // var textDrawer = context.currySelf(this.drawNodeText, this);
         // textNode.each(textDrawer);
         textNode.each(function (data) {
             self.drawNodeText.apply(self, [this, data]);
@@ -661,8 +661,8 @@ graph.Graph = app.createClass({
      */
 
     handleWindowResize: function (event) {
-        var width = $(window).width(),
-            height = $(window).height();
+        var width = $(context).width(),
+            height = $(context).height();
 
         $(this.selector)
             .attr('width', width)
@@ -714,4 +714,4 @@ graph.Drag = {
 };
 
 
-}(window, window.jQuery, window.d3));
+}(this, jQuery, d3));
