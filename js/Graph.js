@@ -173,14 +173,14 @@ graph.Graph = app.createClass({
     getEventsObject: function () {
 
         var eventsObject = {
-            'dragstart': _.bindSelf(this.handleNodeDragStart, this),
-            'drag': _.bindSelf(this.handleNodeDrag, this),
-            'dragend': _.bindSelf(this.handleNodeDragEnd, this),
-            'mouseover': _.bindSelf(this.handleMouseOver, this),
-            'mouseout': _.bindSelf(this.handleMouseOut, this),
-            'click': _.bindSelf(this.handleMouseClick, this),
-            'mouseup': _.bindSelf(this.handleMouseUp, this),
-            'mousedown': _.bindSelf(this.handleMouseDown, this)
+            'dragstart': _.bind(this.handleNodeDragStart, this),
+            'drag': _.bind(this.handleNodeDrag, this),
+            'dragend': _.bind(this.handleNodeDragEnd, this),
+            'mouseover': _.bind(this.handleMouseOver, this),
+            'mouseout': _.bind(this.handleMouseOut, this),
+            'click': _.bind(this.handleMouseClick, this),
+            'mouseup': _.bind(this.handleMouseUp, this),
+            'mousedown': _.bind(this.handleMouseDown, this)
         };
 
         return eventsObject;
@@ -388,7 +388,7 @@ graph.Graph = app.createClass({
             textNode = nodeEnter.append('text')
                 .attr('text-anchor', 'middle');
 
-        // var textDrawer = _.bindSelf(this.drawNodeText, this);
+        // var textDrawer = _.bind(this.drawNodeText, this);
         // textNode.each(textDrawer);
         textNode.each(function (data) {
             self.drawNodeText.apply(self, [this, data]);
