@@ -24,7 +24,7 @@
 
         var prototype = view.data('prototype');
 
-        return util.stringFromTemplate(prototype, params);
+        return util.stringFromTemplate(prototype, parameters);
     }
 
     util.createFromPrototype = createFromPrototype;

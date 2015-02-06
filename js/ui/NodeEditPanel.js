@@ -407,7 +407,10 @@ ui.NodeEditPanel = app.createClass(ui.UIPanel, {
     handleEdgeCreated: function (event, edge, source, target) {
 
         // TODO make nice check or remove event handlers
-        if (!this.nodeData) {
+        console.log('edge created');
+        console.log(this.nodeData);
+        console.log(source);
+        if (!this.nodeData || (this.nodeData._id !== source._id && this.nodeData._id !== target._id)) {
             return;
         }
 

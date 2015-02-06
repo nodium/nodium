@@ -93,4 +93,4 @@ event.EventAware = app.createClass({
     }
 });
 
-}(context, jQuery));
+}(this, jQuery));

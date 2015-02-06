@@ -1,4 +1,4 @@
-(function (context, $, d3, undefined) {
+(function (context, $, undefined) {
 
 'use strict';
 
@@ -23,4 +23,4 @@ modules.Pinnable = app.createClass({
 	}
 });
 
-}(context, jQuery, d3));
+}(this, jQuery));

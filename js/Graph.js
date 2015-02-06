@@ -73,12 +73,12 @@ graph.Graph = app.createClass({
      * asynchronous callback function incase of database call
      * expects a graph object with nodes and edges properties
      */
-    handleGraphData: function (graph) {
+    handleGraphData: function (graphData) {
 
         var tickHandler;
 
-        this.nodes = graph.nodes || [];
-        this.edges = graph.edges || [];
+        this.nodes = graphData.nodes || [];
+        this.edges = graphData.edges || [];
 
         // draw the graph
         this.force = this.createForce();
@@ -173,14 +173,14 @@ graph.Graph = app.createClass({
     getEventsObject: function () {
 
         var eventsObject = {
-            'dragstart': _.bind(this.handleNodeDragStart, this),
-            'drag': _.bind(this.handleNodeDrag, this),
-            'dragend': _.bind(this.handleNodeDragEnd, this),
-            'mouseover': _.bind(this.handleMouseOver, this),
-            'mouseout': _.bind(this.handleMouseOut, this),
-            'click': _.bind(this.handleMouseClick, this),
-            'mouseup': _.bind(this.handleMouseUp, this),
-            'mousedown': _.bind(this.handleMouseDown, this)
+            'dragstart': _.partial(this.handleNodeDragStart, this),
+            'drag': _.partial(this.handleNodeDrag, this),
+            'dragend': _.partial(this.handleNodeDragEnd, this),
+            'mouseover': _.partial(this.handleMouseOver, this),
+            'mouseout': _.partial(this.handleMouseOut, this),
+            'click': _.partial(this.handleMouseClick, this),
+            'mouseup': _.partial(this.handleMouseUp, this),
+            'mousedown': _.partial(this.handleMouseDown, this)
         };
 
         return eventsObject;
@@ -621,6 +621,10 @@ graph.Graph = app.createClass({
 
     handleNodeDragStart: function (graph, data) {
 
+        console.log('node drag start');
+        console.log(graph);
+        console.log(this);
+
         // use d3 event?
         $(graph.kernel).trigger(DragEvent.START, [this, data]);
 
@@ -714,4 +718,4 @@ graph.Drag = {
 };
 
 
-}(this, jQuery, _, d3));
+}(this, jQuery, d3, _));

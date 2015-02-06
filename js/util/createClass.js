@@ -14,22 +14,24 @@
  (function (context, undefined) {
 
     var util    = context.setNamespace('app.util'),
+        app     = context.use('app'),
         superFn = context.use('app.util.super');
+
+    var _shouldConstructSuper = false;
 
     /**
      * Creates a class constructor
      * @param {Function} [SuperClass]
      * @param {Object} prototype
      */
-    context.createClass = function () {
+    app.createClass = function () {
 
         var Constructor,
             SuperClass,
             prototype,
             props,
             p,
-            args,
-            _shouldConstructSuper = false;
+            args;
 
         args = [].slice.call(arguments, 0);
 

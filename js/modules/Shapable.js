@@ -141,7 +141,6 @@ modules.Shapable = app.createClass(modules.Evaluable, {
         }
 
         if (strategy === EvaluationStrategy.PROPERTY) {
-            console.log('shaping by property');
             graphics.shapeNodes(
                 nodes,
                 this.shapeNodeByProperty.bind(this)

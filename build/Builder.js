@@ -61,7 +61,7 @@ module.exports = (function (undefined) {
     function getHeader () {
         return [
             "module.exports = (function () {",
-            "    var -      = require('lodash'),",
+            "    var _      = require('lodash'),",
             "        d3     = require('d3'),",
             "        jQuery = require('jQuery');",
             "",

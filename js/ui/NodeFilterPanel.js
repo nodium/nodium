@@ -22,7 +22,7 @@ ui.NodeFilterPanel = app.createClass(ui.UIPanel, {
     init: function (container) {
 
         var filterUnsetHandler   = _.bind(this.handleFilterUnset, this),
-            filterChangeHandler  = _.bind(this.handleFilterChange, this),
+            // filterChangeHandler  = _.bind(this.handleFilterChange, this),
             nodeFilteredHandler  = _.bind(this.handleNodeFiltered, this),
             listItemClickHandler = _.bind(this.handleListItemClicked, this);
 

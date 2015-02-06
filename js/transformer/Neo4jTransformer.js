@@ -100,9 +100,6 @@ transformer.Neo4jTransformer = app.createClass(transformer.AbstractDataTransform
 	 		});
 	 	}
 
-	 	console.log("nodes");
-	 	console.log(nodes);
-
 	 	return {
 	 		nodes: nodes,
 	 		edges: edges

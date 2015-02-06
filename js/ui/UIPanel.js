@@ -22,7 +22,7 @@ ui.UIPanel = app.createClass(ui.UIElement, {
         this.view.addClass('active');
     },
 
-    super: context.use('app.snippet.super'),
+    super: context.use('app.util.super'),
 
     /**
      * Event handlers

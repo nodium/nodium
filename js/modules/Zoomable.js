@@ -68,4 +68,4 @@ modules.Zoomable = app.createClass({
     }
 });
 
-}(this, jQuery, _, d3));
+}(this, jQuery, d3, _));

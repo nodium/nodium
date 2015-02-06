@@ -362,9 +362,9 @@ aside {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: center;
   -moz-box-align: center;
-  /* OLDâ€¦ */
+  /* OLD├óÔé¼┬ª */
   -ms-flex-align: center;
-  /* You know the drill nowâ€¦ */
+  /* You know the drill now├óÔé¼┬ª */
   -webkit-align-items: center;
   align-items: center;
 }
@@ -410,9 +410,9 @@ aside {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: stretch;
   -moz-box-align: stretch;
-  /* OLDâ€¦ */
+  /* OLD├óÔé¼┬ª */
   -ms-flex-align: stretch;
-  /* You know the drill nowâ€¦ */
+  /* You know the drill now├óÔé¼┬ª */
   -webkit-align-items: stretch;
   align-items: stretch;
   height: 53px;
@@ -505,9 +505,9 @@ label > input[type=radio] {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: center;
   -moz-box-align: center;
-  /* OLDâ€¦ */
+  /* OLD├óÔé¼┬ª */
   -ms-flex-align: center;
-  /* You know the drill nowâ€¦ */
+  /* You know the drill now├óÔé¼┬ª */
   -webkit-align-items: center;
   align-items: center;
   height: 44px;

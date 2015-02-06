@@ -19,8 +19,8 @@
 			node[labelsPath] = labels || [];
 			node[idPath] = id === undefined ? uuid() : id; // force id usage
 
-			console.log('CREATING NODE');
-			console.log(node);
+			// console.log('CREATING NODE');
+			// console.log(node);
 
 			return node;
 	    },
