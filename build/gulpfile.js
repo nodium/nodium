@@ -11,6 +11,7 @@ gulp.task('build', function () {
         output: '../dist/nodium.js',
         fixedOrder: [
         	'namespace',
+            'util/wrappers.js',
         	'util/super.js',
             'util',
             'event/EventAware.js',

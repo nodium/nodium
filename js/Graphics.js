@@ -1,10 +1,10 @@
-(function (window, $, d3, undefined) {
+(function (context, $, d3, undefined) {
 
 'use strict';
 
-var graph       = window.setNamespace('app.graph'),
-    graphics    = window.setNamespace('app.graph.graphics'),
-    NodeStatus  = window.use('app.constants.NodeStatus');
+var graph       = context.setNamespace('app.graph'),
+    graphics    = context.setNamespace('app.graph.graphics'),
+    NodeStatus  = context.use('app.constants.NodeStatus');
 
 graphics.scaleNode = function (scale, node, graph) {
 
@@ -93,4 +93,4 @@ graphics.shapeNodes = function (nodes, shape) {
     });
 };
 
-})(window, window.jQuery, window.d3);
+})(this, jQuery, d3);

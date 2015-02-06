@@ -29,7 +29,7 @@ modules.Hyperlinkable = app.createClass({
 
     followLink: function (uri) {
 
-        window.open(uri);
+        app.open(uri);
     },
 
     handleFollowLink: function (event, node, data) {
