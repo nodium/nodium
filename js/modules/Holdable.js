@@ -42,7 +42,7 @@ modules.Holdable = app.createClass({
 
         var graph = this.graph;
 
-        this.holdTimeoutId = app.setTimeout(function () {
+        this.holdTimeoutId = window.setTimeout(function () {
 
             // we're only really holding the node if we're not dragging
             if (!graph.dragging) {
@@ -81,7 +81,7 @@ modules.Holdable = app.createClass({
 
     handleHoldEnd: function (event, node, data) {
 
-        app.clearTimeout(this.holdTimeoutId);
+        window.clearTimeout(this.holdTimeoutId);
         
         if (!node) {
             return;
