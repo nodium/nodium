@@ -1,4 +1,4 @@
-(function (context, $, d3, undefined) {
+(function (context, $, d3, _, undefined) {
 
 'use strict';
 
@@ -64,4 +64,4 @@ event.Kernel = app.createClass(EventAware, {
     }
 });
 
-}(this, jQuery, d3));
+}(this, jQuery, d3, _));

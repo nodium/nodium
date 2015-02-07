@@ -1,28 +1,21 @@
-(function (context, undefined) {
-
-/*
- * window wrappers
- * the context passed should be the window object
+/**
+ * This file is part of the Nodium core package
+ *
+ * (c) Niko van Meurs & Sid Mijnders
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
+/**
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
+ */
+(function (context, undefined) {
 
-// doesn't work yet!
-var app = context.use('app');
+var app                 = context.setNamespace('app');
 
-app.setTimeout = function () {
-	console.log(context);
-	console.log(app);
-	console.log(arguments);
-	context.setTimeout.apply(context, arguments);
-};
-
-
-app.clearTimeout = function () {
-	context.clearTimeout.apply(context, arguments);
-};
-
-app.open = function () {
-	context.open.apply(context, arguments);
-};
+    app.clearTimeout    = context.clearTimeout.bind(context),
+    app.setTimeout      = context.setTimeout.bind(context),
+    app.open            = context.open.bind(context);
 
 }(this));

@@ -8,7 +8,6 @@
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {

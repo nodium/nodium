@@ -1,14 +1,14 @@
 /**
- * This file is part of the StarApple CRM package
+ * This file is part of the Nodium core package
  *
- * (c) StarApple B.V. <developers@starapple.nl>
+ * (c) Niko van Meurs & Sid Mijnders
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
 (function (context, undefined) {
 

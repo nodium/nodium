@@ -17,7 +17,7 @@ module.exports = (function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -60,7 +60,7 @@ module.exports = (function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -124,7 +124,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
 (function (context, undefined) {
 
@@ -160,7 +160,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -256,7 +256,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
 (function (context, undefined) {
 
@@ -287,7 +287,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -328,7 +328,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -363,7 +363,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -402,7 +402,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -443,7 +443,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -528,7 +528,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  * @author Sid Mijnders <sid@starapple.nl>
  */
  (function (context, undefined) {
@@ -592,7 +592,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
 (function (context, _, undefined) {
 
@@ -632,7 +632,7 @@ app.open = function () {
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
 (function (context, undefined) {
 

@@ -1,3 +1,15 @@
+/**
+ * This file is part of the Nodium core package
+ *
+ * (c) Niko van Meurs & Sid Mijnders
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
+ */
 module.exports = (function (undefined) {
 
     const
@@ -9,6 +21,12 @@ module.exports = (function (undefined) {
         traversed;
 
     Builder = {
+
+        /** 
+         * Concatenates all source files
+         * and wraps them in a self-executing function
+         * @param {Object} options
+         */
         build: function (options) {
 
             var fixedOrder = options.fixedOrder;
@@ -61,11 +79,17 @@ module.exports = (function (undefined) {
     function getHeader () {
         return [
             "module.exports = (function () {",
-            "    var _      = require('lodash'),",
-            "        d3     = require('d3'),",
-            "        jQuery = require('jQuery');",
+            "    var _      = context._ || require('lodash'),",
+            "        d3     = context.d3 || require('d3'),",
+            "        jQuery = context.$ || require('jQuery');",
             "",
-            "    this.app = {};",
+            "    this.app = {",
+            "        context: {",
+            "            _:      _,",
+            "            d3:     d3,",
+            "            jQuery: jQuery",
+            "        }",
+            "    };",
             ""
         ].join('\n');
     }

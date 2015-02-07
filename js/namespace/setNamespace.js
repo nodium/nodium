@@ -1,15 +1,14 @@
 /**
- * This file is part of the Nodium Core package
+ * This file is part of the Nodium core package
  *
- * (c) StarApple B.V. <developers@starapple.nl>
+ * (c) Niko van Meurs & Sid Mijnders
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
- * @author Sid Mijnders <sid@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
  */
  (function (context, undefined) {
 
@@ -22,16 +21,17 @@
 
         // declare variables
         var namespaceCompenents = namespace.split("."),
-            parent = context,
+            parent              = context,
             component,
             i,
             length;
 
         // loop through namespaceComponents and create new sub-objects for each component
         for (i = 0, length = namespaceCompenents.length; i < length; i++) {
-            component = namespaceCompenents[i];
-            parent[component] = parent[component] || {};
-            parent = parent[component];
+
+            component           = namespaceCompenents[i];
+            parent[component]   = parent[component] || {};
+            parent              = parent[component];
         }
 
         // return the namespace object

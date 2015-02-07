@@ -1,15 +1,15 @@
 /**
- * This file is part of the Nodium Core package
+ * This file is part of the Nodium core package
  *
- * (c) StarApple B.V. <developers@starapple.nl>
+ * (c) Niko van Meurs & Sid Mijnders
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 /**
- * @author Niko van Meurs <niko@starapple.nl>
- * @author Sid Mijnders <sid@starapple.nl>
+ * @author Niko van Meurs <nikovanmeurs@gmail.com>
+ * @author Sid Mijnders
  */
  (function (context, undefined) {
 
