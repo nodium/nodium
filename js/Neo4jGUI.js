@@ -1,24 +1,26 @@
-(function (context, $, d3, _, undefined) {
+(function (window, undefined) {
 
 'use strict';
 
-var app           = context.setNamespace('app'),
-    graph         = context.setNamespace('app.graph'),
-    modules       = context.setNamespace('app.modules'),
-    transformer   = context.setNamespace('app.transformer'),
-    ui            = context.setNamespace('app.ui'),
-    animations    = context.setNamespace('app.graph.animations'),
-    Node          = context.use('app.model.Node'),
-    NodeEvent     = context.use('app.event.NodeEvent'),
-    DragEvent     = context.use('app.event.DragEvent'),
-    HoldEvent     = context.use('app.event.HoldEvent'),
-    KeyboardEvent = context.use('app.event.KeyboardEvent'),
+var $             = Nodium.context.jQuery,
+    d3            = Nodium.context.d3,
+    _             = Nodium.context._,
+    graph         = Nodium.graph,
+    modules       = Nodium.modules,
+    transformer   = Nodium.transformer,
+    ui            = Nodium.ui,
+    animations    = Nodium.graph.animations,
+    Node          = Nodium.model.Node,
+    NodeEvent     = Nodium.event.NodeEvent,
+    DragEvent     = Nodium.event.DragEvent,
+    HoldEvent     = Nodium.event.HoldEvent,
+    KeyboardEvent = Nodium.event.KeyboardEvent,
     self;
 
 /**
  * A generic neo4j user interface
  */
-graph.Neo4jGUI = app.createClass(graph.Graph, {
+window.Neo4jGUI = Nodium.createClass(graph.Graph, {
 
     construct: function (selector, kernel) {
 
@@ -36,8 +38,8 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
         .register(new modules.Selectable(), [
             ['node-clicked', 'handleNodeSelect'],
             [NodeEvent.CREATED, 'handleNodeSelect'],
-            [NodeEvent.SELECTED, 'app.graph.graphics.handleClassNode', 'selected'],
-            [NodeEvent.UNSELECTED, 'app.graph.graphics.handleUnclassNode', 'selected'],
+            [NodeEvent.SELECTED, 'Nodium.graph.graphics.handleClassNode', 'selected'],
+            [NodeEvent.UNSELECTED, 'Nodium.graph.graphics.handleUnclassNode', 'selected'],
             [NodeEvent.DESTROYED, 'handleNodeUnselect']
         ])
         .register(new modules.NodeCRUD({
@@ -59,9 +61,9 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
             [DragEvent.DRAG, 'handleHoldDrag'],
             [DragEvent.END, 'handleHoldEnd'],
             ['mouse-up', 'handleHoldEnd'],
-            [DragEvent.END, 'app.graph.graphics.handleNodeScale', 1],
-            [HoldEvent.NODE, 'app.graph.graphics.handleNodeScale', 1.3]
-            // [HoldEvent.NODE, 'app.graph.graphics.handleNodeColor', '#ffcc00'],
+            [DragEvent.END, 'Nodium.graph.graphics.handleNodeScale', 1],
+            [HoldEvent.NODE, 'Nodium.graph.graphics.handleNodeScale', 1.3]
+            // [HoldEvent.NODE, 'Nodium.graph.graphics.handleNodeColor', '#ffcc00'],
         ])
         .register(new modules.Pinnable(), [
             [HoldEvent.DRAGUP, 'handleNodePinned']
@@ -149,7 +151,7 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
 
         // UI handlers that initiate an action event
         var keyDownHandler = _.bind(this.handleKeyDown, this);
-        $(context).on('keydown', keyDownHandler);
+        $(window).on('keydown', keyDownHandler);
 
         $(this)
             .on('mode-change', this.handleModeChange.bind(this))
@@ -328,4 +330,4 @@ graph.Neo4jGUI = app.createClass(graph.Graph, {
     }
 });
 
-}(this, jQuery, d3, _));
+}(window));
