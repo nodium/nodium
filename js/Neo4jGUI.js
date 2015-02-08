@@ -5,6 +5,7 @@
 var $             = Nodium.context.jQuery,
     d3            = Nodium.context.d3,
     _             = Nodium.context._,
+    api           = Nodium.api,
     graph         = Nodium.graph,
     modules       = Nodium.modules,
     transformer   = Nodium.transformer,
@@ -27,7 +28,9 @@ window.Neo4jGUI = Nodium.createClass(graph.Graph, {
         self = this;
         this.mode = '';
 
-        this.api = new graph.Neo4jAPI();
+        this.api = new api.APIConsumer(new api.Neo4jAPI({
+            version: 1
+        }));
 
         // centralized module initialization and configuration
 
