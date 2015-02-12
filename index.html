@@ -7,6 +7,7 @@
 		<link rel="stylesheet" type="text/css" href="css/graph-editor.css" />
 	</head>
 	<body>
+		<aside id="nodium-ui"></aside>
 		<aside id="inspector">
 			<div id="inspector-node" class="panel">
 				<form id="node-form" action="post">
@@ -97,17 +98,29 @@
 
 		$(function () {
 
-			var ui      = Nodium.ui,
-				kernel  = new Nodium.event.Kernel(),
-				graph	= new Neo4jGUI('#graph', kernel),
-				menu 	= new ui.PanelContainer('#inspector', {});
+			// var ui      = Nodium.ui,
+			// 	kernel  = new Nodium.event.Kernel(),
+			// 	graph	= new Neo4jGUI('#graph', kernel),
+			// 	menu 	= new ui.PanelContainer('#inspector', {});
 
-			menu
-				.addPanel(new ui.NodeEditPanel('#inspector-node', {}, kernel))
-				.addPanel(new ui.NodeFilterPanel('#filter-node', {}, kernel))
-				.addPanel(new ui.NodeExplorerPanel('#ui-node-explorer', {}, kernel));
+			Nodium.renderComponent(
+				document.getElementById('nodium-ui'),
+				Nodium.ui.PanelContainer,
+				{
+					expandedPanel: Nodium.ui.NodeEditPanel.name,
+					panels: [
+						Nodium.ui.NodeEditPanel,
+						// Nodium.ui.NodeFilterPanel
+					]
+				}
+			);
 
-			kernel.register(new ui.EdgeModePanel({}, '#edit-mode'));
+			// menu
+			// 	.addPanel(new ui.NodeEditPanel('#inspector-node', {}, kernel))
+			// 	.addPanel(new ui.NodeFilterPanel('#filter-node', {}, kernel))
+			// 	.addPanel(new ui.NodeExplorerPanel('#ui-node-explorer', {}, kernel));
+
+			// kernel.register(new ui.EdgeModePanel({}, '#edit-mode'));
 
 		});
 	</script>
