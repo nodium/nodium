@@ -28,9 +28,7 @@ window.Neo4jGUI = Nodium.createClass(graph.Graph, {
         self = this;
         this.mode = '';
 
-        this.api = new api.APIConsumer(new api.Neo4jAPI({
-            version: 1
-        }));
+        this.api = new api.Neo4jAPI();
 
         // centralized module initialization and configuration
 
