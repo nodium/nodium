@@ -52,7 +52,7 @@ window.Neo4jGUI = Nodium.createClass(graph.Graph, {
         ])
         .register(new modules.NodeCRUD({
             properties: {
-                status: 'accepted'
+                status: 'denied'
             },
             labels: ['yo'] // TODO make api store label using new transactional cypher
         }), [
