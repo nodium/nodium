@@ -28,7 +28,14 @@ window.Neo4jGUI = Nodium.createClass(graph.Graph, {
         self = this;
         this.mode = '';
 
-        this.api = new api.Neo4jAPI();
+        var nodeTransformer = new transformer.SeraphNodeTransformer({
+                map: {
+                    __nodestyle: '_style',
+                    id: false
+                }}),
+            adapter = new api.SeraphAdapter({}, nodeTransformer);
+
+        this.api = new api.Neo4jAPI({}, adapter);
 
         // centralized module initialization and configuration
 
