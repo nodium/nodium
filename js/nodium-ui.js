@@ -730,16 +730,14 @@ module.exports = function (Nodium, $, _, undefined) {
             this.labelList = new List('#node-labels', '#node-form', {
                 new:    '#new-label', // new handle
                 delete: '.delete-label', // delete handle
-                empty:  { label: '' } // empty prototype data
+                empty:  { label: '' } // empty prototype    data
             });
 
             this.edgeList = new List('#node-edges', '#node-form', {
-                new:    '#new-edge',
-                delete: '.delete-edge',
-                empty:  { name: '' }
+                delete: '.delete-edge'
             });
 
-            // mNodiuming of node fields to ui field id
+            // mapping of node fields to ui field id
             // generalize this with options
             this.explicits = {
                 'node-title': 'name'
@@ -750,23 +748,23 @@ module.exports = function (Nodium, $, _, undefined) {
              * Initialization is done when the graph is loaded
              * and reinitialization when a node is updated
              */
-            // this.bloodhound = new Bloodhound({
-            //     name: 'edges',
-            //     local: this.getTypeaheadNodes.bind(this),
-            //     datumTokenizer: function (node) {
-            //         return Bloodhound.tokenizers.whitespace(
-            //             Node.getPropertyValue(node, 'name')
-            //         );
-            //     },
-            //     queryTokenizer: Bloodhound.tokenizers.whitespace
-            // });
+            this.bloodhound = new Bloodhound({
+                name: 'edges',
+                local: this.getTypeaheadNodes.bind(this),
+                datumTokenizer: function (node) {
+                    return Bloodhound.tokenizers.whitespace(
+                        Node.getPropertyValue(node, 'name')
+                    );
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace
+            });
 
-            // $('#new-edge').typeahead(null, {
-            //     source:     this.bloodhound.ttAdapter(),
-            //     displayKey: function (node) {
-            //         return Node.getPropertyValue(node, 'name');
-            //     }
-            // });
+            $('#new-edge-target').typeahead(null, {
+                source:     this.bloodhound.ttAdapter(),
+                displayKey: function (node) {
+                    return Node.getPropertyValue(node, 'name');
+                }
+            });
         },
 
         init: function (container) {
@@ -785,11 +783,14 @@ module.exports = function (Nodium, $, _, undefined) {
                 .on(this, '#node-form', Event.FOCUS_OUT, 'textarea')
                 .on(this, '#node-form', Event.FOCUS_OUT, 'input');
 
+            this.view.find('#node-form').on('keydown', function (event) { event.keyCode === 13 && event.preventDefault() });
+            this.view.find('#new-edge').on('click', this.handleCreateEdge.bind(this));
+
             $(this.labelList).on('list-delete', this.handleDeleteElement.bind(this, 'label'));
             $(this.propertyList).on('list-delete', this.handleDeleteElement.bind(this, 'property'));
             $(this.edgeList).on('list-delete', this.handleDeleteEdge.bind(this));
             $(this.edgeList).on('list-click', this.handleEdgeElementClicked.bind(this));
-            $('#new-edge').on('typeahead:selected', this.handleCreateEdge.bind(this));
+            $('#new-edge-target').on('typeahead:selected', this.handleCreateEdge.bind(this));
 
             $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
 
@@ -1030,19 +1031,59 @@ module.exports = function (Nodium, $, _, undefined) {
         /*
          * Event handlers
          */
-
-        handleCreateEdge: function (event, node) {
+        
+        handleAutocompleteSelected: function (event, node) {
 
             if (!this.nodeData) {
                 return;
             }
 
-            $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, node]);
+            // put stuff in edgelist
+            this.selectedEdgePoint = node;
+        },
 
-            console.log('typeahead:selected');
-            console.log(event);
+        handleCreateEdge: function (event, node) {
 
-            // $('#new-edge').typeahead('val', '');
+            var edgeType,
+                endpoint,
+                endpointName,
+                find;
+
+            find = this.view.find.bind(this.view);
+
+            if (!this.nodeData) {
+                return;
+            }
+
+            edgeType = find('#new-edge-type').val();
+
+            // put stuff in edgelist
+            if (this.selectedEdgePoint) {
+                endpoint = this.selectedEdgePoint
+            } else {
+                
+                endpointName = find('#new-edge-target').val();
+
+                if (!endpointName) {
+                    return;
+                }
+
+                endpoint = _.find(this.nodes, function (node) {
+                    return endpointName === Node.getPropertyValue('name');
+                });
+
+                if (!endpoint) {
+                    return;
+                }
+            }
+
+            $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, endpoint, edgeType]);
+
+            $('#new-edge-target')
+                .val('')
+                .focus();
+
+            // $('#new-edge').typeahead('val', '').focus();
         },
 
         handleDeleteEdge: function (event, data) {
