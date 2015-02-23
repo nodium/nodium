@@ -758,13 +758,6 @@ module.exports = function (Nodium, $, _, undefined) {
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace
             });
-
-            $('#new-edge-target').typeahead(null, {
-                source:     this.bloodhound.ttAdapter(),
-                displayKey: function (node) {
-                    return Node.getPropertyValue(node, 'name');
-                }
-            });
         },
 
         init: function (container) {
@@ -794,10 +787,19 @@ module.exports = function (Nodium, $, _, undefined) {
 
             $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
 
+            $('#new-edge-target').typeahead(null, {
+                source:     this.bloodhound.ttAdapter(),
+                displayKey: function (node) {
+                    return Node.getPropertyValue(node, 'name');
+                }
+            });
+
             return this;
         },
 
         getTypeaheadNodes: function () {
+
+            console.log('TYPEAHEADING');
 
             // filter all nodes
             if (this.nodes) {
