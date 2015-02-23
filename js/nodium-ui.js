@@ -758,13 +758,6 @@ module.exports = function (Nodium, $, _, undefined) {
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace
             });
-
-            $('#new-edge-target').typeahead(null, {
-                source:     this.bloodhound.ttAdapter(),
-                displayKey: function (node) {
-                    return Node.getPropertyValue(node, 'name');
-                }
-            });
         },
 
         init: function (container) {
@@ -790,14 +783,23 @@ module.exports = function (Nodium, $, _, undefined) {
             $(this.propertyList).on('list-delete', this.handleDeleteElement.bind(this, 'property'));
             $(this.edgeList).on('list-delete', this.handleDeleteEdge.bind(this));
             $(this.edgeList).on('list-click', this.handleEdgeElementClicked.bind(this));
-            $('#new-edge-target').on('typeahead:selected', this.handleCreateEdge.bind(this));
+            // $('#new-edge-target').on('typeahead:selected', this.handleCreateEdge.bind(this));
 
             $('#delete-node-button', this.view).on(Event.CLICK, this.handleDeleteNodeButtonClick.bind(this));
+
+            $('#new-edge-target').typeahead(null, {
+                source:     this.bloodhound.ttAdapter(),
+                displayKey: function (node) {
+                    return Node.getPropertyValue(node, 'name');
+                }
+            });
 
             return this;
         },
 
         getTypeaheadNodes: function () {
+
+            console.log('TYPEAHEADING');
 
             // filter all nodes
             if (this.nodes) {
@@ -917,6 +919,7 @@ module.exports = function (Nodium, $, _, undefined) {
             return {
                 edgeId:    edge._id,
                 nodeId:    otherId,
+                edgeType:  edge.type,
                 name:      name || '',
                 direction: from ? 'right' : 'left'
             };
@@ -1079,11 +1082,11 @@ module.exports = function (Nodium, $, _, undefined) {
 
             $(this.kernel).trigger(EdgeEvent.CREATE, [this.nodeData, endpoint, edgeType]);
 
-            $('#new-edge-target')
-                .val('')
-                .focus();
+            // $('#new-edge-target')
+            //     .val('')
+            //     .focus();
 
-            // $('#new-edge').typeahead('val', '').focus();
+            $('#new-edge-target').typeahead('val', '').focus();
         },
 
         handleDeleteEdge: function (event, data) {
@@ -1091,10 +1094,15 @@ module.exports = function (Nodium, $, _, undefined) {
             var sourceId,
                 targetId,
                 nodeId = Node.getId(this.nodeData),
-                otherId = data[0].data.nodeid;
+                otherId = data[0].data.nodeid,
+                edgeType = data[0].data.edgetype;
 
             // delete the edge from the nodeEdges
             this.nodeEdges.forEach(function (edge, i) {
+
+                if (edgeType != edge.type) {
+                    return;
+                }
 
                 sourceId = Node.getId(edge.source);
                 targetId = Node.getId(edge.target);
@@ -1103,7 +1111,7 @@ module.exports = function (Nodium, $, _, undefined) {
                     nodeId == targetId && otherId == sourceId) {
 
                     this.nodeEdges.splice(i, 1);
-                    $(this.kernel).trigger(EdgeEvent.DESTROY, [edge.source, edge.target]);
+                    $(this.kernel).trigger(EdgeEvent.DESTROY, [edge.source, edge.target, edge.type]);
                 }
             }, this);
         },
@@ -1138,7 +1146,8 @@ module.exports = function (Nodium, $, _, undefined) {
             this.edgeList.add(this.parseEdge({
                 _id:    edge._id,
                 source: source,
-                target: target
+                target: target,
+                type: edge.type
             }));
 
             this.nodeEdges.push(edge);
@@ -1154,7 +1163,7 @@ module.exports = function (Nodium, $, _, undefined) {
                 edgeData;
 
             this.nodeEdges = _.reject(this.nodeEdges, function (e) {
-                return e.source._id === source._id && e.target._id === target._id;
+                return e.source._id === source._id && e.target._id === target._id && e.type === edge.type;
             });
 
             // very nasty stuff here
@@ -1213,7 +1222,7 @@ module.exports = function (Nodium, $, _, undefined) {
 
             this.nodes = nodes;
             this.edges = edges;
-            // this.bloodhound.initialize();
+            this.bloodhound.initialize();
         },
 
         handleNodeSelected: function (event, node, data) {
