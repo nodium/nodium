@@ -333,8 +333,6 @@ aside {
 
 /* line 217, sass/_sidebar.scss */
 #node-edges div {
-  width: 100%;
-  min-width: 100%;
   max-width: 100%;
 }
 
