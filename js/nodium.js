@@ -2681,11 +2681,11 @@ modules.EdgeCRUD = app.createClass({
         }
     },
 
-    handleCreateEdge: function (event, source, target) {
+    handleCreateEdge: function (event, source, target, type) {
 
         console.log('handling edge creation');
 
-        this.updateLink(source, target, undefined, 2);
+        this.updateLink(source, target, type, 2);
     },
 
     handleDestroyEdge: function (event, source, target) {
@@ -2744,7 +2744,7 @@ modules.EdgeCRUD = app.createClass({
         this.graph.edges.forEach(function (edge, i) {
 
             if (type && edge.type !== type) {
-                return;
+                return index;
             }
 
             if ((edge.source.index == source.index && edge.target.index == target.index) ||
