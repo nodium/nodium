@@ -362,9 +362,9 @@ aside {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: center;
   -moz-box-align: center;
-  /* OLD├óÔé¼┬ª */
+  /* OLDâ€¦ */
   -ms-flex-align: center;
-  /* You know the drill now├óÔé¼┬ª */
+  /* You know the drill nowâ€¦ */
   -webkit-align-items: center;
   align-items: center;
 }
@@ -410,9 +410,9 @@ aside {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: stretch;
   -moz-box-align: stretch;
-  /* OLD├óÔé¼┬ª */
+  /* OLDâ€¦ */
   -ms-flex-align: stretch;
-  /* You know the drill now├óÔé¼┬ª */
+  /* You know the drill nowâ€¦ */
   -webkit-align-items: stretch;
   align-items: stretch;
   height: 53px;
@@ -505,9 +505,9 @@ label > input[type=radio] {
   /* NEW: Opera 12.1, Firefox 22+ */
   -webkit-box-align: center;
   -moz-box-align: center;
-  /* OLD├óÔé¼┬ª */
+  /* OLDâ€¦ */
   -ms-flex-align: center;
-  /* You know the drill now├óÔé¼┬ª */
+  /* You know the drill nowâ€¦ */
   -webkit-align-items: center;
   align-items: center;
   height: 44px;
@@ -542,6 +542,23 @@ label > input[type=radio] {
 /* line 147, sass/graph-editor.scss */
 #edit-mode .selected {
   color: #331833;
+}
+
+/* line 151, sass/graph-editor.scss */
+.u-row {
+  display: flex !important;
+  flex-direction: row;
+}
+
+/* line 156, sass/graph-editor.scss */
+.u-grow {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* line 161, sass/graph-editor.scss */
+#new-edge {
+  position: static !important;
 }
 
 /* Graph stuff */

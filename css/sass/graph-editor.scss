@@ -148,6 +148,20 @@ label > input[type=radio] {
 	color: $color-dark
 }
 
+.u-row {
+	display: flex !important;
+	flex-direction: row;
+}
+
+.u-grow {
+	display: flex;
+	flex-grow: 1;
+}
+
+#new-edge {
+	position: static !important;
+}
+
 /* Graph stuff */
 
 @import "_nodes.scss";
