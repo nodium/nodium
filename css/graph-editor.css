@@ -48,7 +48,7 @@ button {
 }
 
 /* line 37, sass/_dom-overrides.scss */
-button, input, textarea, select, label {
+button, input, textarea, select, label, .node-key {
   width: 100%;
   padding: 8px;
   border: none;
@@ -57,7 +57,7 @@ button, input, textarea, select, label {
   font-weight: 300;
 }
 /* line 46, sass/_dom-overrides.scss */
-button:focus, input:focus, textarea:focus, select:focus, label:focus {
+button:focus, input:focus, textarea:focus, select:focus, label:focus, .node-key:focus {
   outline: none;
 }
 
@@ -145,24 +145,25 @@ aside {
   padding: 9px 0;
 }
 /* line 31, sass/_sidebar.scss */
-#inspector form > div input {
+#inspector form > div input,
+#inspector form > div .node-key {
   padding-left: 38px;
 }
-/* line 36, sass/_sidebar.scss */
+/* line 37, sass/_sidebar.scss */
 #inspector.expanded {
   pointer-events: auto;
 }
-/* line 40, sass/_sidebar.scss */
+/* line 41, sass/_sidebar.scss */
 #inspector.expanded .panel-navigation {
   margin-right: -38px;
 }
-/* line 44, sass/_sidebar.scss */
+/* line 45, sass/_sidebar.scss */
 #inspector.expanded .panel.active {
   margin-right: 0;
   pointer-events: auto;
 }
 
-/* line 51, sass/_sidebar.scss */
+/* line 52, sass/_sidebar.scss */
 .panel {
   background: #331833;
   margin-right: -320px;
@@ -175,7 +176,7 @@ aside {
   transition: margin-right 0.18s linear;
 }
 
-/* line 63, sass/_sidebar.scss */
+/* line 64, sass/_sidebar.scss */
 .panel-navigation {
   background: #331833;
   position: absolute;
@@ -188,7 +189,7 @@ aside {
   z-index: 100;
   pointer-events: auto;
 }
-/* line 78, sass/_sidebar.scss */
+/* line 79, sass/_sidebar.scss */
 .panel-navigation button {
   width: 38px;
   padding: 9px 0;
@@ -197,12 +198,12 @@ aside {
   background: transparent;
   color: #FFF;
 }
-/* line 92, sass/_sidebar.scss */
+/* line 93, sass/_sidebar.scss */
 .panel-navigation .hidden {
   margin-right: -38px;
 }
 
-/* line 97, sass/_sidebar.scss */
+/* line 98, sass/_sidebar.scss */
 .node-field > div,
 .node-field > textarea {
   width: 50%;
@@ -212,36 +213,37 @@ aside {
   vertical-align: top;
 }
 
-/* line 106, sass/_sidebar.scss */
+/* line 107, sass/_sidebar.scss */
 .node-field > div {
   position: relative;
   height: auto;
 }
 
-/* line 111, sass/_sidebar.scss */
-.node-field input {
+/* line 112, sass/_sidebar.scss */
+.node-field input,
+.node-key {
   left: 0;
   right: 0;
   padding-left: 38px;
 }
 
-/* line 117, sass/_sidebar.scss */
+/* line 119, sass/_sidebar.scss */
 .node-field button {
   position: absolute;
   top: 0;
   bottom: 0;
   color: #b3b3b3;
 }
-/* line 123, sass/_sidebar.scss */
+/* line 125, sass/_sidebar.scss */
 .node-field button.right {
   right: 0;
 }
-/* line 127, sass/_sidebar.scss */
+/* line 129, sass/_sidebar.scss */
 .node-field button:not(.right) {
   left: 0;
 }
 
-/* line 132, sass/_sidebar.scss */
+/* line 134, sass/_sidebar.scss */
 .node-field button,
 #new-property,
 #new-label,
@@ -254,7 +256,7 @@ aside {
   background: transparent;
 }
 
-/* line 144, sass/_sidebar.scss */
+/* line 146, sass/_sidebar.scss */
 #new-property,
 #new-label,
 #new-edge {
@@ -262,27 +264,28 @@ aside {
   height: 35px;
 }
 
-/* line 151, sass/_sidebar.scss */
+/* line 153, sass/_sidebar.scss */
 #delete-node-button {
   background: #e97777;
   color: #331833;
 }
 
-/* line 156, sass/_sidebar.scss */
+/* line 158, sass/_sidebar.scss */
 .node-field input,
-.node-field textarea {
+.node-field textarea,
+.node-key {
   background: transparent;
   color: #FFF;
 }
 
-/* line 162, sass/_sidebar.scss */
+/* line 165, sass/_sidebar.scss */
 .node-label.node-field div {
   width: 100%;
   min-width: 100%;
   max-width: 100%;
 }
 
-/* line 170, sass/_sidebar.scss */
+/* line 173, sass/_sidebar.scss */
 #inspector ul::before {
   width: 100%;
   padding: 6px 0 6px 38px;
@@ -296,55 +299,60 @@ aside {
   border-bottom: 1px solid #b3b3b3;
 }
 
-/* line 185, sass/_sidebar.scss */
+/* line 188, sass/_sidebar.scss */
 #inspector li {
   color: #b3b3b3;
   cursor: pointer;
   transition: color 0.08s linear;
 }
-/* line 191, sass/_sidebar.scss */
+/* line 194, sass/_sidebar.scss */
 #inspector li:last-child {
   border-bottom: 1px solid #b3b3b3;
 }
-/* line 195, sass/_sidebar.scss */
+/* line 198, sass/_sidebar.scss */
 #inspector li:hover {
   color: #FFF;
 }
 
-/* line 200, sass/_sidebar.scss */
+/* line 203, sass/_sidebar.scss */
 #node-fields::before {
   content: 'Properties';
 }
 
-/* line 204, sass/_sidebar.scss */
+/* line 207, sass/_sidebar.scss */
 #node-labels::before {
   content: 'Labels';
 }
 
-/* line 208, sass/_sidebar.scss */
+/* line 211, sass/_sidebar.scss */
 #node-edges::before {
   content: 'Relations';
 }
 
-/* line 212, sass/_sidebar.scss */
+/* line 215, sass/_sidebar.scss */
 #node-edges div {
   width: 100%;
   min-width: 100%;
   max-width: 100%;
 }
 
-/* line 218, sass/_sidebar.scss */
+/* line 221, sass/_sidebar.scss */
 #node-filter-result::before {
   content: 'Result';
 }
 
-/* line 222, sass/_sidebar.scss */
+/* line 225, sass/_sidebar.scss */
 #node-filter-result {
   overflow-y: auto;
   height: calc(100vh - 35px - 16px);
 }
 
-/* line 228, sass/_sidebar.scss */
+/* line 231, sass/_sidebar.scss */
+.node-key {
+  display: flex;
+}
+
+/* line 235, sass/_sidebar.scss */
 .list-item {
   width: 100%;
   height: 38px;

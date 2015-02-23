@@ -28,7 +28,8 @@ aside {
 			padding: 9px 0;
 		}
 
-		input {
+		input,
+		.node-key {
 			padding-left: 38px;
 		}
 	}
@@ -108,7 +109,8 @@ aside {
 	height: auto;
 }
 
-.node-field input {
+.node-field input,
+.node-key {
 	left: 0;
 	right: 0;
 	padding-left: 38px;
@@ -154,7 +156,8 @@ aside {
 }
 
 .node-field input,
-.node-field textarea {
+.node-field textarea,
+.node-key {
 	background: transparent;
 	color: $color-light;
 }
@@ -223,6 +226,10 @@ aside {
 	overflow-y: auto;
 
 	height: calc(100vh - 35px - 16px);
+}
+
+.node-key {
+	display: flex;
 }
 
 .list-item {
