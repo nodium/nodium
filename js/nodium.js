@@ -632,7 +632,7 @@ var app                 = context.setNamespace('app');
      * @returns {String}
      */
     function replace (haystack, value, needle) {
-        return haystack.replace(new RegExp('\{' + needle + '\}'), value);
+        return haystack.replace(new RegExp('\{' + needle + '\}', 'g'), value);
     };
 
     util.stringFromTemplate = stringFromTemplate;
@@ -2688,11 +2688,11 @@ modules.EdgeCRUD = app.createClass({
         this.updateLink(source, target, type, 2);
     },
 
-    handleDestroyEdge: function (event, source, target) {
+    handleDestroyEdge: function (event, source, target, type) {
 
         console.log('handling edge deletion');
 
-        this.updateLink(source, target, undefined, 1);
+        this.updateLink(source, target, type, 1);
     },
 
     handleUpdateEdge: function (event, edge, update) {
