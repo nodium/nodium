@@ -96,7 +96,8 @@ aside {
 }
 
 .node-field > div,
-.node-field > textarea {
+.node-field > textarea,
+.node-value {
 	width: 50%;
 	min-width: 50%;
 	max-width: 50%;
@@ -157,6 +158,7 @@ aside {
 
 .node-field input,
 .node-field textarea,
+.node-value,
 .node-key {
 	background: transparent;
 	color: $color-light;
