@@ -162,6 +162,28 @@ label > input[type=radio] {
 	position: static !important;
 }
 
+/** Autocomplete */
+
+.tt-dropdown-menu {
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+#new-edge-target ~ .tt-dropdown-menu {
+	width: 100%;
+
+	cursor: pointer;
+}
+
+.tt-suggestion {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 40px;
+
+	&:hover {
+		background-color: rgb(192, 192, 192);
+	}
+}
+
 /* Graph stuff */
 
 @import "_nodes.scss";

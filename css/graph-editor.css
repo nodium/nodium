@@ -561,6 +561,29 @@ label > input[type=radio] {
   position: static !important;
 }
 
+/** Autocomplete */
+/* line 167, sass/graph-editor.scss */
+.tt-dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* line 171, sass/graph-editor.scss */
+#new-edge-target ~ .tt-dropdown-menu {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* line 177, sass/graph-editor.scss */
+.tt-suggestion {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 40px;
+}
+/* line 182, sass/graph-editor.scss */
+.tt-suggestion:hover {
+  background-color: silver;
+}
+
 /* Graph stuff */
 /* line 1, sass/_nodes.scss */
 circle {
