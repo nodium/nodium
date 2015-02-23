@@ -1069,7 +1069,7 @@ module.exports = function (Nodium, $, _, undefined) {
                 }
 
                 endpoint = _.find(this.nodes, function (node) {
-                    return endpointName === Node.getPropertyValue('name');
+                    return endpointName === node.getProperty('name');
                 });
 
                 if (!endpoint) {
