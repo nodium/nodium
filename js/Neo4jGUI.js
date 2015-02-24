@@ -150,13 +150,6 @@ window.Neo4jGUI = Nodium.createClass(graph.Graph, {
 			[DragEvent.END, 'handleNodeStyled']
 		]);
 
-        // initialize transformers
-        new transformer.Neo4jTransformer({
-            map: {
-                __nodestyle: '_style'
-            }
-        });
-
         // UI handlers that initiate an action event
         var keyDownHandler = _.bind(this.handleKeyDown, this);
         $(window).on('keydown', keyDownHandler);

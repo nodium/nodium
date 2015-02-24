@@ -3895,12 +3895,12 @@ modules.Shapable = app.createClass(modules.Evaluable, {
 
 'use strict';
 
-var modules       = context.setNamespace('app.modules'),
-    app         = context.use('app'),
-    model         = context.use('app.model'),
-    NodeEvent   = context.use('app.event.NodeEvent'),
+var modules   = context.setNamespace('app.modules'),
+    app       = context.use('app'),
+    model     = context.use('app.model'),
+    NodeEvent = context.use('app.event.NodeEvent'),
     _defaults = {
-        path: '_style',
+        path: '_mapped._style',
         storables: {}
     };
 
@@ -3981,17 +3981,19 @@ modules.Storable = app.createClass({
 
 		var storables = this.options.storables,
             path = this.options.path,
+            storedString,
 			style,
 			obj,
 			properties,
 			property,
 			value;
 
-		if (!data.hasOwnProperty(path)) {
+        storedString = context.getObjectValueByPath(data, path);
+		if (!storedString) {
 			return;
 		}
 
-		obj = this.objectFromString(data[path]);
+		obj = this.objectFromString(storedString);
 
 		for (style in obj) {
 			// check if this style was configured to be used

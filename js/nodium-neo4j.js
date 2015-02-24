@@ -623,7 +623,7 @@ module.exports = function (Nodium, undefined) {
 
             // check if a property was updated
             if (!update.changed('_properties') &&
-                !update.changed('_style')) {
+                !update.changed('_mapped')) {
                 
                 return;
             }
